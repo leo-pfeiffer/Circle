@@ -1,4 +1,4 @@
-const makeUser = require('community')
+const { testUserAndCommunity} = require('./community.js')
 
 const MongoClient = require('mongodb').MongoClient;
 const express = require('express');
@@ -30,3 +30,5 @@ client.connect()
 .then(() => app.listen(API_PORT, () => console.log(`Listening on localhost: ${API_PORT}`)))
 .catch(err => console.log(`Could not start server`, err))
 
+testUserAndCommunity();
+process.exit(1)
