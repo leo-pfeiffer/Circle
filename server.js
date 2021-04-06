@@ -1,3 +1,5 @@
+const makeUser = require('community')
+
 const MongoClient = require('mongodb').MongoClient;
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -15,8 +17,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 const API_PORT = 3000;
 
-
-
 app.use(express.static('content'));
 
 client.connect()
@@ -29,3 +29,4 @@ client.connect()
 // tell the server to listen on the given port and log a message to the console (so we can see our server is doing something!)
 .then(() => app.listen(API_PORT, () => console.log(`Listening on localhost: ${API_PORT}`)))
 .catch(err => console.log(`Could not start server`, err))
+
