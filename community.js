@@ -39,7 +39,7 @@ makeUser = (userName, userEmail) => {
             if(!this.adminCommunities.includes(community)) {
                 this.communities.splice(this.communities.indexOf(community), 1)
             } else {
-                console.log('Cannot remove admin')
+                throw new Error("Cannot remove admin of a community.")
             }
         }
 
@@ -92,7 +92,7 @@ makeCommunity = (communityName, admin) => {
                 this.users.splice(this.users.indexOf(user), 1)
                 user.leaveCommunity(this)
             } else {
-                console.log('Cannot remove admin')
+                throw new Error("Cannot remove admin of a community.")
             }
         }
         
@@ -117,6 +117,7 @@ exports.testUserAndCommunity = function() {
     c2.removeUser(alice)
     console.log(c2.users.map(el => el.userName))
 
-    c2.removeUser(bob)
-    console.log(c2.users.map(el => el.userName))
+    // the following would throw an error
+    // c2.removeUser(bob)
+    // console.log(c2.users.map(el => el.userName))
 }
