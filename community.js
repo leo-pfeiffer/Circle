@@ -89,28 +89,26 @@ makeThread = (text, title, author) => {
     function Thread ()  {
         this.text = text
         this.title = title
-        this.author = author
+        this.author = author
         this.comments =[]
         this.community = null
 
-        this.addComment =  function(comment)
-        {
+        this.addComment =  function(comment) {
             if (!(this.comments.includes(comment))) {
-            this.comments.push(comment)
-            comment.thread = this
+                this.comments.push(comment)
+                comment.thread = this
+           }
         }
+        author.addThread(this)
     }
-    author.addThread(this) 
-}
-return new Thread()
+    return new Thread()
 }
 
 exports.makeComment = (text,  author) => {
     return makeComment(text,  author)
 }
 
-makeComment = (text, author) =>
-{
+makeComment = (text, author) => {
     function Comment (){
         this.text = text
         this.author = author
@@ -134,12 +132,11 @@ makeCommunity = (communityName, admin) => {
         this.users = []
         this.threads = []
 
-        this.addThread =  function (thread)
-        {
+        this.addThread =  function (thread) {
             if (!(this.threads.includes(thread))) {
                 this.threads.push(thread)
                 thread.community = this
-
+            }
         }
 
         this.addUser = function(user, isAdmin = false) {
@@ -159,7 +156,6 @@ makeCommunity = (communityName, admin) => {
                 throw new Error("Cannot remove admin of a community.")
             }
         }
-        
     }
     return new Community()
 }
@@ -185,3 +181,4 @@ exports.testUserAndCommunity = function() {
     // c2.removeUser(bob)
     // console.log(c2.users.map(el => el.userName))
 }
+
