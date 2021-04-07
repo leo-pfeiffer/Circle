@@ -85,21 +85,22 @@ exports.makeThread = (text, title, author) => {
     return makeThread(text, title, author)
 }
 
-makeThread = (text, title, author) => {
+makeThread = (text, title, author, community) => {
     function Thread ()  {
         this.text = text
         this.title = title
         this.author = author
         this.comments =[]
-        this.community = null
+        this.community = community
 
         this.addComment =  function(comment) {
-            if (!(this.comments.includes(comment))) {
+            if (!(this.comments.includes(comment)) && this.community.users.includes(comment.author)) {
                 this.comments.push(comment)
                 comment.thread = this
            }
         }
         author.addThread(this)
+        this.community.addThread(this)
     }
     return new Thread()
 }
@@ -133,7 +134,8 @@ makeCommunity = (communityName, admin) => {
         this.threads = []
 
         this.addThread =  function (thread) {
-            if (!(this.threads.includes(thread))) {
+
+            if (!(this.threads.includes(thread)) && (this.users.includes(thread.author))) {
                 this.threads.push(thread)
                 thread.community = this
             }
@@ -171,7 +173,6 @@ exports.testUserAndCommunity = function() {
 
     console.log(alice.communities.map(el => el.communityName))
     console.log(alice.adminCommunities.map(el => el.communityName))
-
     console.log(c2.users.map(el => el.userName))
 
     c2.removeUser(alice)
@@ -180,5 +181,27 @@ exports.testUserAndCommunity = function() {
     // the following would throw an error
     // c2.removeUser(bob)
     // console.log(c2.users.map(el => el.userName))
+}
+
+exports.testcommentAndThread =  function () {
+    let alice = makeUser('alice', 'alice@mail.com')
+    let bob = makeUser('bob', 'bob@mail.com')
+    let charly = makeUser('charly', 'charly@mail.com')
+
+    let c1 = makeCommunity('cs5003', alice)
+    let c2 = makeCommunity('id5059', bob)
+    c2.addUser(alice)
+    let thread = makeThread('hello','cs5003',alice,c2)
+    let comment = makeComment ('hello',alice)
+   
+    console.log(alice.communities.map(el => el.communityName))
+    console.log(alice.adminCommunities.map(el => el.communityName))
+
+    console.log(c2.users.map(el => el.userName))
+
+    //c2.addThread(thread)
+    console.log(c2.threads)
+    thread.addComment(comment)
+    console.log(thread.comments)
 }
 
