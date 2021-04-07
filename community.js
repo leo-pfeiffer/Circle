@@ -1,9 +1,19 @@
 const { v4: uuidv4 } = require('uuid')
 
+/** 
+ * Export makeUser().
+ * @param userName
+ * @param userEmail
+ * */
 exports.makeUser = (userName, userEmail) => {
     return makeUser(userName, userEmail)
 }
 
+/** 
+ * Create a new user profile.
+ * @param userName
+ * @param userEmail
+ * */
 makeUser = (userName, userEmail) => {
     function User () {
         this.id = uuidv4()
@@ -63,12 +73,20 @@ makeUser = (userName, userEmail) => {
             this.interests.splice(this.interests.indexOf(interest), 1)
         }
 
+        /**
+         * Add a new thread.
+         * @param {Object} thread
+         * */
         this.addThread = function(thread) {
             if (!(this.threads.includes(thread))) {
                 this.threads.push(thread)
             }
         }
 
+        /**
+         * Add a new comment.
+         * @param {Object} comment
+         * */
         this.addComment = function(comment) {
             if (!(this.comments.includes(comment))) {
                 this.comments.push(comment)
@@ -79,12 +97,24 @@ makeUser = (userName, userEmail) => {
     return new User()
 }
 
-
-
-exports.makeThread = (text, title, author) => {
-    return makeThread(text, title, author)
+/** 
+ * Export makeThread().
+ * @param text
+ * @param title
+ * @param {Object} author
+ * @param {Object} community
+ * */
+exports.makeThread = (text, title, author, community) => {
+    return makeThread(text, title, author, community)
 }
 
+/** 
+ * Create a new thread.
+ * @param text
+ * @param title
+ * @param {Object} author
+ * @param {Object} community
+ * */
 makeThread = (text, title, author, community) => {
     function Thread ()  {
         this.text = text
@@ -93,6 +123,10 @@ makeThread = (text, title, author, community) => {
         this.comments =[]
         this.community = community
 
+        /**
+         * Add a new comment.
+         * @param {Object} comment
+         * */
         this.addComment =  function(comment) {
             if (!(this.comments.includes(comment)) && this.community.users.includes(comment.author)) {
                 this.comments.push(comment)
@@ -105,10 +139,20 @@ makeThread = (text, title, author, community) => {
     return new Thread()
 }
 
+/** 
+ * Export makeComment().
+ * @param text
+ * @param {Object} author
+ * */
 exports.makeComment = (text,  author) => {
     return makeComment(text,  author)
 }
 
+/** 
+ * Create a new comment.
+ * @param text
+ * @param {Object} author
+ * */
 makeComment = (text, author) => {
     function Comment (){
         this.text = text
@@ -121,10 +165,19 @@ makeComment = (text, author) => {
     return new Comment()
 }
 
+/** 
+ * Export makeCommunity().
+ * @param communityName
+ * @param {Object} admin
+ * */
 exports.makeCommunity = (communityName, admin) => {
     return makeCommunity(communityName, admin)
 }
-
+/** 
+ * Create a new community.
+ * @param communityName
+ * @param {Object} admin
+ * */
 makeCommunity = (communityName, admin) => {
     function Community () {
         this.id = uuidv4()
@@ -133,23 +186,34 @@ makeCommunity = (communityName, admin) => {
         this.users = []
         this.threads = []
 
+        /**
+         * Add a new thread.
+         * @param {Object} thread
+         * */
         this.addThread =  function (thread) {
-
             if (!(this.threads.includes(thread)) && (this.users.includes(thread.author))) {
                 this.threads.push(thread)
                 thread.community = this
             }
         }
 
+        /**
+         * Add a new user.
+         * @param {Object} user
+         * @param isAdmin
+         * */
         this.addUser = function(user, isAdmin = false) {
             if (!(this.users.includes(user))) {
                 this.users.push(user)
                 user.joinCommunity(this, isAdmin)
             }
         }
-        this.addUser(this.admin, true )
+        this.addUser(this.admin, true)
 
-        //Leaving the community
+        /**
+         * Remove user from community.
+         * @param {Object} user
+         * */
         this.removeUser = function(user) {
             if (user !== this.admin) {
                 this.users.splice(this.users.indexOf(user), 1)
