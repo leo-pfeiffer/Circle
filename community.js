@@ -15,6 +15,8 @@ makeUser = (userName, userEmail) => {
         this.gender = null;
         this.age = null;
         this.adminCommunities = [];
+        this.comments = []
+        this.threads = []
 
         /**
          * Join a new community.
@@ -61,15 +63,68 @@ makeUser = (userName, userEmail) => {
             this.interests.splice(this.interests.indexOf(interest), 1)
         }
 
+        this.addThread = function(thread) {
+            if (!(this.threads.includes(thread))) {
+                this.threads.push(thread)
+            }
+        }
+
+        this.addComment = function(comment) {
+            if (!(this.comments.includes(comment))) {
+                this.comments.push(comment)
+            }
+        }
+
     }
     return new User()
 }
 
 
+
+exports.makeThread = (text, title, author) => {
+    return makeThread(text, title, author)
+}
+
+makeThread = (text, title, author) => {
+    function Thread ()  {
+        this.text = text
+        this.title = title
+        this.author = author
+        this.comments =[]
+        this.community = null
+
+        this.addComment =  function(comment)
+        {
+            if (!(this.comments.includes(comment))) {
+            this.comments.push(comment)
+            comment.thread = this
+        }
+    }
+    author.addThread(this) 
+}
+return new Thread()
+}
+
+exports.makeComment = (text,  author) => {
+    return makeComment(text,  author)
+}
+
+makeComment = (text, author) =>
+{
+    function Comment (){
+        this.text = text
+        this.author = author
+        this.thread = null
+
+        author.addComment(this) 
+
+    }
+    return new Comment()
+}
+
 exports.makeCommunity = (communityName, admin) => {
     return makeCommunity(communityName, admin)
 }
-
 
 makeCommunity = (communityName, admin) => {
     function Community () {
@@ -77,6 +132,15 @@ makeCommunity = (communityName, admin) => {
         this.communityName = communityName;
         this.admin = admin;
         this.users = []
+        this.threads = []
+
+        this.addThread =  function (thread)
+        {
+            if (!(this.threads.includes(thread))) {
+                this.threads.push(thread)
+                thread.community = this
+
+        }
 
         this.addUser = function(user, isAdmin = false) {
             if (!(this.users.includes(user))) {
