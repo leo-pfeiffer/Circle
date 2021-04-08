@@ -244,7 +244,7 @@
                                             <div class="h5 mb-0 font-weight-bold text-light-800">{{ community.name }}</div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                            <i class="fas fa-users fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -257,7 +257,7 @@
                     <div class="row">
 
                         <!-- Area Chart -->
-                        <div class="col-xl-8 col-lg-7">
+                        <div class="col-xl-8 col-lg-7" id="feed" v-show="state !== 'login'">
                             <div class="card shadow mb-4 bg-secondary">
                                 <!-- Card Header - Dropdown -->
                                 <div
@@ -288,12 +288,12 @@
                         </div>
 
                         <!-- Pie Chart -->
-                        <div class="col-xl-4 col-lg-5">
+                        <div class="col-xl-4 col-lg-5" id="calendarPreview" v-show="state !== 'login'">
                             <div class="card shadow mb-4 bg-secondary">
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-success">Calendar</h6>
+                                    <h6 class="m-0 font-weight-bold text-warning">Calendar</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -334,13 +334,14 @@
                     <div class="row justify-content-center" id="login" v-show="state === 'login'">
 
                         <div class="col-xl-10 col-lg-12 col-md-9">
-                            <div class="card o-hidden border-0 shadow-lg my-5">
+                            <div class="card o-hidden border-0 shadow-lg my-5 bg-gradient-info">
                                 <div class="card-body p-0">
                                     <div class="row justify-content-center">
                                         <div class="col-lg-6">
                                             <div class="p-5">
                                                 <div class="text-center">
-                                                    <h1 class="h4 text-gray-900 mb-4">Welcome to Circle!</h1>
+                                                    <h1 class="h4 text-gray-900 mb-4">Welcome to</h1>
+                                                    <h1 id="loginLogo">&#x25ef; Circle</h1>
                                                 </div>
                                                 <form class="user">
                                                     <div class="form-group">
@@ -351,11 +352,11 @@
                                                         <input type="password" class="form-control form-control-user"
                                                                id="inputPassword" placeholder="Password">
                                                     </div>
-                                                    <a class="btn btn-primary btn-user btn-block" v-on:click="login">Login</a>
+                                                    <a class="btn btn-warning btn-user btn-block" v-on:click="login">Login</a>
                                                     <hr>
                                                 </form>
                                                 <div class="text-center">
-                                                    <a class="small" href="register.html">Create an Account!</a>
+                                                    <a class="small text-warning" href="register.html">Create an Account!</a>
                                                 </div>
                                             </div>
                                         </div>
