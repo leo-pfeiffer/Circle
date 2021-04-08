@@ -1,3 +1,9 @@
 /**
 * Custom CSS
 */
+
+#loginLogo {
+  color: white; 
+  font-size: 100px;
+  padding: 30px;
+}

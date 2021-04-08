@@ -30,6 +30,31 @@ const makeShortlistVue = function() {
     })
 }
 
+const makeFeedVue = function() {
+    const feedVue = new Vue({
+        el: '#feed',
+        computed: {
+            state() {
+                return client.state;
+            },
+        },
+    })
+}
+
+ const makeCalendarPreviewVue = function() {
+     const makeCalendarPreview = new Vue({
+         el: '#calendarPreview',
+         computed: {
+             state() {
+                 return client.state;
+             },
+         },
+     })
+ }
+
+
 export const makeDashboard = function () {
     makeShortlistVue();
+    makeFeedVue();
+    makeCalendarPreviewVue();
 }
