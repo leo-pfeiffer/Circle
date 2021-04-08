@@ -17,6 +17,12 @@
 
     <title>&#x25ef; Circle</title>
 
+    <!-- Development version of Vue: todo change this to production -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
     <!-- Custom fonts for this template-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
@@ -286,7 +292,7 @@
                                     Profile
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <a class="dropdown-item" href="login.html">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -624,6 +630,46 @@
                         </div>
                     </div>
 
+                    <!-- Login Element-->
+                    <div class="row justify-content-center" id="login" v-show="state === 'login'">
+
+                        <div class="col-xl-10 col-lg-12 col-md-9">
+                            <div class="card o-hidden border-0 shadow-lg my-5">
+                                <div class="card-body p-0">
+                                    <div class="row justify-content-center">
+                                        <div class="col-lg-6">
+                                            <div class="p-5">
+                                                <div class="text-center">
+                                                    <h1 class="h4 text-gray-900 mb-4">Welcome to Circle!</h1>
+                                                </div>
+                                                <form class="user">
+                                                    <div class="form-group">
+                                                        <input type="username" class="form-control form-control-user" id="inputUsername"
+                                                               placeholder="Username">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="password" class="form-control form-control-user"
+                                                               id="inputPassword" placeholder="Password">
+                                                    </div>
+                                                    <a href="index.html" class="btn btn-primary btn-user btn-block">
+                                                        Login
+                                                    </a>
+                                                    <hr>
+                                                </form>
+                                                <div class="text-center">
+                                                    <a class="small" href="register.html">Create an Account!</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!-- End of Login Element-->
+
                 </div>
                 <!-- /.container-fluid -->
 
@@ -651,27 +697,12 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div></div>
 
 </body>
+
+<!-- Custom javascript -->
+<script src="js/index.js" type="module"></script>
 
 <!--  jQuery (for bootstrap template)  -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
