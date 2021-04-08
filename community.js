@@ -28,11 +28,7 @@ makeUser = (userName, userEmail) => {
         this.comments = []
         this.threads = []
 
-        /**
-         * Join a new community.
-         * @param {Object} community
-         * @param isAdmin
-         * */
+
         this.joinCommunity = function(community,isAdmin = false) {
             if (!(this.communities.includes(community))) {
                 this.communities.push(community)
@@ -133,7 +129,7 @@ makeThread = (text, title, author, community) => {
                 comment.thread = this
            }
         }
-        author.addThread(this)
+        this.author.addThread(this)
         this.community.addThread(this)
     }
     return new Thread()
@@ -159,7 +155,7 @@ makeComment = (text, author) => {
         this.author = author
         this.thread = null
 
-        author.addComment(this) 
+        this.author.addComment(this)
 
     }
     return new Comment()
