@@ -17,18 +17,16 @@ const API_PORT = 3000;
         let body = req.body;
        // let film = Film.fromJSON(body); // this will do all the validation for us!
         let user =  makeUser(body.userName,body.userEmail)
-       // dao.addUser(body)
-       // .then( id => {
-           console.log(user)
+    //    dao.addUser(body)
+    //    .then( id => {
+    //        console.log(user)
            res.status(200).json(user);
-            //res.status(200).json({msg : `Added user '${body.userName}' with userName ${body.userName}`});
-
-      //  })
-
-       // .catch(err => {
-        //    console.log(`Could not add user '${body.userName}`, err);
-        //    res.status(400).json({msg: `Could not add user '${body.userName}`});
-      //  });
+            //res.status(200).json({msg : `Added user '${body.userName}' with id ${id}`});
+    //    })
+    //    .catch(err => {
+    //        console.log(`Could not add user '${body.userName}`, err);
+    //        res.status(400).json({msg: `Could not add user '${body.userName}`});
+    //    });
     }
 
     let addCommunity =  function(req,res,next)
@@ -46,10 +44,19 @@ const API_PORT = 3000;
 app.use(express.static('content'));
 
 // tell the server to listen on the given port and log a message to the console (so we can see our server is doing something!)
-app.listen(API_PORT, () => {
-	console.log(`Listening on localhost:${API_PORT}`);
-});
+// app.listen(API_PORT, () => {
+// 	console.log(`Listening on localhost:${API_PORT}`);
+// });
 
+function run() {
+    // intitialise the database 
+    dao.init()
+    //only start listening once the database initialisation has finished successfully
+    .then(() => app.listen(API_PORT, () => console.log(`Listening on localhost: ${API_PORT}`)))
+    .catch(err => console.log(`Could not start server`, err))
+}
+
+run()
 //testUserAndCommunity();
 //testcommentAndThread();
 //process.exit(1)
