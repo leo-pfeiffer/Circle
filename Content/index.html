@@ -232,6 +232,12 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
+                    <div id="community-header" v-show="state === 'community'">
+                        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                            <h1 class="h3 mb-0 text-white"><i class="text-white" v-bind:class="symbol"></i> {{ name }} </h1>
+                        </div>
+                    </div>
+
                     <!-- Content Row -->
                     <div class="row" id="shortlist" v-show="state === 'dashboard'">
 

@@ -19,5 +19,4 @@ const makeLoginVue = function() {
 
 export const makeLogin = function () {
     makeLoginVue();
-    console.log('hello')
 }
