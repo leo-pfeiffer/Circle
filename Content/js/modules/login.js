@@ -1,4 +1,4 @@
-import { client } from './clientUtils.js'
+import {client, setState} from './clientUtils.js'
 
 const makeLoginVue = function() {
     const loginVue = new Vue({
@@ -7,6 +7,12 @@ const makeLoginVue = function() {
             state() {
                 return client.state;
             },
+        },
+        methods: {
+            login: function() {
+                setState('dashboard');
+                console.log('should transition to dashboard')
+            }
         }
     })
 }
