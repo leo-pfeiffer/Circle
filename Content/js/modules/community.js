@@ -19,6 +19,38 @@ const makeCommunityHeaderVue = function() {
     })
 }
 
+const makeCommunityCalendarVue = function() {
+    const communityCalendarVue = new Vue({
+        el: '#community-calendar',
+        data: {
+        },
+        computed: {
+            state() {
+                return client.state;
+            },
+        },
+    })
+}
+
+const makeCommunityFeedVue = function() {
+    const communityFeedVue = new Vue({
+        el: '#community-feed',
+        data: {
+            threads: [
+                {name: "Thread 1", text: "Lorem ipsum dolor", id: 1},
+                {name: "Thread 2", text: "Lorem ipsum dolor", id: 2},
+            ]
+        },
+        computed: {
+            state() {
+                return client.state;
+            },
+        },
+    })
+}
+
 export const makeCommunity = function () {
     makeCommunityHeaderVue();
+    makeCommunityFeedVue();
+    makeCommunityCalendarVue();
 }
