@@ -297,7 +297,7 @@
                                                 <h6 class="m-0 font-weight-bold text-primary">{{ thread.name }}</h6>
                                             </a>
                                             <!-- Card Content - Collapse -->
-                                            <div class="collapse show" v-bind:href="`#thread${thread.id}`">
+                                            <div class="collapse show" v-bind:id="`thread${thread.id}`">
                                                 <div class="card-body">
                                                     {{ thread.text }}
                                                 </div>
