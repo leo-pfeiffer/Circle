@@ -40,6 +40,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
+        <div id="sidenav" v-show="state !== 'login'">
         <ul class="navbar-nav bg-gradient-info sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
@@ -150,6 +151,7 @@
             </div>
 
         </ul>
+        </div>
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
@@ -423,7 +425,7 @@
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            <footer class="sticky-footer bg-white">
+            <footer class="sticky-footer bg-secondary">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
                         <span>Circle | Practical 3 of CS5003 @ University of St Andrews</span>

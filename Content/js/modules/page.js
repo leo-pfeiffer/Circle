@@ -15,6 +15,19 @@ const makeHeaderVue = function() {
     })
 }
 
+const makeSidenavVue = function() {
+    const sidenavVue = new Vue({
+        el: "#sidenav",
+        computed: {
+            state() {
+                return client.state;
+            }
+        }
+    })
+}
+
+
 export const makePage = function() {
     makeHeaderVue();
+    makeSidenavVue();
 }
