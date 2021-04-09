@@ -8,7 +8,7 @@ const client = new MongoClient(fullurl, {useUnifiedTopology: true});
 let collection = null; //we will give this a value after we connect to the database
 
 const user_data = [{userName: "A", userEmail: 'abc@gmail.com'},
-    {userName: "B", userEmail: 'bcd@gmail.com'}];
+                  {userName: "B", userEmail: 'bcd@gmail.com'}];
 
 // client.connect()
 // .then(conn => {
