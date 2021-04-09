@@ -26,6 +26,7 @@ const makeSidenavVue = function() {
         methods: {
             setState: function(newState) {
                 setState(newState)
+                console.log(`transitioned to ${newState}`)
             }
         }
     })

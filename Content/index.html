@@ -55,8 +55,8 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+            <li class="nav-item active" v-on:click="setState('dashboard')">
+                <a class="nav-link">
                     <i class="fas fa-home"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -243,12 +243,12 @@
                     <div class="row" id="shortlist" v-show="state === 'dashboard'">
 
                         <!-- Community shortlist on dashboard -->
-                        <div class="col-xl-3 col-md-6 mb-4" v-for="community in shortListedCommunities">
+                        <div class="col-xl-3 col-md-6 mb-4 is-link" v-for="community in shortListedCommunities">
                             <div class="card border-left-info shadow h-100 py-2 bg-secondary" v-on:click="goToCommunity(community.id)">
                                 <div class="card-body bg-secondary">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <div class="h5 mb-0 font-weight-bold text-light-800">{{ community.name }}</div>
+                                            <div class="h5 mb-0 font-weight-bold text-white">{{ community.name }}</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-users fa-2x text-gray-300"></i>
@@ -323,14 +323,39 @@
                                     <div class="card-body">
 
                                         <!-- Threads -->
-                                        <div class="card shadow mb-4" v-for="thread in threads">
+                                        <div class="card shadow mb-4" v-for="(thread, index) in threads">
                                             <a v-bind:href="`#thread${thread.id}`" class="d-block card-header py-3" data-toggle="collapse" role="button">
                                                 <h6 class="m-0 font-weight-bold text-primary">{{ thread.name }}</h6>
                                             </a>
-                                            <!-- Card Content - Collapse -->
-                                            <div class="collapse show" v-bind:id="`thread${thread.id}`">
+                                            <!-- Thread Content - Collapse -->
+                                            <div class="collapse" v-bind:id="`thread${thread.id}`" v-bind:class="{ 'show': index === 0 }">
                                                 <div class="card-body">
-                                                    {{ thread.text }}
+
+                                                    <!-- Opening post -->
+                                                    <div class="card border-left-warning shadow">
+                                                        <div class="card-body">
+                                                            <div class="row no-gutters align-items-center">
+                                                                <div class="col mr-2">
+                                                                    <div class="text-xs text-warning mb-1">{{ thread.author }} <span class="text-gray-700">{{ thread.time }}</span></div>
+                                                                    <div>{{ thread.text }}</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <!-- Comments -->
+                                                    <div class="card border-left-primary shadow" v-for="comment in thread.comments">
+                                                        <div class="card-body">
+                                                            <div class="row no-gutters align-items-center">
+                                                                <div class="col mr-2">
+                                                                    <div class="text-xs text-primary mb-1">{{ comment.author}} <span class="text-gray-700">{{ comment.time }}</span></div>
+                                                                    <div>{{ comment.text }}</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -338,6 +363,7 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
                         <!-- Feed on dashboard -->
