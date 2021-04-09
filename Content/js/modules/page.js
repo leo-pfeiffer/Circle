@@ -26,8 +26,26 @@ const makeSidenavVue = function() {
     })
 }
 
+const makeProfileAccess = function() {
+    const profileAccessVue = new Vue({
+        el: "#profileAccess",
+        computed: {
+            state() {
+                return client.state;
+            },
+        },
+        // methods: {
+        //     profile: function() {
+        //         setState('profile');
+        //         console.log('should transition to profile')
+        //     }
+        // }
+    })
+}
+
 
 export const makePage = function() {
     makeHeaderVue();
     makeSidenavVue();
+    makeProfileAccess();
 }
