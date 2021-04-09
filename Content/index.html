@@ -40,7 +40,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <div id="sidenav" v-show="state !== 'login'">
+        <div id="sidenav" v-show="(state !== 'login') && (state !== 'logout')">
         <ul class="navbar-nav bg-gradient-info sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
@@ -161,7 +161,7 @@
             <div id="content">
 
                 <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-dark bg-dark topbar mb-4 static-top shadow" id="header" v-show="state !== 'login'">
+                <nav class="navbar navbar-expand navbar-dark bg-dark topbar mb-4 static-top shadow" id="header" v-show="(state !== 'login') && (state !== 'logout')">
 
                     <!-- Sidebar Toggle (Topbar) (Mobile)-->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
@@ -238,8 +238,9 @@
                             <h1 class="h3 mb-0 text-white"><i class="text-white" v-bind:class="symbol"></i> {{ name }} </h1>
                         </div>
                     </div>
+                    <!-- End of Community header with name -->
 
-                    <!-- Content Row -->
+                    <!-- Dashboard Shortlist Content Row -->
                     <div class="row" id="shortlist" v-show="state === 'dashboard'">
 
                         <!-- Community shortlist on dashboard -->
@@ -258,20 +259,31 @@
                             </div>
                         </div>
                     </div>
+                    <!-- End of Dashboard Shortlist Content Row -->
 
-                    <!-- Profile view info section -->
-                    <div class="row" id="profileInfo" v-show="state === 'profile'">
-                        <div class="col-xl-6 col-lg-7">
+                    <!-- Dashboard Shortlist Content Row -->
+                    <div class="row">
+
+                        <!-- Feed on dashboard -->
+                        <div class="col-xl-8 col-lg-7" id="feed" v-show="state === 'dashboard'">
                             <div class="card shadow mb-4 bg-secondary">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-warning">My data</h6>
+                                        class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-warning">Feed</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                         </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                             aria-labelledby="dropdownMenuLink">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- Card Body -->
@@ -283,6 +295,57 @@
                             </div>
                         </div>
 
+                        <!-- Personal calendar preview dashboard -->
+                        <div class="col-xl-4 col-lg-5" id="calendarPreview" v-show="state === 'dashboard'">
+                            <div class="card shadow mb-4 bg-secondary">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                        class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-warning">Calendar</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button"
+                                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <p>Here will be a preview of your calendar with Google calendar API</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- End of Dashboard Shortlist Content Row -->
+
+                    <!-- Profile Content Row -->
+                    <div class="row" id="profileInfo" v-show="state === 'profile'">
+
+                        <!-- Profile data section -->
+                        <div class="col-xl-6 col-lg-7">
+                            <div class="card shadow mb-4 bg-secondary">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-warning">My data</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body bg-secondary">
+                                    <div class="chart-area">
+                                        <canvas id="myAreaChart1"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User stats section -->
                         <div class="col-xl-6 col-lg-7">
                             <div class="card shadow mb-4 bg-secondary">
                                 <!-- Card Header - Dropdown -->
@@ -290,7 +353,7 @@
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-warning">User stats</h6>
                                     <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                        <a class="dropdown-toggle" href="#" role="button"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                         </a>
@@ -304,22 +367,22 @@
                         </div>
                     
                     </div>
+                    <!-- End of Profile Content Row -->
 
-                    <!-- Content Row -->
-
+                    <!-- Community Content Row -->
                     <div class="row">
 
                         <!-- Left column of main area -->
                         <div class="col-xl-8 col-lg-7">
 
-                            <!-- Collapsable Community Calendar -->
+                            <!-- Community Calendar -->
                             <div class="card shadow mb-4 bg-secondary" id="community-calendar" v-show="state === 'community'">
-                                <!-- Card Header - Accordion -->
+
                                 <a href="#collapseCommunityCalendar" class="d-block card-header py-3" data-toggle="collapse"
                                    role="button" aria-expanded="true" aria-controls="collapseCommunityCalendar">
                                     <h6 class="m-0 font-weight-bold text-success">Calendar</h6>
                                 </a>
-                                <!-- Card Content - Collapse -->
+
                                 <div class="collapse" id="collapseCommunityCalendar">
                                     <div class="card-body">
                                         This is the calendar
@@ -327,14 +390,14 @@
                                 </div>
                             </div>
 
-                            <!-- Collapsable Community Feed -->
+                            <!-- Community Feed -->
                             <div class="card shadow mb-4 bg-secondary" id="community-feed" v-show="state === 'community'">
-                                <!-- Card Header - Accordion -->
+
                                 <a href="#collapseCommunityFeed" class="d-block card-header py-3" data-toggle="collapse"
                                    role="button" aria-expanded="true" aria-controls="collapseCommunityFeed">
                                     <h6 class="m-0 font-weight-bold text-warning">Feed</h6>
                                 </a>
-                                <!-- Card Content - Collapse -->
+
                                 <div class="collapse show" id="collapseCommunityFeed">
                                     <div class="card-body">
 
@@ -343,8 +406,9 @@
                                             <a v-bind:href="`#thread${thread.id}`" class="d-block card-header py-3" data-toggle="collapse" role="button">
                                                 <h6 class="m-0 font-weight-bold text-primary">{{ thread.name }}</h6>
                                             </a>
-                                            <!-- Thread Content - Collapse -->
+                                            <!-- Thread Content -->
                                             <div class="collapse" v-bind:id="`thread${thread.id}`" v-bind:class="{ 'show': index === 0 }">
+
                                                 <div class="card-body">
 
                                                     <!-- Opening post -->
@@ -358,7 +422,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-
 
                                                     <!-- Comments -->
                                                     <div class="card border-left-primary shadow" v-for="comment in thread.comments">
@@ -382,58 +445,8 @@
 
                         </div>
 
-                        <!-- Feed on dashboard -->
-                        <div class="col-xl-8 col-lg-7" id="feed" v-show="state === 'dashboard'">
-                            <div class="card shadow mb-4 bg-secondary">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-warning">Feed</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body bg-secondary">
-                                    <div class="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Personal calendar preview dashboard -->
-                        <div class="col-xl-4 col-lg-5" id="calendarPreview" v-show="state === 'dashboard'">
-                            <div class="card shadow mb-4 bg-secondary">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-warning">Calendar</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <p>Here will be a preview of your calendar with Google calendar API</p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
+                    <!-- End of Community Content Row -->
 
                     <!-- Login Element-->
                     <div class="row justify-content-center" id="login" v-show="state === 'login'">
@@ -446,7 +459,7 @@
                                             <div class="p-5">
                                                 <div class="text-center">
                                                     <h1 class="h4 text-gray-900 mb-4">Welcome to</h1>
-                                                    <h1 id="loginLogo">&#x25ef; Circle</h1>
+                                                    <h1 id="login-logo">&#x25ef; Circle</h1>
                                                 </div>
                                                 <form class="user">
                                                     <div class="form-group">
@@ -485,7 +498,7 @@
                                             <div class="p-5">
                                                 <div class="text-center">
                                                     <h1 class="h4 text-gray-900 mb-4">See you soon on</h1>
-                                                    <h1 id="loginLogo">&#x25ef; Circle</h1>
+                                                    <h1 id="logout-logo">&#x25ef; Circle</h1>
                                                 </div>
                                             </div>
                                         </div>

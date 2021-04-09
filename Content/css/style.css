@@ -2,7 +2,7 @@
 * Custom CSS
 */
 
-#loginLogo {
+#login-logo, #logout-logo {
   color: white; 
   font-size: 100px;
   padding: 30px;
