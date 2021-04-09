@@ -4,11 +4,11 @@ const MongoClient = require('mongodb').MongoClient;
 const fullurl = `mongodb://${config.username}:${config.password}@${config.url}:${config.port}/${config.database}?authSource=admin`;
 const sanitisedUrl = fullurl.replace(/:([^:@]{1,})@/, ':****@');
 
-const client = new MongoClient(fullurl, {useUnifiedTopology: true});
+const client = new MongoClient(fullurl, { useUnifiedTopology: true });
 let collection = null; //we will give this a value after we connect to the database
 
-const user_data = [{userName: "A", userEmail: 'abc@gmail.com'},
-                  {userName: "B", userEmail: 'bcd@gmail.com'}];
+const user_data = [{ userName: "A", userEmail: 'abc@gmail.com' },
+{ userName: "B", userEmail: 'bcd@gmail.com' }];
 
 // client.connect()
 // .then(conn => {
@@ -42,4 +42,20 @@ let init = function () {
         })
 }
 
-module.exports = {init: init};
+//get all data stored in user_data
+let getUser = function () {
+    return collection.find({}).toArray()
+        .then(users => users.map(user => User.fromJSON(user)));
+}
+
+//adding User object to db
+let addUser = function (user) {
+    return collection.insertOne(user)
+        .then(res => res.insertedId);
+}
+
+module.exports = {
+    init: init,
+    getUser: getUser,
+    addUser: addUser
+};
