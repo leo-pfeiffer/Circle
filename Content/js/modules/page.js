@@ -11,6 +11,11 @@ const makeHeaderVue = function() {
             state() {
                 return client.state;
             }
+        },
+        methods: {
+            setState: function(newState) {
+                setState(newState)
+            }
         }
     })
 }

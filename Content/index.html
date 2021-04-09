@@ -44,7 +44,7 @@
         <ul class="navbar-nav bg-gradient-info sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" id="logo" v-on:click="setState('dashboard')">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="far fa-circle"></i>
                 </div>
@@ -209,7 +209,7 @@
                         </li>
 
                         <!-- nav-item logout -->
-                        <li class="nav-item">
+                        <li class="nav-item" v-on:click="setState('logout')">
                             <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                 <span>Logout</span></a>
@@ -218,7 +218,7 @@
                         <div class="topbar-divider d-none d-sm-block"></div>
 
                         <!-- Nav Item - User Information -->
-                        <li class="nav-item">
+                        <li class="nav-item" v-on:click="setState('profile')">
                             <a class="nav-link" href="#" id="modal" role="button" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-400">Douglas McGee</span>
                             </a>
@@ -260,35 +260,51 @@
                     </div>
 
                     <!-- Profile view info section -->
-                    <div class="col-xl-8 col-lg-7" id="profileInfo" v-show="state === 'profile'">
-                        <div class="card shadow mb-4 bg-secondary">
-                            <!-- Card Header - Dropdown -->
-                            <div
-                                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <h6 class="m-0 font-weight-bold text-warning">My data</h6>
-                                <div class="dropdown no-arrow">
-                                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                        aria-labelledby="dropdownMenuLink">
-                                        <div class="dropdown-header">Dropdown Header:</div>
-                                        <a class="dropdown-item" href="#">Action</a>
-                                        <a class="dropdown-item" href="#">Another action</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">Something else here</a>
+                    <div class="row" id="profileInfo" v-show="state === 'profile'">
+                        <div class="col-xl-6 col-lg-7">
+                            <div class="card shadow mb-4 bg-secondary">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-warning">My data</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body bg-secondary">
+                                    <div class="chart-area">
+                                        <canvas id="myAreaChart"></canvas>
                                     </div>
                                 </div>
                             </div>
-                            <!-- Card Body -->
-                            <div class="card-body bg-secondary">
-                                <div class="chart-area">
-                                    <canvas id="myAreaChart"></canvas>
+                        </div>
+
+                        <div class="col-xl-6 col-lg-7">
+                            <div class="card shadow mb-4 bg-secondary">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-warning">User stats</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body bg-secondary">
+                                    <p>Some sort of chart showing the user activity, e.g. threads opened or number of comments made</p>
                                 </div>
                             </div>
                         </div>
+                    
                     </div>
+
                     <!-- Content Row -->
 
                     <div class="row">
@@ -367,7 +383,7 @@
                         </div>
 
                         <!-- Feed on dashboard -->
-                        <div class="col-xl-8 col-lg-7" id="feed" v-show="state !== 'login'">
+                        <div class="col-xl-8 col-lg-7" id="feed" v-show="state === 'dashboard'">
                             <div class="card shadow mb-4 bg-secondary">
                                 <!-- Card Header - Dropdown -->
                                 <div
@@ -398,7 +414,7 @@
                         </div>
 
                         <!-- Personal calendar preview dashboard -->
-                        <div class="col-xl-4 col-lg-5" id="calendarPreview" v-show="state !== 'login'">
+                        <div class="col-xl-4 col-lg-5" id="calendarPreview" v-show="state === 'dashboard'">
                             <div class="card shadow mb-4 bg-secondary">
                                 <!-- Card Header - Dropdown -->
                                 <div
@@ -409,32 +425,11 @@
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                         </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
                                     </div>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <div class="chart-pie pt-4 pb-2">
-                                        <canvas id="myPieChart"></canvas>
-                                    </div>
-                                    <div class="mt-4 text-center small">
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-info"></i> Direct
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Social
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-info"></i> Referral
-                                        </span>
-                                    </div>
+                                    <p>Here will be a preview of your calendar with Google calendar API</p>
                                 </div>
                             </div>
                         </div>
@@ -478,6 +473,29 @@
 
                     </div>
                     <!-- End of Login Element-->
+
+                    <!-- Logout Element-->
+                    <div class="row justify-content-center" id="logout" v-show="state === 'logout'">
+
+                        <div class="col-xl-10 col-lg-12 col-md-9">
+                            <div class="card o-hidden border-0 shadow-lg my-5 bg-gradient-info">
+                                <div class="card-body p-0">
+                                    <div class="row justify-content-center">
+                                        <div class="col-lg-6">
+                                            <div class="p-5">
+                                                <div class="text-center">
+                                                    <h1 class="h4 text-gray-900 mb-4">See you soon on</h1>
+                                                    <h1 id="loginLogo">&#x25ef; Circle</h1>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- End of Logout Element-->
 
                 </div>
                 <!-- /.container-fluid -->

@@ -16,3 +16,7 @@
 .is-link {
   cursor: pointer;
 }
+
+#logo {
+  color: white;
+}
