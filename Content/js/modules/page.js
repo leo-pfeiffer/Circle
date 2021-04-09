@@ -2,7 +2,7 @@
  * This file contains vue components that are present in multiple state such as the sidebar or the header.
  * */
 
-import {client} from "./clientUtils.js";
+import {client, setState} from "./clientUtils.js";
 
 const makeHeaderVue = function() {
     const headerVue = new Vue({
@@ -22,30 +22,16 @@ const makeSidenavVue = function() {
             state() {
                 return client.state;
             }
+        },
+        methods: {
+            setState: function(newState) {
+                setState(newState)
+            }
         }
     })
 }
 
-const makeProfileAccess = function() {
-    const profileAccessVue = new Vue({
-        el: "#profileAccess",
-        computed: {
-            state() {
-                return client.state;
-            },
-        },
-        // methods: {
-        //     profile: function() {
-        //         setState('profile');
-        //         console.log('should transition to profile')
-        //     }
-        // }
-    })
-}
-
-
 export const makePage = function() {
     makeHeaderVue();
     makeSidenavVue();
-    makeProfileAccess();
 }
