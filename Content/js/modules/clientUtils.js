@@ -14,7 +14,7 @@ export const client = Vue.observable({
  * Array that contains all allowed states the client can be in.
  * @type {Array<string>}
  * */
-const ALLOWED_STATES = ['login', 'dashboard', 'community', 'profile']
+const ALLOWED_STATES = ['login', 'dashboard', 'community', 'profile', 'logout']
 
 
 /**
@@ -43,6 +43,10 @@ export const setState = function(newState) {
 
     else if (newState === "profile") {
         console.log(`Doing something that is necessary whenever we enter the profile state.`)
+    }
+
+    else if (newState === "logout") {
+        console.log(`Doing something that is necessary whenever we enter the logout state.`)
     }
 
     // finally, set the new State

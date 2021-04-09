@@ -7,6 +7,7 @@ import {makePage} from "./modules/page.js";
 import {makeDashboard} from "./modules/dashboard.js";
 import {makeCommunity} from "./modules/community.js";
 import {makeProfile} from "./modules/profile.js";
+import {makeLogout} from "./modules/logout.js";
 
 window.onload = () => {
     makeLogin();
@@ -14,4 +15,5 @@ window.onload = () => {
     makeDashboard();
     makeCommunity();
     makeProfile();
+    makeLogout();
 }

@@ -1,3 +1,8 @@
+/**
+ * This file contains the vue components of the login.
+ * */
+
+
 import {client, setState} from './clientUtils.js'
 
 const makeLoginVue = function() {
