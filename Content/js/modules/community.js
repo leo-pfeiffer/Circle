@@ -32,6 +32,19 @@ const makeCommunityCalendarVue = function() {
     })
 }
 
+const makeCommunityInfoVue = function() {
+    const communityInfoVue = new Vue({
+        el: '#community-info',
+        data: {
+        },
+        computed: {
+            state() {
+                return client.state;
+            },
+        },
+    })
+}
+
 const makeCommunityFeedVue = function() {
     const communityFeedVue = new Vue({
         el: '#community-feed',
@@ -53,6 +66,21 @@ const makeCommunityFeedVue = function() {
                         {
                             author: 'someoneelse',
                             text: 'Gesundheit!',
+                            time: '07/12/2015, 12:12'
+                        },
+                        {
+                            author: 'someoneelse',
+                            text: 'hello!',
+                            time: '07/12/2015, 12:12'
+                        },
+                        {
+                            author: 'someoneelse',
+                            text: 'hallo!',
+                            time: '07/12/2015, 12:12'
+                        },
+                        {
+                            author: 'someoneelse',
+                            text: 'salut!',
                             time: '07/12/2015, 12:12'
                         },
                     ]
@@ -77,13 +105,22 @@ const makeCommunityFeedVue = function() {
                         },
                     ]
                 },
-            ]
+            ],
+            newComment: "",
         },
         computed: {
             state() {
                 return client.state;
             },
         },
+        methods: {
+            submitNewComment: function() {
+                if (this.newComment.length > 0) {
+                    console.log("New comment: ", this.newComment)
+                    this.newComment = "";
+                }
+            }
+        }
     })
 }
 
@@ -91,4 +128,5 @@ export const makeCommunity = function () {
     makeCommunityHeaderVue();
     makeCommunityFeedVue();
     makeCommunityCalendarVue();
+    makeCommunityInfoVue();
 }
