@@ -53,3 +53,17 @@ export const setState = function(newState) {
     client.state = newState;
     console.log(`The user has transitioned from ${client.state} to ${newState}.`)
 }
+
+/**
+ * Format a Date object as string.
+ * @param {Date} dateTime
+ * */
+export const formatDateTime = function(dateTime) {
+    let str = ''
+    str += dateTime.getDate() + '/'
+    str += (dateTime.getMonth() + 1) + '/'
+    str += dateTime.getFullYear() + ', '
+    str += dateTime.getHours() + ':'
+    str += dateTime.getMinutes()
+    return str
+}
