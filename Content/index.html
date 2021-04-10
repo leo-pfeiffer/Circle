@@ -142,14 +142,6 @@
                 </div>
             </li>
 
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
-
         </ul>
         </div>
         <!-- End of Sidebar -->
@@ -320,10 +312,10 @@
                     <!-- End of Dashboard Shortlist Content Row -->
 
                     <!-- Profile Content Row -->
-                    <div class="row" id="profileInfo" v-show="state === 'profile'">
+                    <div class="row">
 
                         <!-- Profile data section -->
-                        <div class="col-xl-6 col-lg-7">
+                        <div class="col-xl-6 col-lg-7" id="profileInfo" v-show="state === 'profile'">
                             <div class="card shadow mb-4 bg-secondary">
                                 <!-- Card Header - Dropdown -->
                                 <div
@@ -338,15 +330,23 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body bg-secondary">
-                                    <div class="chart-area">
-                                        <canvas id="myAreaChart1"></canvas>
+                                    <div>
+                                        <div class="row">
+                                            <img v-bind:src="picture"/>
+                                            <h2 class="text-info">Lena123</h2>
+                                        </div>
+                                        <p>Email: lena1@23.com </p>
+                                        <p>Age: 25</p>
+                                        <p>Location: London</p>
+                                        <hr>
+                                        <p>Interests: Swimming, Cooking</p>            
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- User stats section -->
-                        <div class="col-xl-6 col-lg-7">
+                        <div class="col-xl-6 col-lg-7" id="userStats" v-show="state === 'profile'">
                             <div class="card shadow mb-4 bg-secondary">
                                 <!-- Card Header - Dropdown -->
                                 <div
