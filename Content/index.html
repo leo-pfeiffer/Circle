@@ -487,7 +487,13 @@
 
                                 <div class="card-body bg-secondary">
                                     <div class="text-white">
-                                        <p>Bla bla bla</p>
+                                        <h2 class="h3 mb-0 text-white"><i class="text-white" v-bind:class="symbol"></i> {{ name }} </h2>
+                                        <hr>
+                                        <p>Admin: {{ admin }}</p>
+                                        <hr>
+                                        <p>Tags: {{ formattedTags }}</p>
+                                        <hr>
+                                        <p>Users: <span v-for="u in users"> <i v-bind:class="u.symbol"> </i> </span> </p>
                                     </div>
                                 </div>
                             </div>

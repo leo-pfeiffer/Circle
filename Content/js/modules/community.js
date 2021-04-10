@@ -36,11 +36,29 @@ const makeCommunityInfoVue = function() {
     const communityInfoVue = new Vue({
         el: '#community-info',
         data: {
+            name: "Gardening",
+            admin: "michaeljordan23",
+            symbol: 'fas fa-seedling',
+            tags: ['gardening', 'wood', 'seeds', 'flowers'],
+            users: [
+                {name: 'lebron', symbol: 'far fa-angry'},
+                {name: 'kobe', symbol: 'far fa-grin-alt'},
+                {name: 'shaquille', symbol: 'far fa-flushed'},
+                {name: 'kareem', symbol: 'far fa-laugh'},
+            ]
         },
         computed: {
             state() {
                 return client.state;
             },
+            formattedTags() {
+                let fmtString = "";
+                for (let tag of this.tags) {
+                    fmtString += tag
+                    fmtString += this.tags.indexOf(tag) + 1 < this.tags.length ? ', ' : ''
+                }
+                return fmtString;
+            }
         },
     })
 }
