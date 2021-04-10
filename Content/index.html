@@ -509,7 +509,9 @@
                             <div class="card o-hidden border-0 shadow-lg my-5 bg-gradient-info">
                                 <div class="card-body p-0">
                                     <div class="row justify-content-center">
-                                        <div class="col-lg-6">
+
+                                        <!-- Login -->
+                                        <div class="col-lg-6" v-show="entryType === 'login'">
                                             <div class="p-5">
                                                 <div class="text-center">
                                                     <h1 class="h4 text-gray-900 mb-4">Welcome to</h1>
@@ -518,17 +520,73 @@
                                                 <form class="user">
                                                     <div class="form-group">
                                                         <input type="username" class="form-control form-control-user" id="inputUsername"
-                                                               placeholder="Username">
+                                                               placeholder="Username" v-model="username">
                                                     </div>
                                                     <div class="form-group">
                                                         <input type="password" class="form-control form-control-user"
-                                                               id="inputPassword" placeholder="Password">
+                                                               id="inputPassword" placeholder="Password" v-model="password">
                                                     </div>
+                                                    <p class="text-white">{{ message }}</p>
                                                     <a class="btn btn-warning btn-user btn-block" v-on:click="login">Login</a>
                                                     <hr>
                                                 </form>
                                                 <div class="text-center">
-                                                    <a class="small text-warning" href="register.html">Create an Account!</a>
+                                                    <a class="small text-warning is-link" v-on:click="toggleEntryType">Create an Account!</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Register -->
+                                        <div class="col-lg-6" v-show="entryType === 'register'">
+                                            <div class="p-5">
+                                                <div class="text-center">
+                                                    <h1 class="h4 text-gray-900 mb-4">Welcome to</h1>
+                                                    <h1 id="register-logo">&#x25ef; Circle</h1>
+                                                </div>
+                                                <form class="user">
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control form-control-user" placeholder="Username" v-model="username">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control form-control-user" placeholder="Email" v-model="email">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="password" class="form-control form-control-user" placeholder="Password" v-model="password">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="password" class="form-control form-control-user" placeholder="Confirm Password" v-model="passwordConfirm">
+                                                    </div>
+                                                    <p class="text-white">{{ confirmPasswordMessage }}</p>
+                                                    <hr>
+
+                                                    <!-- TODO: Selection not showing up -->
+                                                    <div class="form-group">
+                                                        <select class="form-control form-control-user" v-model="gender">
+                                                            <option disabled value="">Gender</option>
+                                                            <option value="female">Female</option>
+                                                            <option value="male">Male</option>
+                                                            <option value="other">Other</option>
+                                                            <option value="not-stated">Prefer not to say</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <select class="form-control form-control-user" v-model="age">
+                                                            <option disabled value="">Age</option>
+                                                            <option v-for="n in 83" v-bind:value="n + 17">{{ n + 17 }}</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Todo don't make this a free text field -->
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control form-control-user" placeholder="Location" v-model="location">
+                                                    </div>
+
+                                                    <p class="text-white">{{ message }}</p>
+                                                    <a class="btn btn-warning btn-user btn-block" v-on:click="register">Register</a>
+                                                    <hr>
+                                                </form>
+                                                <div class="text-center">
+                                                    <a class="small text-warning is-link" v-on:click="toggleEntryType">Already have an account? Login!</a>
                                                 </div>
                                             </div>
                                         </div>

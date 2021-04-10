@@ -7,7 +7,9 @@
  * Vue observable that stores basic information about the client.
  * */
 export const client = Vue.observable({
-    state: 'login'
+    state: 'login',
+    userKey: '',
+    username: '',
 })
 
 /**
