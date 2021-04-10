@@ -2,7 +2,7 @@
  * This file contains the vue components of a community.
  * */
 
-import {client, setState} from './clientUtils.js'
+import {client, formatDateTime, setState} from './clientUtils.js'
 
 const makeCommunityHeaderVue = function() {
     const communityHeaderVue = new Vue({
@@ -22,6 +22,19 @@ const makeCommunityHeaderVue = function() {
 const makeCommunityCalendarVue = function() {
     const communityCalendarVue = new Vue({
         el: '#community-calendar',
+        data: {
+        },
+        computed: {
+            state() {
+                return client.state;
+            },
+        },
+    })
+}
+
+const makeCommunityInfoVue = function() {
+    const communityInfoVue = new Vue({
+        el: '#community-info',
         data: {
         },
         computed: {
@@ -55,6 +68,21 @@ const makeCommunityFeedVue = function() {
                             text: 'Gesundheit!',
                             time: '07/12/2015, 12:12'
                         },
+                        {
+                            author: 'someoneelse',
+                            text: 'hello!',
+                            time: '07/12/2015, 12:12'
+                        },
+                        {
+                            author: 'someoneelse',
+                            text: 'hallo!',
+                            time: '07/12/2015, 12:12'
+                        },
+                        {
+                            author: 'someoneelse',
+                            text: 'salut!',
+                            time: '07/12/2015, 12:12'
+                        },
                     ]
                 },
 
@@ -77,13 +105,51 @@ const makeCommunityFeedVue = function() {
                         },
                     ]
                 },
-            ]
+                {
+                    id: 3,
+                    name: "Jack and Jill went up a hill",
+                    text: "... you know how it goes.",
+                    author: "whoami",
+                    time: "30/07/2016, 5:41",
+                    comments: []
+                },
+            ],
+            newComments: {},
         },
         computed: {
             state() {
                 return client.state;
             },
         },
+        methods: {
+            submitNewComment: function(threadId) {
+                if (this.newComments.hasOwnProperty(threadId) && this.newComments[threadId].length > 0) {
+
+                    let thread = this.getThreadById(threadId)
+
+                    let comment = {
+                        // todo get real username
+                        author: 'leopold',
+                        text: this.newComments[threadId],
+                        time: formatDateTime(new Date)
+                    }
+
+                    thread.comments.push(comment)
+
+                    console.log("New comment: ", this.newComments[threadId])
+                    // todo send to API
+                    this.newComments[threadId] = "";
+                }
+            },
+            getThreadById: function(threadId) {
+                let arr = this.threads.filter(thread => thread.id === threadId)
+                if (arr.length === 1) {
+                    return arr[0]
+                } else {
+                    console.err(`Thread with id ${threadId} not found.`)
+                }
+            }
+        }
     })
 }
 
@@ -91,4 +157,5 @@ export const makeCommunity = function () {
     makeCommunityHeaderVue();
     makeCommunityFeedVue();
     makeCommunityCalendarVue();
+    makeCommunityInfoVue();
 }

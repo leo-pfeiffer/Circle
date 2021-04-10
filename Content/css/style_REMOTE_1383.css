@@ -21,13 +21,6 @@
   color: white;
 }
 
-#profileInfo img {
-  border-radius: 50%;
-  border: 5px #333 solid;
-  margin-bottom: 30px;
-  margin-right: 50px;
-}
-
 /* Comment section */
 .comment-section {
   max-height: 300px;
