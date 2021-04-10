@@ -4,16 +4,15 @@
 
 import {client, setState} from './clientUtils.js'
 
-const entry = Vue.observable({type: 'login'});
-
 const toggleEntryType = function() {
-    entry.type = entry.type === 'login' ? 'register': 'login';
+
 }
 
 const makeLoginVue = function() {
     const loginVue = new Vue({
         el: '#login',
         data: {
+            entryType: 'login',
             username: "",
             password: "",
             passwordConfirm: "",
@@ -26,9 +25,6 @@ const makeLoginVue = function() {
         computed: {
             state() {
                 return client.state;
-            },
-            entryType() {
-                return entry.type;
             },
             confirmPasswordMessage() {
                 if ((this.entryType === 'register') &&
@@ -69,6 +65,7 @@ const makeLoginVue = function() {
 
                 this.message = ""
 
+                // todo API call to register a new user
                 let status = this.username === 'fail' ? 'fail' : 'success';
                 let registerResponse = {status: status, username: this.username}
 
@@ -90,7 +87,8 @@ const makeLoginVue = function() {
                 this.gender = "";
                 this.age = "";
                 this.location = "";
-                toggleEntryType()
+
+                this.entryType = this.entryType === 'login' ? 'register': 'login';
             }
         }
     })
