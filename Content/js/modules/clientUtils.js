@@ -32,23 +32,23 @@ export const setState = function(newState) {
     // Ideally, we would only like to call other functions from here in order to not clutter up this function with
     // unrelated code snippets.
     if (newState === "login") {
-        console.log(`Doing something that is necessary whenever we enter the login state.`)
+        // todo
     }
 
     else if (newState === "dashboard") {
-        console.log(`Doing something that is necessary whenever we enter the dashboard state.`)
+        // todo
     }
 
     else if (newState === "community") {
-        console.log(`Doing something that is necessary whenever we enter the community state.`)
+        // todo
     }
 
     else if (newState === "profile") {
-        console.log(`Doing something that is necessary whenever we enter the profile state.`)
+        // todo
     }
 
     else if (newState === "logout") {
-        console.log(`Doing something that is necessary whenever we enter the logout state.`)
+        // todo
     }
 
     // finally, set the new State
