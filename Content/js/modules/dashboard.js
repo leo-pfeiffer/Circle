@@ -2,7 +2,7 @@
  * This file contains the vue components of the dashboard.
  * */
 
-import {client, setState} from './clientUtils.js'
+import {client, goToCommunity, setState} from './clientUtils.js'
 
 const makeShortlistVue = function() {
     const shortlistVue = new Vue({
@@ -23,8 +23,7 @@ const makeShortlistVue = function() {
         },
         methods: {
             goToCommunity: function(communityId) {
-                // go to community with id `communityId`
-                setState('community')
+                goToCommunity(communityId)
             }
         }
     })

@@ -69,3 +69,9 @@ export const formatDateTime = function(dateTime) {
     str += dateTime.getMinutes()
     return str
 }
+
+export const goToCommunity = function(communityId) {
+    // todo call API
+    // go to community with id `communityId`
+    setState('community')
+}

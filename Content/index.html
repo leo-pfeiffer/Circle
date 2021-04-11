@@ -69,14 +69,14 @@
                 Personal zone
             </div>
 
-            <!-- Nav Item - Tables -->
+            <!-- Nav Item - Profile -->
             <li class="nav-item" v-on:click="setState('profile')">
                 <a class="nav-link">
                     <i class="fas fa-user"></i>
                     <span>Profile</span></a>
             </li>
 
-            <!-- Nav Item - Charts -->
+            <!-- Nav Item - Calendar -->
             <li class="nav-item">
                 <a class="nav-link" href="#">
                     <i class="fas fa-calendar"></i>
@@ -91,7 +91,7 @@
                 Community Zone
             </div>
 
-            <!-- Nav Item - All communities Collapse Menu -->
+            <!-- Nav Item - All communities -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAllCommunities" aria-expanded="true" aria-controls="collapseAllCommunities">
                     <i class="fas fa-users"></i>
@@ -99,11 +99,7 @@
                 </a>
                 <div id="collapseAllCommunities" class="collapse" data-parent="#accordionSidebar">
                     <div class="bg-secondary py-2 collapse-inner rounded">
-                        <a class="collapse-item">CS5003</a>
-                        <a class="collapse-item">ID5059</a>
-                        <a class="collapse-item">MT5764</a>
-                        <a class="collapse-item">CS5044</a>
-                        <!-- Add Communities here -->
+                        <a class="collapse-item" v-for="com in getAllCommunitiesToDisplay()" v-on:click="goToCommunity(com.id)">{{ com.name }}</a>
                     </div>
                 </div>
             </li>
@@ -116,11 +112,7 @@
                 </a>
                 <div id="collapseOwnedCommunities" class="collapse" data-parent="#accordionSidebar">
                     <div class="bg-secondary py-2 collapse-inner rounded">
-                        <a class="collapse-item">CS5003</a>
-                        <a class="collapse-item">ID5059</a>
-                        <a class="collapse-item">MT5764</a>
-                        <a class="collapse-item">CS5044</a>
-                        <!-- Add Communities here -->
+                        <a class="collapse-item" v-for="com in getOwnedCommunitiesToDisplay()" v-on:click="goToCommunity(com.id)">{{ com.name }}</a>
                     </div>
                 </div>
             </li>
@@ -133,11 +125,7 @@
                 </a>
                 <div id="collapseRecentlyActive" class="collapse" data-parent="#accordionSidebar">
                     <div class="bg-secondary py-2 collapse-inner rounded">
-                        <a class="collapse-item">CS5003</a>
-                        <a class="collapse-item">ID5059</a>
-                        <a class="collapse-item">MT5764</a>
-                        <a class="collapse-item">CS5044</a>
-                        <!-- Add Communities here -->
+                        <a class="collapse-item" v-for="com in getRecentCommunitiesToDisplay()" v-on:click="goToCommunity(com.id)">{{ com.name }}</a>
                     </div>
                 </div>
             </li>
