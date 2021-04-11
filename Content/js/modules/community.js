@@ -45,12 +45,14 @@ const makeCommunityInfoVue = function() {
                 {name: 'kobe', symbol: 'far fa-grin-alt'},
                 {name: 'shaquille', symbol: 'far fa-flushed'},
                 {name: 'kareem', symbol: 'far fa-laugh'},
-            ]
+            ],
+            newTag: '',
         },
         computed: {
             state() {
                 return client.state;
             },
+            // todo this is most likely obsolete
             formattedTags() {
                 let fmtString = "";
                 for (let tag of this.tags) {
@@ -60,6 +62,26 @@ const makeCommunityInfoVue = function() {
                 return fmtString;
             }
         },
+        methods: {
+            addTag: function() {
+                // todo connect to API
+                if (this.tags.includes(this.newTag)) {
+                    console.log("new tag already in tags.")
+                    return;
+                }
+                if (this.newTag.length <= 20) {
+                    this.tags.push(this.newTag)
+                    this.newTag = '';
+                }
+                else {
+                    console.log("tag to long. must be <= 20 chars.")
+                }
+            },
+            removeTag: function(tag) {
+                // todo connect to API
+                this.tags.splice(this.tags.indexOf(tag), 1)
+            }
+        }
     })
 }
 

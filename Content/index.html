@@ -491,7 +491,17 @@
                                         <hr>
                                         <p>Admin: {{ admin }}</p>
                                         <hr>
-                                        <p>Tags: {{ formattedTags }}</p>
+                                        <div class="custom-tag-container">
+                                            <!-- display existing tags -->
+                                            <span class="custom-tag" v-for="tag in tags">
+                                                <button class="btn btn-info btn-circle btn-sm font-weight-bolder" v-on:click="removeTag(tag)">&times;</button> {{ tag }}
+                                            </span>
+                                            <!-- add tags -->
+                                            <span class="custom-tag">
+                                                <button class="btn btn-info btn-circle btn-sm font-weight-bolder" v-on:click="addTag">&checkmark;</button>
+                                                <input type="text" class="custom-tag-input" placeholder="..." v-model="newTag">
+                                            </span>
+                                        </div>
                                         <hr>
                                         <p>Users: <span v-for="u in users"> <i v-bind:class="u.symbol"> </i> </span> </p>
                                     </div>
