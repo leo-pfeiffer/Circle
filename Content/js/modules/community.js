@@ -69,12 +69,12 @@ const makeCommunityInfoVue = function() {
                     console.log("new tag already in tags.")
                     return;
                 }
-                if (this.newTag.length <= 20) {
+                if ((this.newTag.length <= 20) && (this.newTag.length > 0)) {
                     this.tags.push(this.newTag)
                     this.newTag = '';
                 }
                 else {
-                    console.log("tag to long. must be <= 20 chars.")
+                    console.log("tag requires length 1 <= x <= 20.")
                 }
             },
             removeTag: function(tag) {
