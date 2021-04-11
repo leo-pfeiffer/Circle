@@ -2,7 +2,7 @@
  * This file contains the vue components of a community.
  * */
 
-import {client, formatDateTime, setState} from './clientUtils.js'
+import {client, formatDateTime, goToProfile, setState} from './clientUtils.js'
 
 const makeCommunityHeaderVue = function() {
     const communityHeaderVue = new Vue({
@@ -41,10 +41,15 @@ const makeCommunityInfoVue = function() {
             symbol: 'fas fa-seedling',
             tags: ['gardening', 'wood', 'seeds', 'flowers'],
             users: [
-                {name: 'lebron', symbol: 'far fa-angry'},
-                {name: 'kobe', symbol: 'far fa-grin-alt'},
-                {name: 'shaquille', symbol: 'far fa-flushed'},
-                {name: 'kareem', symbol: 'far fa-laugh'},
+                {name: 'lebron', picture: 'https://randomuser.me/api/portraits/men/7.jpg', numComments: 12},
+                {name: 'kobe', picture: 'https://randomuser.me/api/portraits/men/8.jpg', numComments: 13},
+                {name: 'shaquille', picture: 'https://randomuser.me/api/portraits/men/9.jpg', numComments: 14},
+                {name: 'kareem', picture: 'https://randomuser.me/api/portraits/men/10.jpg', numComments: 16},
+                {name: 'michael', picture: 'https://randomuser.me/api/portraits/men/11.jpg', numComments: 3},
+                {name: 'stephen', picture: 'https://randomuser.me/api/portraits/men/12.jpg', numComments: 0},
+                {name: 'bill', picture: 'https://randomuser.me/api/portraits/men/13.jpg', numComments: 0},
+                {name: 'larry', picture: 'https://randomuser.me/api/portraits/men/14.jpg', numComments: 1},
+                {name: 'dirk', picture: 'https://randomuser.me/api/portraits/men/15.jpg', numComments: 5},
             ],
             newTag: '',
         },
@@ -80,6 +85,17 @@ const makeCommunityInfoVue = function() {
             removeTag: function(tag) {
                 // todo connect to API
                 this.tags.splice(this.tags.indexOf(tag), 1)
+            },
+            goToProfile: function(username) {
+                goToProfile(username)
+            },
+            /**
+             * Get n most frequent contributors.
+             * @param {Number} n. If n = -1, all are returned
+             * */
+            getMostFrequentContributors: function(n=-1) {
+                n = n === -1 ? this.users.length : n;
+                return [...this.users].sort((a, b) => b.numComments - a.numComments).slice(0, n);
             }
         }
     })

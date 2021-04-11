@@ -320,7 +320,7 @@
                                 <div class="card-body bg-secondary">
                                     <div>
                                         <div class="row">
-                                            <img v-bind:src="picture"/>
+                                            <img v-bind:src="picture" class="large-user-img"/>
                                             <h2 class="text-info">Lena123</h2>
                                         </div>
                                         <p>Email: lena1@23.com </p>
@@ -491,7 +491,17 @@
                                             </span>
                                         </div>
                                         <hr>
-                                        <p>Users: <span v-for="u in users"> <i v-bind:class="u.symbol"> </i> </span> </p>
+                                        <div>
+                                            <a class="collapsed" href="#" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="true" aria-controls="collapseUsers">
+                                                <i class="fas fa-users text-white"></i>
+                                                <span class="text-white">Users</span>
+                                            </a>
+                                            <div id="collapseUsers" class="collapse">
+                                                <span v-for="u in users">
+                                                    <img v-bind:src="u.picture" class="small-user-img is-link" v-bind:title="u.name" v-on:click="goToProfile(u.name)">
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

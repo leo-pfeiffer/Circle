@@ -62,7 +62,6 @@ export const setState = function(newState) {
 
     // finally, set the new State
     client.state = newState;
-    console.log(`The user has transitioned from ${client.state} to ${newState}.`)
 }
 
 /**
@@ -83,4 +82,10 @@ export const goToCommunity = function(communityId) {
     // todo call API
     // go to community with id `communityId`
     setState('community')
+}
+
+export const goToProfile = function(username) {
+    // todo call API
+    // go to profile with of `username`
+    setState('profile')
 }
