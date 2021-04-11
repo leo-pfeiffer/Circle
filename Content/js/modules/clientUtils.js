@@ -13,6 +13,15 @@ export const client = Vue.observable({
 })
 
 /**
+ * Reset the client Vue observable to its default values
+ * */
+export const resetClient = function() {
+    client.state = 'login';
+    client.userKey = '';
+    client.username = '';
+}
+
+/**
  * Array that contains all allowed states the client can be in.
  * @type {Array<string>}
  * */

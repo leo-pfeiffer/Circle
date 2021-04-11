@@ -2,7 +2,7 @@
  * This file contains vue components that are present in multiple state such as the sidebar or the header.
  * */
 
-import {client, goToCommunity, setState} from "./clientUtils.js";
+import {client, goToCommunity, resetClient, setState} from "./clientUtils.js";
 
 const makeHeaderVue = function() {
     const headerVue = new Vue({
@@ -15,7 +15,11 @@ const makeHeaderVue = function() {
         methods: {
             setState: function(newState) {
                 setState(newState)
-            }
+            },
+            logout: function() {
+                resetClient();
+                setState('logout')
+            },
         }
     })
 }
