@@ -76,7 +76,6 @@ const makeNewCommunityModalVue = function () {
                 }
             },
             resetMessageAndStatus: function() {
-                console.log('hello!')
                 this.message = ''
                 this.success = false;
             },
@@ -134,7 +133,6 @@ const makeSidenavVue = function() {
         methods: {
             setState: function(newState) {
                 setState(newState)
-                console.log(`transitioned to ${newState}`)
             },
             /**
              * Get n most recently active communities.
