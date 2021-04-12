@@ -9,7 +9,11 @@
 export const client = Vue.observable({
     state: 'login',
     userKey: '',
-    username: '',
+    userData: {
+        userId: null,
+        username: '',
+        picture: '',
+    }
 })
 
 /**
@@ -17,8 +21,11 @@ export const client = Vue.observable({
  * */
 export const resetClient = function() {
     client.state = 'login';
-    client.userKey = '';
-    client.username = '';
+    client.userData = {
+        userId: null,
+        username: '',
+        picture: '',
+    }
 }
 
 /**

@@ -36,9 +36,12 @@ const makeCommunityInfoVue = function() {
     const communityInfoVue = new Vue({
         el: '#community-info',
         data: {
+            id: "someId",
             name: "Gardening",
             admin: "michaeljordan23",
             symbol: 'fas fa-seedling',
+            description: 'This is a community about gardening, which seems to be a very interesting pass time for some. If ' +
+                'you are one of them, please join! 🪴🌵',
             tags: ['gardening', 'wood', 'seeds', 'flowers'],
             users: [
                 {name: 'lebron', picture: 'https://randomuser.me/api/portraits/men/7.jpg', numComments: 12},
@@ -57,14 +60,8 @@ const makeCommunityInfoVue = function() {
             state() {
                 return client.state;
             },
-            // todo this is most likely obsolete
-            formattedTags() {
-                let fmtString = "";
-                for (let tag of this.tags) {
-                    fmtString += tag
-                    fmtString += this.tags.indexOf(tag) + 1 < this.tags.length ? ', ' : ''
-                }
-                return fmtString;
+            isMember() {
+                return this.users.map(el => el.name).includes(client.userData.username);
             }
         },
         methods: {
@@ -96,6 +93,16 @@ const makeCommunityInfoVue = function() {
             getMostFrequentContributors: function(n=-1) {
                 n = n === -1 ? this.users.length : n;
                 return [...this.users].sort((a, b) => b.numComments - a.numComments).slice(0, n);
+            },
+            /**
+             * Join the community
+             * */
+            join: function() {
+                // todo join via API
+                let apiResponse = {status: 'success'}
+                if (apiResponse.status === 'success') {
+                    this.users.push({name: client.userData.username, picture: client.userData.picture})
+                }
             }
         }
     })

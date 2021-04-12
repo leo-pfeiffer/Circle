@@ -478,7 +478,15 @@
 
                                 <div class="card-body bg-secondary">
                                     <div class="text-white">
-                                        <h2 class="h3 mb-0 text-white"><i class="text-white" v-bind:class="symbol"></i> {{ name }} </h2>
+                                        <h2 class="h3 mb-0 text-white">
+                                            <i class="text-white" v-bind:class="symbol"></i>{{ name }}
+                                            <button class="btn btn-sm btn-primary float-right" v-on:click="join" v-show="!isMember">
+                                                Join <i class="text-white fas fa-sign-in-alt"></i>
+                                            </button>
+                                        </h2>
+
+                                        <hr>
+                                        <p>{{ description }}</p>
                                         <hr>
                                         <p>Admin: {{ admin }}</p>
                                         <hr>
@@ -648,7 +656,7 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="new-community-modal-label">Create a new communty</h5>
+                                    <h5 class="modal-title" id="new-community-modal-label">Create a new community</h5>
                                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">×</span>
                                     </button>

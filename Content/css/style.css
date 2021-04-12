@@ -64,3 +64,7 @@
   width: 10pc;
   border: none;
 }
+
+.float-right {
+  float: right;
+}

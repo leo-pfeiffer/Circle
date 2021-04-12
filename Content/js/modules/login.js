@@ -54,7 +54,7 @@ const makeLoginVue = function() {
 
                     // direct user to dashboard
                     setState('dashboard');
-                    client.username = loginResponse.username
+                    client.userData.username = loginResponse.username
                     // todo process other elements in loginResponse
                 } else {
                     console.log('Login failed.')
