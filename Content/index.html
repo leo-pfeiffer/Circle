@@ -188,9 +188,18 @@
                             </div>
                         </li>
 
+                        <!-- nav-item new community -->
+                        <li class="nav-item" >
+                            <a class="nav-link" href="#" data-toggle="modal" data-target="#new-community-modal">
+                                <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
+                                <span>New community</span></a>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
                         <!-- nav-item logout -->
                         <li class="nav-item" v-on:click="logout">
-                            <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
+                            <a class="nav-link" href="#">
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                 <span>Logout</span></a>
                         </li>
@@ -623,6 +632,47 @@
 
                     </div>
                     <!-- End of Logout Element-->
+
+                    <!-- New community modal-->
+                    <div class="modal fade" id="new-community-modal" tabindex="-1" role="dialog" aria-labelledby="new-community-modal-label"
+                         aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="new-community-modal-label">Create a new communty</h5>
+                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form class="user">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control form-control-user" placeholder="Community name" v-model="newCommunity.name">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control form-control-user" placeholder="Description" v-model="newCommunity.description">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control form-control-user" placeholder="Tags (seperated by space)" v-model="newCommunity.tags">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control form-control-user" placeholder="Symbol" v-model="newCommunity.symbol">
+                                        </div>
+                                        <div v-show="message !== ''">
+                                            <hr>
+                                            <p v-bind:class="[ success ? 'text-success' : 'text-danger']">{{ message }}</p>
+                                        </div>
+                                    </form>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                                    <button class="btn btn-primary" v-on:click="createNewCommunity">Create</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of new community modal-->
 
                 </div>
                 <!-- /.container-fluid -->

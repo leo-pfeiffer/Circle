@@ -24,6 +24,66 @@ const makeHeaderVue = function() {
     })
 }
 
+const makeNewCommunityModalVue = function () {
+    const newCommunityModalVue = new Vue({
+        el: '#new-community-modal',
+        data: {
+            newCommunity: {
+                name: null,
+                description: null,
+                tags: null,
+                symbol: null,
+            },
+            message: '',
+            success: false,
+        },
+        methods: {
+            createNewCommunity: function() {
+
+                // make sure all the required data is entered
+                if (this.newCommunity.name === null || this.newCommunity.name === '' ||
+                    this.newCommunity.description === null || this.newCommunity.description === '' ||
+                    this.newCommunity.tags === null || this.newCommunity.tags === ''
+                ) {
+                    this.message = 'Please fill out all the required fields.'
+                    this.success = false;
+
+                    // reset this message and status after 5 seconds
+                    setTimeout(this.resetMessageAndStatus, 5000);
+                    return;
+                }
+
+                // set default value for symbol if none is entered
+                this.newCommunity.symbol = this.newCommunity.symbol === null ? 'fas fa-users' : this.newCommunity.symbol
+
+                // split tags into list
+                this.newCommunity.tags = this.newCommunity.tags.split(' ').filter(el => el !== "")
+
+                // todo send this.newCommunity data to API
+                let apiResponse = {status: 'success'}
+                if (apiResponse.status === 'success') {
+                    this.message = 'Community created. You can now close this popup.'
+                    this.success = true;
+
+                    // reset this message and status after 5 seconds
+                    setTimeout(this.resetMessageAndStatus, 5000);
+                } else {
+                    this.message = 'There was an error. Please check your entries.'
+                    this.success = false;
+
+                    // reset this message and status after 5 seconds
+                    setTimeout(this.resetMessageAndStatus, 5000);
+                }
+            },
+            resetMessageAndStatus: function() {
+                console.log('hello!')
+                this.message = ''
+                this.success = false;
+            },
+        }
+    })
+}
+
 const makeSidenavVue = function() {
     const sidenavVue = new Vue({
         el: "#sidenav",
@@ -91,4 +151,5 @@ const makeSidenavVue = function() {
 export const makePage = function() {
     makeHeaderVue();
     makeSidenavVue();
+    makeNewCommunityModalVue();
 }
