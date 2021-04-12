@@ -89,3 +89,16 @@ export const goToProfile = function(username) {
     // go to profile with of `username`
     setState('profile')
 }
+
+/**
+ * Get a list of all available Font Awesome unicode characters
+ * @return {Promise<Array>}
+ * */
+export const getAvailableIcons = function() {
+    const url = 'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/metadata/icons.json'
+
+    // use jQuery here instead due to Github's cross domain policy
+    return $.getJSON(url).then(data => {
+        return Object.entries(data).filter(el => el[1].styles.includes('solid')).map(el => el[1].unicode);
+    })
+}

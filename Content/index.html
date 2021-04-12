@@ -655,8 +655,10 @@
                                         <div class="form-group">
                                             <input type="text" class="form-control form-control-user" placeholder="Tags (seperated by space)" v-model="newCommunity.tags">
                                         </div>
+                                        <!--- Todo this is a bad idea -> just let them upload a picture -->
                                         <div class="form-group">
                                             <input type="text" class="form-control form-control-user" placeholder="Symbol" v-model="newCommunity.symbol">
+                                            <p><i v-for="icon in availableIcons"v-html="`&#x${icon};`" class="fa" style="color: black"></i></p>
                                         </div>
                                         <div v-show="message !== ''">
                                             <hr>

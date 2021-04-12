@@ -2,7 +2,7 @@
  * This file contains vue components that are present in multiple state such as the sidebar or the header.
  * */
 
-import {client, goToCommunity, resetClient, setState} from "./clientUtils.js";
+import {client, getAvailableIcons, goToCommunity, resetClient, setState} from "./clientUtils.js";
 
 const makeHeaderVue = function() {
     const headerVue = new Vue({
@@ -36,9 +36,10 @@ const makeNewCommunityModalVue = function () {
             },
             message: '',
             success: false,
+            availableIcons: [],
         },
         methods: {
-            createNewCommunity: function() {
+            createNewCommunity: async function() {
 
                 // make sure all the required data is entered
                 if (this.newCommunity.name === null || this.newCommunity.name === '' ||
@@ -80,6 +81,11 @@ const makeNewCommunityModalVue = function () {
                 this.message = ''
                 this.success = false;
             },
+        },
+        created: async function() {
+            let availableIcons = await getAvailableIcons();
+            this.availableIcons = availableIcons.slice(0, 10);
+            console.log(this.availableIcons)
         }
     })
 }
