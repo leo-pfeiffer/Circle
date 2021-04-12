@@ -323,16 +323,20 @@
                                 <div class="card-body bg-secondary">
                                     <div>
                                         <div class="row">
-                                            <img v-bind:src="picture" class="large-user-img"/>
-                                            <h2 class="text-info">{{name}}</h2>
+                                                <img v-bind:src="picture" class="large-user-img"/>
+                                                <h2 class="text-info">{{name}}</h2>
                                         </div>
+                                        <button class="btn btn-sm btn-info" v-on:click="">
+                                            Upload picture <i class="text-white fas fa-camera"></i>
+                                        </button>
+                                        <hr>
                                         <p>Email: {{email}} </p>
                                         <p>Age: {{age}}</p>
                                         <p>Location: {{location}}</p>
                                         <hr>
                                         <p>Status: {{status}}</p>
                                         <hr>
-                                        <h4>My tags:</h4>
+                                        <h5>My tags:</h5>
                                         <div class="custom-tag-container">
                                             <!-- display existing tags -->
                                             <span class="custom-tag" v-for="tag in tags">
