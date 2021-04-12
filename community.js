@@ -20,6 +20,7 @@ makeUser = (userName, userEmail) => {
         this.userName = userName;
         this.userEmail = userEmail;
         this.location = null;
+        this.status = null;
         this.communities = [];
         this.interests = [];
         this.gender = null;

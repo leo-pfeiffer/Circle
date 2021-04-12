@@ -318,25 +318,32 @@
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-warning">My data</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                    </div>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body bg-secondary">
                                     <div>
                                         <div class="row">
                                             <img v-bind:src="picture" class="large-user-img"/>
-                                            <h2 class="text-info">Lena123</h2>
+                                            <h2 class="text-info">{{name}}</h2>
                                         </div>
-                                        <p>Email: lena1@23.com </p>
-                                        <p>Age: 25</p>
-                                        <p>Location: London</p>
+                                        <p>Email: {{email}} </p>
+                                        <p>Age: {{age}}</p>
+                                        <p>Location: {{location}}</p>
                                         <hr>
-                                        <p>Interests: Swimming, Cooking</p>            
+                                        <p>Status: {{status}}</p>
+                                        <hr>
+                                        <h4>My tags:</h4>
+                                        <div class="custom-tag-container">
+                                            <!-- display existing tags -->
+                                            <span class="custom-tag" v-for="tag in tags">
+                                                <button class="btn btn-info btn-circle btn-sm font-weight-bolder" v-on:click="removeTag(tag)">&times;</button> {{ tag }}
+                                            </span>
+                                            <!-- add tags -->
+                                            <span class="custom-tag">
+                                                <button class="btn btn-info btn-circle btn-sm font-weight-bolder" v-on:click="addTag">&checkmark;</button>
+                                                <input type="text" class="custom-tag-input" placeholder="..." v-model="newTag">
+                                            </span>
+                                        </div>            
                                     </div>
                                 </div>
                             </div>
