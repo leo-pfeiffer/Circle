@@ -650,16 +650,16 @@
                                             <input type="text" class="form-control form-control-user" placeholder="Community name" v-model="newCommunity.name">
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" class="form-control form-control-user" placeholder="Description" v-model="newCommunity.description">
+                                            <textarea type="text" class="form-control" rows="3" placeholder="Description" v-model="newCommunity.description"></textarea>
                                         </div>
                                         <div class="form-group">
                                             <input type="text" class="form-control form-control-user" placeholder="Tags (seperated by space)" v-model="newCommunity.tags">
                                         </div>
-                                        <!--- Todo this is a bad idea -> just let them upload a picture -->
                                         <div class="form-group">
-                                            <input type="text" class="form-control form-control-user" placeholder="Symbol" v-model="newCommunity.symbol">
-                                            <p><i v-for="icon in availableIcons"v-html="`&#x${icon};`" class="fa" style="color: black"></i></p>
+                                            <label for="community-picture-upload">Upload a community picture:</label>
+                                            <input type="file" id="community-picture-upload" accept="image/*" v-on:change="saveUploadedPicture"/>
                                         </div>
+                                        <img v-bind:src="newCommunity.picture">
                                         <div v-show="message !== ''">
                                             <hr>
                                             <p v-bind:class="[ success ? 'text-success' : 'text-danger']">{{ message }}</p>
@@ -668,7 +668,7 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                                    <button class="btn btn-secondary" type="button" data-dismiss="modal" v-on:click="resetNewCommunity">Close</button>
                                     <button class="btn btn-primary" v-on:click="createNewCommunity">Create</button>
                                 </div>
                             </div>

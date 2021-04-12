@@ -32,7 +32,7 @@ const makeNewCommunityModalVue = function () {
                 name: null,
                 description: null,
                 tags: null,
-                symbol: null,
+                picture: null,
             },
             message: '',
             success: false,
@@ -54,9 +54,6 @@ const makeNewCommunityModalVue = function () {
                     return;
                 }
 
-                // set default value for symbol if none is entered
-                this.newCommunity.symbol = this.newCommunity.symbol === null ? 'fas fa-users' : this.newCommunity.symbol
-
                 // split tags into list
                 this.newCommunity.tags = this.newCommunity.tags.split(' ').filter(el => el !== "")
 
@@ -68,6 +65,8 @@ const makeNewCommunityModalVue = function () {
 
                     // reset this message and status after 5 seconds
                     setTimeout(this.resetMessageAndStatus, 5000);
+
+                    this.resetNewCommunity();
                 } else {
                     this.message = 'There was an error. Please check your entries.'
                     this.success = false;
@@ -81,11 +80,34 @@ const makeNewCommunityModalVue = function () {
                 this.message = ''
                 this.success = false;
             },
+            resetNewCommunity: function() {
+                this.newCommunity = {
+                    name: null,
+                    description: null,
+                    tags: null,
+                    picture: null,
+                }
+            },
+            saveUploadedPicture: function(event) {
+                if (!event.target.files.length) return;
+                const imgFile = event.target.files[0]
+
+                // create a new file reader
+                const reader = new FileReader();
+
+                // onload set imgUpload to the relevant file
+                reader.onload = (e) => {
+                    this.newCommunity.picture = e.target.result;
+                }
+
+                // read the imgFile in as data URL
+                reader.readAsDataURL(imgFile);
+            }
         },
+        // todo most likely obsolete
         created: async function() {
             let availableIcons = await getAvailableIcons();
             this.availableIcons = availableIcons.slice(0, 10);
-            console.log(this.availableIcons)
         }
     })
 }
