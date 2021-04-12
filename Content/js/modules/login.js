@@ -21,6 +21,7 @@ const makeLoginVue = function() {
             age: "",
             location: "",
             message: "",
+            picture: null,
         },
         computed: {
             state() {
@@ -78,6 +79,21 @@ const makeLoginVue = function() {
                     this.message = "Registration failed. Please try again.";
                 }
             },
+            saveUploadedPicture: function(event) {
+                if (!event.target.files.length) return;
+                const imgFile = event.target.files[0]
+
+                // create a new file reader
+                const reader = new FileReader();
+
+                // onload set imgUpload to the relevant file
+                reader.onload = (e) => {
+                    this.picture = e.target.result;
+                }
+
+                // read the imgFile in as data URL
+                reader.readAsDataURL(imgFile);
+            },
             toggleEntryType: function() {
                 // reset data
                 this.username = "";
@@ -87,6 +103,7 @@ const makeLoginVue = function() {
                 this.gender = "";
                 this.age = "";
                 this.location = "";
+                this.picture = null;
 
                 this.entryType = this.entryType === 'login' ? 'register': 'login';
             }
