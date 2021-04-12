@@ -152,9 +152,9 @@
                     <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
-                            <input type="text" class="form-control bg-secondary border-0 small" placeholder="Search..." aria-label="Search" aria-describedby="basic-addon2">
+                            <input type="text" class="form-control bg-secondary border-0 small" aria-label="Search" aria-describedby="basic-addon2" v-model="searchTerm">
                             <div class="input-group-append">
-                                <button class="btn btn-info" type="button">
+                                <button class="btn btn-info" type="button" v-on:click="search">
                                     <i class="fas fa-search fa-sm"></i>
                                 </button>
                             </div>
@@ -520,6 +520,46 @@
 
                     </div>
                     <!-- End of Community Content Row -->
+
+                    <!-- Search Results -->
+                    <div class="row" id="search-results">
+
+                        <div class="col-xl-8">
+                            <p class="text-white" v-show="searchTerm !== ''">Your search results for <span class="text-warning">{{ searchTerm }}</span></p>
+                            <!-- Community Results -->
+                            <div class="card shadow mb-4 bg-secondary" id="community-search-results" v-show="state === 'search'">
+
+                                <a href="#collapseCommunityResults" class="d-block card-header py-3" data-toggle="collapse"
+                                   role="button" aria-expanded="true" aria-controls="collapseCommunityCalendar">
+                                    <h6 class="m-0 font-weight-bold text-success">Communities</h6>
+                                </a>
+
+                                <div class="collapse" id="collapseCommunityResults">
+                                    <div class="card-body">
+                                        Here are the communities that were found.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- User Results -->
+                            <div class="card shadow mb-4 bg-secondary" id="user-search-results" v-show="state === 'search'">
+
+                                <a href="#collapseUserResults" class="d-block card-header py-3" data-toggle="collapse"
+                                   role="button" aria-expanded="true" aria-controls="collapseCommunityCalendar">
+                                    <h6 class="m-0 font-weight-bold text-success">Users</h6>
+                                </a>
+
+                                <div class="collapse" id="collapseUserResults">
+                                    <div class="card-body">
+                                        Here are the users that were found.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <!-- End of Search Results -->
 
                     <!-- Login Element-->
                     <div class="row justify-content-center" id="login" v-show="state === 'login'">

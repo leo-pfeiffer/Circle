@@ -2,7 +2,7 @@
  * This file contains vue components that are present in multiple state such as the sidebar or the header.
  * */
 
-import {client, getAvailableIcons, goToCommunity, resetClient, setState} from "./clientUtils.js";
+import {client, getAvailableIcons, goToCommunity, resetClient, search, setState} from "./clientUtils.js";
 
 const makeHeaderVue = function() {
     const headerVue = new Vue({
@@ -10,6 +10,14 @@ const makeHeaderVue = function() {
         computed: {
             state() {
                 return client.state;
+            },
+            searchTerm: {
+                get: function() {
+                    return search.term;
+                },
+                set: function(searchRequest) {
+                    search.term = searchRequest;
+                }
             }
         },
         methods: {
@@ -20,7 +28,13 @@ const makeHeaderVue = function() {
                 resetClient();
                 setState('logout')
             },
-        }
+            search: function() {
+                // don't do anything if no search term was entered
+                if (search.term === '') return;
+                // todo call to api -> save response in observable -> access it from search vue
+                this.setState('search');
+            }
+        },
     })
 }
 

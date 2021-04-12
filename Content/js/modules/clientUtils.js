@@ -13,8 +13,13 @@ export const client = Vue.observable({
         userId: null,
         username: '',
         picture: '',
-    }
+    },
 })
+
+/**
+ * Vue observable to pass the search term between components
+ * */
+export const search = Vue.observable({term: ''})
 
 /**
  * Reset the client Vue observable to its default values
@@ -32,7 +37,7 @@ export const resetClient = function() {
  * Array that contains all allowed states the client can be in.
  * @type {Array<string>}
  * */
-const ALLOWED_STATES = ['login', 'dashboard', 'community', 'profile', 'logout']
+const ALLOWED_STATES = ['login', 'dashboard', 'community', 'profile', 'logout', 'search']
 
 
 /**
@@ -64,6 +69,10 @@ export const setState = function(newState) {
     }
 
     else if (newState === "logout") {
+        // todo
+    }
+
+    else if (newState === "search") {
         // todo
     }
 
