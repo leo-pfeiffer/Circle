@@ -228,7 +228,7 @@
                     <div id="community-header" v-show="state === 'community'">
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
                             <h1 class="h3 mb-0 text-white"><i class="text-white" v-bind:class="symbol"></i> {{ name }} </h1>
-                        </div>A
+                        </div>
                     </div>
                     <!-- End of Community header with name -->
 
@@ -430,7 +430,29 @@
 
                                 <div class="collapse" id="collapseCommunityCalendar">
                                     <div class="card-body">
-                                        This is the calendar
+                                        <div>
+                                            <v-date-picker is-expanded title-position="left" :attributes='attributes' v-model="selectedDate"/>
+                                        </div>
+
+                                        <hr class="sidebar-divider" v-show="eventsOnSelectedDay.length > 0">
+
+                                        <div v-for="(event, index) in eventsOnSelectedDay">
+                                            <div class="card border-left-warning shadow">
+                                                <div class="card-body is-link" v-on:click="goToCommunity(event.community.id)">
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col mr-2">
+                                                            <h5>{{ event.title }} @ {{ timeOfDayFormatter(event.datetime) }}</h5>
+                                                            <div class="text text-danger mb-1">
+                                                                <span class="text-primary">Created by </span> {{ event.organiser.username }}<span class="text-primary">.</span>
+                                                            </div>
+                                                            <div>{{ event.desciption }}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <hr class="sidebar-divider" v-show="index < eventsOnSelectedDay.length - 1">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
