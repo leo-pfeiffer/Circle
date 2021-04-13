@@ -45,6 +45,12 @@
   overflow-y: auto;
 }
 
+/* Dashboard Feed */
+#dashboard-feed-body {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
 /* Tag layout (e.g. interest, group tags, ...) */
 .custom-tag {
   border: black solid;
