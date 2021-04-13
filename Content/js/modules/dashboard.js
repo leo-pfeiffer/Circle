@@ -4,6 +4,18 @@
 
 import {client, goToCommunity, setState} from './clientUtils.js'
 
+const makeDashboardHeaderVue = function() {
+    const dashboardHeaderVue = new Vue({
+        el: '#dashboard-header',
+        computed: {
+            state() {
+                return client.state;
+            },
+        },
+    })
+}
+
+
 const makeShortlistVue = function() {
     const shortlistVue = new Vue({
         el: '#shortlist',
@@ -106,4 +118,5 @@ export const makeDashboard = function () {
     makeShortlistVue();
     makeFeedVue();
     makeCalendarPreviewVue();
+    makeDashboardHeaderVue();
 }

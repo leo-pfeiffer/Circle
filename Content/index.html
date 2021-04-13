@@ -225,13 +225,21 @@
                     <div id="community-header" v-show="state === 'community'">
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
                             <h1 class="h3 mb-0 text-white"><i class="text-white" v-bind:class="symbol"></i> {{ name }} </h1>
+                        </div>A
+                    </div>
+                    <!-- End of Community header with name -->
+
+                    <!-- Dashboard header -->
+                    <div id="dashboard-header" v-show="state === 'dashboard'">
+                        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                            <h1 class="h3 mb-0 text-white">Shortlisted communities</h1>
                         </div>
                     </div>
                     <!-- End of Community header with name -->
 
+
                     <!-- Dashboard Shortlist Content Row -->
                     <div class="row" id="shortlist" v-show="state === 'dashboard'">
-
                         <!-- Community shortlist on dashboard -->
                         <div class="col-xl-3 col-md-6 mb-4 is-link" v-for="community in shortListedCommunities">
                             <div class="card border-left-info shadow h-100 py-2 bg-secondary" v-on:click="goToCommunity(community.id)">
