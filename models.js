@@ -305,6 +305,69 @@ Community = class {
  * */
 exports.Community = Community;
 
+Event = class {
+
+    /**
+     * Create a new Event.
+     * @param {string} title - The title of the event
+     * @param {string} description - A description of the event
+     * @param {Community} community - The community the event belongs to
+     * @param {User} organiser - The user that created the event
+     * @param {Date} datetime - The date and time of the event
+     * */
+    constructor(title, description, community, organiser, datetime) {
+        this.title = title
+        this.description = description
+        this.community = community
+        this.organiser = organiser
+        this.datetime = datetime
+
+        /**
+         * @type {string | null}
+         * */
+        this.location = null;
+
+        /**
+         * @type {string | null}
+         * */
+        this.link = null;
+
+        // Make sure the organiser is actually a member
+        if (!(community.users.includes(organiser))) {
+            throw new Error("Cannot add event to a community without being a member")
+        }
+    }
+
+    /**
+     * Method to deserialize a JSON object and create a new Event object.
+     * @param {Object} jsn - The object to deserialize
+     * */
+    static fromJSON(jsn) {
+        let title = jsn.title;
+        let description = jsn.description;
+        let community = jsn.community;
+        let organiser = jsn.organiser;
+        let datetime = jsn.datetime;
+
+        if (title === undefined || description === author || community === undefined ||
+            organiser === undefined || datetime === undefined) return null;
+
+        let event = new Event(title, description, community, organiser, datetime);
+
+        event.location = jsn.location;
+        event.link = jsn.link;
+
+        return event;
+    }
+}
+
+/**
+ * Export the Event class
+ * @type {Class}
+ * */
+exports.Event = Event;
+
+
 /**
  * Simple test function to test the user and community classes.
  * */
