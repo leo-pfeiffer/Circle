@@ -11,10 +11,12 @@ const makeLogoutVue = function() {
             state() {
                 return client.state;
             },
-            setState() {
-                setState('login')
-            },
         },
+        methods: {
+            backToLogin() {
+                setState('login')
+            }
+        }
     })
 }
 
