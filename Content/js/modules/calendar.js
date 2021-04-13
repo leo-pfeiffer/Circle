@@ -28,11 +28,15 @@ const makeMainCalendarVue = function() {
                     dates: this.events.map(el => el.datetime),
                 }]
             },
+            /**
+             * Return all events of the currently selected day sorted by time of event.
+             * */
             eventsOnSelectedDay() {
                 if (this.selectedDate === null) {
                     return [];
                 }
                 return this.events.filter(el => isDateMatch(el.datetime, this.selectedDate))
+                    .sort((a, b) => a.datetime - b.datetime)
             }
         },
         methods: {
