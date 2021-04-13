@@ -57,7 +57,45 @@
     })
 }
 
+const makeProfilePictureUploadVue = function() {
+    const profileInfoVue = new Vue({
+       el: '#profile-picture-upload-modal',
+       data: {
+            newPicture: null, 
+       },
+       computed: {
+            state() {
+                return client.state;
+            },
+       },
+       methods: {
+            saveUploadedPicture: function(event) {
+                if (!event.target.files.length) return;
+                const imgFile = event.target.files[0]
+            
+                // create a new file reader
+                const reader = new FileReader();
+            
+                // onload set imgUpload to the relevant file
+                reader.onload = (e) => {
+                    this.newPicture = e.target.result;
+                }
+            
+                // read the imgFile in as data URL
+                reader.readAsDataURL(imgFile);
+            }, 
+            uploadPicture: function() {
+                console.log("New picture uploaded")
+            }
+       },
+    })
+}
+
+
+
+
  export const makeProfile = function () {
      makeProfileInfoVue();
      makeUserStatsVue();
+     makeProfilePictureUploadVue();
  }
