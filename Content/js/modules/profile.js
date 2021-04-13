@@ -57,6 +57,38 @@
     })
 }
 
+// const createCharts = function() {
+//     let myChart = document.getElementById('commentBarChart').getContext('2d');
+//         let commentsBar = new Chart(myChart, {
+//             type: 'bar',
+//             data: {
+//                 labels: ['Gardening', 'Yoga', 'Cooking'],
+//                 datasets:[{
+//                     label:'Number of comments',
+//                     data: [
+//                         20,
+//                         5,
+//                         13
+//                     ],
+//                 }]
+//             }
+//         })  
+// }
+
+// const makeCommentsChartVue = function() {
+//     const commentsStatsVude = new Vue({
+//         el: '#commentBarChart',
+//         computed: {
+//             state() {
+//                 return client.state;
+//             },
+//         },
+//         methods: {
+//             createCharts();
+//         },
+//     })
+// }
+
 const makeProfilePictureUploadVue = function() {
     const profileInfoVue = new Vue({
        el: '#profile-picture-upload-modal',
@@ -98,4 +130,5 @@ const makeProfilePictureUploadVue = function() {
      makeProfileInfoVue();
      makeUserStatsVue();
      makeProfilePictureUploadVue();
+     //makeCommentsChartVue();
  }
