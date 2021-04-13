@@ -38,7 +38,7 @@ export const resetClient = function() {
  * Array that contains all allowed states the client can be in.
  * @type {Array<string>}
  * */
-const ALLOWED_STATES = ['login', 'dashboard', 'community', 'profile', 'logout', 'search']
+const ALLOWED_STATES = ['login', 'dashboard', 'community', 'profile', 'logout', 'search', 'calendar']
 
 
 /**
@@ -77,6 +77,10 @@ export const setState = function(newState) {
         // todo
     }
 
+    else if (newState === "calendar") {
+        // todo
+    }
+
     // finally, set the new State
     client.state = newState;
 }
@@ -93,6 +97,18 @@ export const formatDateTime = function(dateTime) {
     str += dateTime.getHours() + ':'
     str += dateTime.getMinutes()
     return str
+}
+
+/**
+ * Return hour and minute in a nicer format
+ * @param {Date} datetime
+ * */
+export const timeOfDayFormatter = function(datetime) {
+    let hour = `${datetime.getHours()}`
+    let minute = `${datetime.getMinutes()}`
+    hour = hour.length === 2 ? hour : `0${hour}`
+    minute = minute.length === 2 ? minute : `0${minute}`
+    return hour + ':' + minute
 }
 
 export const goToCommunity = function(communityId) {
@@ -118,4 +134,18 @@ export const getAvailableIcons = function() {
     return $.getJSON(url).then(data => {
         return Object.entries(data).filter(el => el[1].styles.includes('solid')).map(el => el[1].unicode);
     })
+}
+
+/**
+ * Check if two Date objects have the same date (year, month, day).
+ * @param {Date} date1
+ * @param {Date} date2
+ * @return {boolean}
+ * */
+export const isDateMatch = function(date1, date2) {
+    return (
+        date1.getFullYear() === date2.getFullYear() &&
+        date1.getDate() === date2.getDate() &&
+        date1.getMonth() === date2.getMonth()
+    )
 }

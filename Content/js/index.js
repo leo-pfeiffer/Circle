@@ -9,6 +9,7 @@ import {makeCommunity} from "./modules/community.js";
 import {makeProfile} from "./modules/profile.js";
 import {makeLogout} from "./modules/logout.js";
 import {makeSearch} from "./modules/search.js";
+import {makeCalendar} from "./modules/calendar.js";
 
 window.onload = () => {
     makeLogin();
@@ -18,4 +19,5 @@ window.onload = () => {
     makeProfile();
     makeLogout();
     makeSearch();
+    makeCalendar();
 }

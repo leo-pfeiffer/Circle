@@ -20,6 +20,9 @@
     <!-- Development version of Vue: todo change this to production -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
 
+    <!-- VCalendar -->
+    <script src='https://unpkg.com/v-calendar'></script>
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 
@@ -77,7 +80,7 @@
             </li>
 
             <!-- Nav Item - Calendar -->
-            <li class="nav-item">
+            <li class="nav-item" v-on:click="setState('calendar')">
                 <a class="nav-link" href="#">
                     <i class="fas fa-calendar"></i>
                     <span>Calendar</span></a>
@@ -568,8 +571,50 @@
                     </div>
                     <!-- End of Community Content Row -->
 
+                    <!-- Calendar Content Row -->
+                    <div class="row">
+
+                        <div class="col-xl-12">
+                            <div class="card shadow mb-4 bg-secondary" id="main-calendar" v-show="state === 'calendar'">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-warning">Your personal calendar.</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div>
+                                        <v-date-picker is-expanded title-position="left" :attributes='attributes' v-model="selectedDate"/>
+                                    </div>
+
+                                    <hr class="sidebar-divider" v-show="eventsOnSelectedDay.length > 0">
+
+                                    <div v-for="(event, index) in eventsOnSelectedDay">
+                                        <div class="card border-left-warning shadow">
+                                            <div class="card-body is-link" v-on:click="goToCommunity(event.community.id)">
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col mr-2">
+                                                        <h4>{{ event.title }} @ {{ timeOfDayFormatter(event.datetime) }}</h4>
+                                                        <div class="text text-danger mb-1">
+                                                            <span class="text-primary">Created by </span> {{ event.organiser.username }}<span class="text-primary"> in </span> {{ event.community.name }}<span class="text-primary">.</span>
+                                                        </div>
+                                                        <div>{{ event.desciption }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <hr class="sidebar-divider" v-show="index < eventsOnSelectedDay.length - 1">
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <!-- End of Calendar Content Row -->
+
                     <!-- Search Results -->
-                    <div class="row" id="search-results">
+                    <div class="row" id="search-results" v-show="state === 'search'">
 
                         <div class="col-xl-8">
                             <p class="text-white" v-show="searchTerm !== ''">Your search results for <span class="text-warning">{{ searchTerm }}</span></p>
