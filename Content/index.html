@@ -240,7 +240,6 @@
                     </div>
                     <!-- End of Community header with name -->
 
-
                     <!-- Dashboard Shortlist Content Row -->
                     <div class="row" id="shortlist" v-show="state === 'dashboard'">
                         <!-- Community shortlist on dashboard -->
@@ -261,7 +260,7 @@
                     </div>
                     <!-- End of Dashboard Shortlist Content Row -->
 
-                    <!-- Dashboard Shortlist Content Row -->
+                    <!-- Dashboard Content Row -->
                     <div class="row">
 
                         <!-- Feed on dashboard -->
@@ -301,12 +300,11 @@
                         </div>
 
                         <!-- Personal calendar preview dashboard -->
-                        <div class="col-xl-4 col-lg-5" id="calendarPreview" v-show="state === 'dashboard'">
+                        <div class="col-xl-4 col-lg-5" id="calendar-preview" v-show="state === 'dashboard'">
                             <div class="card shadow mb-4 bg-secondary">
                                 <!-- Card Header - Dropdown -->
-                                <div
-                                        class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-warning">Calendar</h6>
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <p class="m-0 font-weight-bold text-warning">Calendar</p>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button"
                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -316,13 +314,36 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <p>Here will be a preview of your calendar with Google calendar API</p>
+                                    <div>
+                                        <v-date-picker is-expanded title-position="left" :attributes='attributes' v-model="selectedDate"/>
+                                    </div>
+
+                                    <hr class="sidebar-divider" v-show="eventsOnSelectedDay.length > 0">
+
+                                    <div v-for="(event, index) in eventsOnSelectedDay">
+                                        <div class="card border-left-warning shadow">
+                                            <div class="card-body is-link" v-on:click="goToCommunity(event.community.id)">
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col mr-2">
+                                                        <h5>{{ event.title }} @ {{ timeOfDayFormatter(event.datetime) }}</h5>
+                                                        <div class="text text-danger mb-1">
+                                                            <span class="text-primary">Created by </span> {{ event.organiser.username }}<span class="text-primary"> in </span> {{ event.community.name }}<span class="text-primary">.</span>
+                                                        </div>
+                                                        <div>{{ event.desciption }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <hr class="sidebar-divider" v-show="index < eventsOnSelectedDay.length - 1">
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
 
                     </div>
-                    <!-- End of Dashboard Shortlist Content Row -->
+                    <!-- End of Dashboard Content Row -->
 
                     <!-- Profile Content Row -->
                     <div class="row">
