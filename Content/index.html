@@ -405,7 +405,7 @@
                             <!-- Community Feed -->
                             <div class="card shadow mb-4 bg-secondary" id="community-feed" v-show="state === 'community'">
 
-                                <a href="#collapseCommunityFeed" class="d-block card-header py-3" data-toggle="collapse"
+                                <a href="#collapseCommunityFeed" class="d-block card-header py-3 " data-toggle="collapse"
                                    role="button" aria-expanded="true" aria-controls="collapseCommunityFeed">
                                     <h6 class="m-0 font-weight-bold text-warning">Feed</h6>
                                 </a>
@@ -413,10 +413,33 @@
                                 <div class="collapse show" id="collapseCommunityFeed">
                                     <div class="card-body">
 
+                                        <!-- New thread-->
+                                        <div class="card border-left-danger shadow">
+                                            <div class="card-body">
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col mr-2">
+                                                        <div class="text text-danger mb-1">
+                                                            New thread
+                                                            <button class="btn btn-sm btn-primary float-right" v-on:click="submitNewThread">
+                                                                <i class="text-white fas fa-plus"></i> Post
+                                                            </button>
+                                                        </div>
+                                                        <hr>
+                                                        <input type="text" class="form-control form-control-user text-xs" placeholder="Title" v-model="newThread.title">
+                                                        <textarea type="text" class="form-control form-control-user" placeholder="Text" rows="2" v-model="newThread.text"></textarea>
+                                                        <p class="text-danger" v-show="newThreadMessage !== ''">{{ newThreadMessage }}</p>
+                                                    </div>
+                                                    <hr>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <hr class="sidebar-divider" v-show="threads.length > 0">
+
                                         <!-- Threads -->
                                         <div class="card shadow mb-4" v-for="(thread, index) in threads">
                                             <a v-bind:href="`#thread${thread.id}`" class="d-block card-header py-3" data-toggle="collapse" role="button">
-                                                <h6 class="m-0 font-weight-bold text-primary">{{ thread.name }}</h6>
+                                                <h6 class="m-0 font-weight-bold text-primary">{{ thread.title }}</h6>
                                             </a>
                                             <!-- Thread Content -->
                                             <div class="collapse" v-bind:id="`thread${thread.id}`" v-bind:class="{ 'show': index === 0 }">
@@ -659,7 +682,7 @@
                                                     <!-- Upload profile picture -->
                                                     <div class="form-group">
                                                         <label for="community-picture-upload">Upload a profile picture:</label>
-                                                        <input type="file" id="profile-picture-upload" accept="image/*" v-on:change="saveUploadedPicture"/>
+                                                        <input type="file" id="profile-picture-upload-registration" accept="image/*" v-on:change="saveUploadedPicture"/>
                                                     </div>
 
                                                     <img v-bind:src="picture">
@@ -750,8 +773,8 @@
                     <!-- End of new community modal-->
 
                     <!-- Upload profile picture modal-->
-                    <div class="modal fade" id="profile-picture-upload-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-upload-modal-label"
-                         aria-hidden="true">
+                    <div class="modal fade" id="profile-picture-upload-modal" tabindex="-1" role="dialog"
+                         aria-labelledby="profile-picture-upload-modal-label" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -776,7 +799,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- End of new community modal-->
+                    <!-- End of profile picture modal-->
 
                 </div>
                 <!-- /.container-fluid -->

@@ -14,6 +14,7 @@ export const client = Vue.observable({
         username: '',
         picture: '',
     },
+    community: '',
 })
 
 /**

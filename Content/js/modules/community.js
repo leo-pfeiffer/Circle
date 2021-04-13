@@ -116,7 +116,7 @@ const makeCommunityFeedVue = function() {
             threads: [
                 {
                     id: 1,
-                    name: "Spaceships",
+                    title: "Spaceships",
                     text: "The rumor that I'm building a spaceship to get back to my home planet Mars is totally untrue",
                     author: "elonmusk",
                     time: "05/12/2015, 22:00",
@@ -148,10 +148,9 @@ const makeCommunityFeedVue = function() {
                         },
                     ]
                 },
-
                 {
                     id: 2,
-                    name: "Gigafactory",
+                    title: "Gigafactory",
                     text: "One gigafactory is about the size of 50 billion hamsters",
                     author: "elonmusk",
                     time: "30/07/2016, 5:41",
@@ -170,7 +169,7 @@ const makeCommunityFeedVue = function() {
                 },
                 {
                     id: 3,
-                    name: "Jack and Jill went up a hill",
+                    title: "Jack and Jill went up a hill",
                     text: "... you know how it goes.",
                     author: "whoami",
                     time: "30/07/2016, 5:41",
@@ -178,6 +177,11 @@ const makeCommunityFeedVue = function() {
                 },
             ],
             newComments: {},
+            newThread: {
+                title: '',
+                text: '',
+            },
+            newThreadMessage: '',
         },
         computed: {
             state() {
@@ -185,6 +189,34 @@ const makeCommunityFeedVue = function() {
             },
         },
         methods: {
+            submitNewThread: function() {
+                if ((this.newThread.title.trim() !== '') && (this.newThread.text.trim() !== '')) {
+                    // todo push to API
+
+                    let thread = {
+                        text: this.newThread.text,
+                        title: this.newThread.title,
+                        time: formatDateTime(new Date()),
+                        author: client.userData.username,
+                        community: client.community,
+                        comments: []
+                    }
+
+                    this.threads.push(thread);
+
+                    console.log("New thread: ", thread.title)
+
+                    this.newThread = {title: '', text: ''}
+
+                } else {
+                    this.newThread = {title: '', text: ''}
+                    this.newThreadMessage = 'Please enter both a title and a text.'
+                    setTimeout(this.resetNewThreadMessage, 5000);
+                }
+            },
+            resetNewThreadMessage: function() {
+                this.newThreadMessage = '';
+            },
             submitNewComment: function(threadId) {
                 if (this.newComments.hasOwnProperty(threadId) && this.newComments[threadId].length > 0) {
 
