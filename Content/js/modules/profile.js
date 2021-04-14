@@ -11,6 +11,10 @@
              state() {
                  return client.state;
              },
+            isOwnProfile() {
+                 // todo proabbly change this to ID instead of username but for that we need to add API connection first
+                 return this.name === client.userData.username
+            }
         },
         data: {    
             id: "123456789",
