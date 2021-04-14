@@ -57,34 +57,35 @@
     })
 }
 
-
 const makeCommentsChartVue = function() {
     const commentsStatsVude = new Vue({
         el: '#commentBarChart',
+        data: {
+            labels: ['Gardening', 'Yoga', 'Cooking'],
+            datasets:[{
+                    label:'Number of comments',
+                    data: [
+                            20,
+                            5,
+                            13
+                    ],
+            }]
+
+        },
         computed: {
-            state() {
+            state() {ü
                 return client.state;
             },
-        },
+        }, 
         methods: {
-            createBarChart: function() {
-                let barChart = document.getElementById('commentBarChart').getContext('2d');
-                let commentsBar = new Chart(barChart, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Gardening', 'Yoga', 'Cooking'],
-                            datasets:[{
-                                label:'Number of comments',
-                                data: [
-                                    20,
-                                    5,
-                                    13
-                                ],
-                            }]
-                    },
-                })  
+            createChart(el, data) {
+              const ctx = document.getElementById('commentBarChart');
+              const myChart = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+              });
             }
-        },
+          }
     })
 }
 
@@ -116,6 +117,7 @@ const makeProfilePictureUploadVue = function() {
                 reader.readAsDataURL(imgFile);
             }, 
             uploadPicture: function() {
+                // todo connect to db
                 console.log("New picture uploaded")
             }
        },
