@@ -55,10 +55,14 @@
 .custom-tag {
   border: black solid;
   border-radius: 0.5rem;
-  padding-right: 0.5rem;
+  padding: 0 0.5rem 0 0.5rem;
   margin: 0.25rem;
   color: black;
   background: white;
+}
+
+.custom-tag.editable {
+  padding: 0 0.5rem 0 0;
 }
 
 .custom-tag-container {

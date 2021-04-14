@@ -16,6 +16,9 @@ const makeSearchResultVue = function() {
             },
             searchTerm() {
                 return search.term;
+            },
+            searchType() {
+                return search.type;
             }
         },
         methods: {

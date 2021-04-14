@@ -105,6 +105,9 @@ const makeCommunityInfoVue = function() {
             },
             isMember() {
                 return this.users.map(el => el.name).includes(client.userData.username);
+            },
+            isAdmin() {
+                return this.admin === client.userData.username
             }
         },
         methods: {

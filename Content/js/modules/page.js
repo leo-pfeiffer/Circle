@@ -31,7 +31,13 @@ const makeHeaderVue = function() {
             search: function() {
                 // don't do anything if no search term was entered
                 if (search.term === '') return;
+                search.type = 'search'
                 // todo call to api -> save response in observable -> access it from search vue
+                this.setState('search');
+            },
+            getRecommendations: function () {
+                search.type = 'recommendation'
+                // todo call to api -> get recommendations for current user
                 this.setState('search');
             }
         },

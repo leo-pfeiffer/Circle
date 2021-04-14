@@ -157,8 +157,11 @@
                         <div class="input-group">
                             <input type="text" class="form-control bg-secondary border-0 small" aria-label="Search" aria-describedby="basic-addon2" v-model="searchTerm">
                             <div class="input-group-append">
-                                <button class="btn btn-info" type="button" v-on:click="search">
+                                <button class="btn btn-info" type="button" v-on:click="search" title="Search">
                                     <i class="fas fa-search fa-sm"></i>
+                                </button>
+                                <button class="btn btn-info" type="button" v-on:click="getRecommendations" title="Get recommendations">
+                                    <i class="fas fa-star fa-sm"></i>
                                 </button>
                             </div>
                         </div>
@@ -584,11 +587,11 @@
                                         <hr>
                                         <div class="custom-tag-container">
                                             <!-- display existing tags -->
-                                            <span class="custom-tag" v-for="tag in tags">
-                                                <button class="btn btn-info btn-circle btn-sm font-weight-bolder" v-on:click="removeTag(tag)">&times;</button> {{ tag }}
+                                            <span class="custom-tag" v-for="tag in tags" v-bind:class="[ isAdmin ? 'editable' : '']">
+                                                <button class="btn btn-info btn-circle btn-sm font-weight-bolder" v-on:click="removeTag(tag)" v-show="isAdmin">&times;</button> {{ tag }}
                                             </span>
                                             <!-- add tags -->
-                                            <span class="custom-tag">
+                                            <span class="custom-tag" v-show="isAdmin" v-bind:class="[ isAdmin ? 'editable' : '']">
                                                 <button class="btn btn-info btn-circle btn-sm font-weight-bolder" v-on:click="addTag">&checkmark;</button>
                                                 <input type="text" class="custom-tag-input" placeholder="..." v-model="newTag">
                                             </span>
@@ -659,7 +662,8 @@
                     <div class="row" id="search-results" v-show="state === 'search'">
 
                         <div class="col-xl-8">
-                            <p class="text-white" v-show="searchTerm !== ''">Your search results for <span class="text-warning">{{ searchTerm }}</span></p>
+                            <p v-if="searchType === 'search'" class="text-white" v-show="searchTerm !== ''">Your search results for <span class="text-warning">{{ searchTerm }}</span>.</p>
+                            <p v-else-if="searchType === 'recommendation'" class="text-white">Your recommendations.</p>
                             <!-- Community Results -->
                             <div class="card shadow mb-4 bg-secondary" id="community-search-results" v-show="state === 'search'">
 
