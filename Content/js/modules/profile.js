@@ -2,7 +2,8 @@
  * This file contains the vue components of the user profile.
  * */
 
- import {client, setState} from './clientUtils.js'
+ import {client, setState, createChart} from './clientUtils.js'
+//  import {client, createChart} from './clientUtils.js'
 
  const makeProfileInfoVue = function() {
      const profileInfoVue = new Vue({
@@ -72,12 +73,8 @@
         },
         methods: {
             createChart: function(chartId, chartData) {
-                const ctx = document.getElementById(chartId);
-                const myChart = new Chart(ctx, {
-                    type: chartData.type,
-                    data: chartData.data,
-                });
-            }
+                createChart(chartId, chartData)
+            },
         },
         mounted() {
             this.createChart('commentBarChart', this.commentBarChartData)
@@ -127,5 +124,4 @@ const makeProfilePictureUploadVue = function() {
      makeProfileInfoVue();
      makeUserStatsVue();
      makeProfilePictureUploadVue();
-     // makeCommentsChartVue();
  }

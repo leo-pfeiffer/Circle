@@ -149,3 +149,14 @@ export const isDateMatch = function(date1, date2) {
         date1.getMonth() === date2.getMonth()
     )
 }
+
+/**
+ * Create a bar chart 
+ * */
+export const createChart = function(chartId, chartData) {
+    const ctx = document.getElementById(chartId);
+    const myChart = new Chart(ctx, {
+        type: chartData.type,
+        data: chartData.data,
+    });
+}
