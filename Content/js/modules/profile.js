@@ -65,7 +65,8 @@ const makeCommentsChartVue = function() {
     const commentsStatsVude = new Vue({
         el: '#commentBarChart',
         data: {
-            labels: ['Gardening', 'Yoga', 'Cooking'],
+            data: {
+                labels: ['Gardening', 'Yoga', 'Cooking'],
             datasets:[{
                     label:'Number of comments',
                     data: [
@@ -74,6 +75,7 @@ const makeCommentsChartVue = function() {
                             13
                     ],
             }]
+            }
 
         },
         computed: {
@@ -86,7 +88,7 @@ const makeCommentsChartVue = function() {
               const ctx = document.getElementById('commentBarChart');
               const myChart = new Chart(ctx, {
                 type: 'bar',
-                data: data,
+                data: data.data,
               });
             }
           },
