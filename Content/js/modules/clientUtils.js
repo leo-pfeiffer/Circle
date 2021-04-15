@@ -158,5 +158,6 @@ export const createChart = function(chartId, chartData) {
     const myChart = new Chart(ctx, {
         type: chartData.type,
         data: chartData.data,
+        options: chartData.options,
     });
 }

@@ -62,8 +62,25 @@
                     datasets:[{
                         label:'Number of comments',
                         data: [20, 5, 13],
-                    }]
-                }
+                        backgroundColor:[
+                            '#1cc88a',
+                          ],
+                    }],
+                },
+                options:{
+                    title:{
+                      display:true,
+                      text:'Top active communities by number of comments written',
+                      fontSize:20
+                    },
+                    legend:{
+                      display:true,
+                      position:'right',
+                      labels:{
+                        fontColor:'#white'
+                      }
+                    }
+                }  
             }
         },
         computed: {
@@ -116,8 +133,6 @@ const makeProfilePictureUploadVue = function() {
        },
     })
 }
-
-
 
 
  export const makeProfile = function () {
