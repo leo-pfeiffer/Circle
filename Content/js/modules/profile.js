@@ -77,7 +77,7 @@ const makeCommentsChartVue = function() {
 
         },
         computed: {
-            state() {ü
+            state() {
                 return client.state;
             },
         }, 
@@ -89,7 +89,8 @@ const makeCommentsChartVue = function() {
                 data: data,
               });
             }
-          }
+          },
+        mounted: function() { this.createChart('commentBarChart', data); }
     })
 }
 
