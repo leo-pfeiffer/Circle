@@ -53,46 +53,35 @@
  const makeUserStatsVue = function() {
     const userStatsVue = new Vue({
         el: '#userStats',
-        computed: {
-            state() {
-                return client.state;
-            },
-        },
-    })
-}
-
-const makeCommentsChartVue = function() {
-    const commentsStatsVude = new Vue({
-        el: '#commentBarChart',
         data: {
-            data: {
-                labels: ['Gardening', 'Yoga', 'Cooking'],
-            datasets:[{
-                    label:'Number of comments',
-                    data: [
-                            20,
-                            5,
-                            13
-                    ],
-            }]
+            commentBarChartData: {
+                type: 'bar',
+                data: {
+                    labels: ['Gardening', 'Yoga', 'Cooking'],
+                    datasets:[{
+                        label:'Number of comments',
+                        data: [20, 5, 13],
+                    }]
+                }
             }
-
         },
         computed: {
             state() {
                 return client.state;
             },
-        }, 
+        },
         methods: {
-            createChart(el, data) {
-              const ctx = document.getElementById('commentBarChart');
-              const myChart = new Chart(ctx, {
-                type: 'bar',
-                data: data.data,
-              });
+            createChart: function(chartId, chartData) {
+                const ctx = document.getElementById(chartId);
+                const myChart = new Chart(ctx, {
+                    type: chartData.type,
+                    data: chartData.data,
+                });
             }
-          },
-        mounted: function() { this.createChart('commentBarChart', data); }
+        },
+        mounted() {
+            this.createChart('commentBarChart', this.commentBarChartData)
+        }
     })
 }
 
@@ -138,5 +127,5 @@ const makeProfilePictureUploadVue = function() {
      makeProfileInfoVue();
      makeUserStatsVue();
      makeProfilePictureUploadVue();
-     makeCommentsChartVue();
+     // makeCommentsChartVue();
  }
