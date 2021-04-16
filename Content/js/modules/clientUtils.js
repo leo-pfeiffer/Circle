@@ -103,53 +103,6 @@ export const setState = function(newState) {
     client.state = newState;
 }
 
-/**
- * Join a room.
- * @param {string} room
- * @param {Object} params - additional parameters
- * */
-export const joinRoom = function(room, params={}) {
-    params.room = room
-    socket.emit('join', params);
-}
-
-/**
- * Leave a room.
- * @param {string} room
- * @param {Object} params - additional parameters
- * */
-export const leaveRoom = function(room, params={}) {
-    params.room = room
-    socket.emit('leave', params);
-}
-
-
-/**
- * Format a Date object as string.
- * @param {Date} dateTime
- * */
-export const formatDateTime = function(dateTime) {
-    let str = ''
-    str += dateTime.getDate() + '/'
-    str += (dateTime.getMonth() + 1) + '/'
-    str += dateTime.getFullYear() + ', '
-    str += dateTime.getHours() + ':'
-    str += dateTime.getMinutes()
-    return str
-}
-
-/**
- * Return hour and minute in a nicer format
- * @param {Date} datetime
- * */
-export const timeOfDayFormatter = function(datetime) {
-    let hour = `${datetime.getHours()}`
-    let minute = `${datetime.getMinutes()}`
-    hour = hour.length === 2 ? hour : `0${hour}`
-    minute = minute.length === 2 ? minute : `0${minute}`
-    return hour + ':' + minute
-}
-
 export const goToCommunity = function(communityId) {
     // todo call API
     // go to community with id `communityId`
@@ -179,6 +132,32 @@ export const isDateMatch = function(date1, date2) {
 }
 
 /**
+ * Return hour and minute in a nicer format
+ * @param {Date} datetime
+ * */
+export const timeOfDayFormatter = function(datetime) {
+    let hour = `${datetime.getHours()}`
+    let minute = `${datetime.getMinutes()}`
+    hour = hour.length === 2 ? hour : `0${hour}`
+    minute = minute.length === 2 ? minute : `0${minute}`
+    return hour + ':' + minute
+}
+
+/**
+ * Format a Date object as string.
+ * @param {Date} dateTime
+ * */
+export const formatDateTime = function(dateTime) {
+    let str = ''
+    str += dateTime.getDate() + '/'
+    str += (dateTime.getMonth() + 1) + '/'
+    str += dateTime.getFullYear() + ', '
+    str += dateTime.getHours() + ':'
+    str += dateTime.getMinutes()
+    return str
+}
+
+/**
  * Create a bar chart 
  * */
 export const createChart = function(chartId, chartData) {
@@ -190,8 +169,10 @@ export const createChart = function(chartId, chartData) {
     });
 }
 
+
+// Socket.io related utility functions ======
 /**
- * Create a socket connection.
+ * Create the variable that will eventually contain the socket connection.
  * */
 let socket = null;
 
@@ -200,9 +181,14 @@ let socket = null;
  * */
 export const addAuthToSocket = function() {
     let username = client.userData.username
-    socket.auth = { username };
+    let password = client.userData.password
+    socket.auth = { username: username, password: password };
 }
 
+/**
+ * Make the actual socket, i.e. instantiate and connect it.
+ * Also define action handlers of socket.io
+ * */
 export const makeSocket = function() {
     if (client.userData.username !== '' || client.userData.username !== null) {
         socket = io();
@@ -219,8 +205,31 @@ export const makeSocket = function() {
     }
 }
 
+/**
+ * Destroy the socket and reset it to it's initial state.
+ * */
 export const destroySocket = function() {
-    socket.disconnect();
+    if (socket.connected) socket.disconnect();
     socket = null;
     console.log('disconnected from socket')
+}
+
+/**
+ * Join a room.
+ * @param {string} room
+ * @param {Object} params - additional parameters
+ * */
+export const joinRoom = function(room, params={}) {
+    params.room = room
+    socket.emit('join', params);
+}
+
+/**
+ * Leave a room.
+ * @param {string} room
+ * @param {Object} params - additional parameters
+ * */
+export const leaveRoom = function(room, params={}) {
+    params.room = room
+    socket.emit('leave', params);
 }

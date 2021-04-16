@@ -3,6 +3,7 @@ const dao = require('./dao');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const basicAuth = require('basic-auth');
 
 const app = express();
 
@@ -15,13 +16,34 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 const API_PORT = 3000;
 
-// ===== Socket IO
-io.use((socket, next) => {
-    const username = socket.handshake.auth.username;
-    if (!username) {
-        return next(new Error('no username'));
+// Basic authentication
+let authenticate = function (req, res, next) {
+    let user = basicAuth(req);
+    // check DB
+    let validUser = true;
+    if (!validUser) {
+        //make the browser ask for credentials if none/wrong are provided
+        // res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+        return res.sendStatus(401);
     }
-    socket.username = username;
+    req.username = user.username;
+    next();
+};
+
+// ===== Socket IO
+// authentication using basicAuth
+io.use((socket, next) => {
+
+    const user = socket.handshake.auth
+
+    // todo -> check if user is in db and password is correct
+    let validUser = true;
+
+    if (!validUser) {
+        return next(new Error('invalid credentials'))
+    }
+
+    socket.username = user.username;
     next();
 })
 
@@ -35,11 +57,29 @@ io.on('connection', (socket) => {
 
     socket.on('join', data => {
         console.log(data);
-        socket.join(data.room);
-        let text = `${socket.handshake.auth.username} joined room ${data.room}`;
-        io.to(data.room).emit('notify', {data: text})
-        console.log(socket.rooms)
+        if (!socket.rooms.has(data.room)) {
+            socket.join(data.room);
+            let text = `${socket.handshake.auth.username} joined room ${data.room}`;
+            io.to(data.room).emit('notify', {data: text})
+            console.log(text)
+        } else {
+            console.log('User is already in the room.')
+        }
+
     })
+
+    socket.on('leave', data => {
+        console.log(data);
+        if (socket.rooms.has(data.room)) {
+            socket.leave(data.room);
+            let text = `${socket.handshake.auth.username} left room ${data.room}`;
+            io.to(data.room).emit('notify', {data: text})
+            console.log(text)
+        } else {
+            console.log('User is not in the room anyway.')
+        }
+    })
+
 
     socket.on('disconnect', (reason) => {
         console.log(socket.handshake.auth.username, 'disconnected')
@@ -225,14 +265,14 @@ let getComment = function (req, res, next) {
 }
 
 //Set up routes
-app.post('/api/create-user/', createUser);
-app.post('/api/create-community/', createCommunity);
-app.post('/api/create-thread/', createThread);
-app.post('/api/create-comment/', createComment);
-app.get('/api/get-all-users/', getAllUsers);
-app.get('/api/get-community/', getCommunity);
-app.get('/api/get-thread/', getThread);
-app.get('/api/get-comment/', getComment);
+app.post('/api/create-user/', authenticate, createUser);
+app.post('/api/create-community/', authenticate, createCommunity);
+app.post('/api/create-thread/', authenticate, createThread);
+app.post('/api/create-comment/', authenticate, createComment);
+app.get('/api/get-all-users/', authenticate, getAllUsers);
+app.get('/api/get-community/', authenticate, getCommunity);
+app.get('/api/get-thread/', authenticate, getThread);
+app.get('/api/get-comment/', authenticate, getComment);
 
 
 
