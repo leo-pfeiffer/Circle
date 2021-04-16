@@ -4,6 +4,8 @@ const dao = require('./dao');
 const express = require('express');
 const bodyParser = require('body-parser');
 const basicAuth = require('basic-auth');
+const cors = require('cors')
+const axios = require('axios');
 
 const app = express();
 
@@ -13,10 +15,16 @@ const io = require('socket.io')(server);
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cors())
 
 const API_PORT = 3000;
 
-// Basic authentication
+/**
+ * Basic middleware function that is used for basic authentication upon requests that require it.
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
 let authenticate = function (req, res, next) {
     let user = basicAuth(req);
     // check DB
@@ -30,7 +38,7 @@ let authenticate = function (req, res, next) {
     next();
 };
 
-// ===== Socket IO
+// ===== Socket IO =====
 // authentication using basicAuth
 io.use((socket, next) => {
 
@@ -47,14 +55,17 @@ io.use((socket, next) => {
     next();
 })
 
+// Connection handler
 io.on('connection', (socket) => {
     console.log(socket.handshake.auth.username, 'connected');
 
+    // Basic ping event handler for testing
     socket.on('ping', msg => {
         console.log('received ping from', )
         io.emit('pong', {data: 'pong'});
     })
 
+    // Handler for join events
     socket.on('join', data => {
         if (!socket.rooms.has(data.room)) {
             socket.join(data.room);
@@ -62,9 +73,9 @@ io.on('connection', (socket) => {
             io.to(data.room).emit('notify', {data: text})
             console.log(text)
         }
-
     })
 
+    // Handler for leave events
     socket.on('leave', data => {
         if (socket.rooms.has(data.room)) {
             socket.leave(data.room);
@@ -74,16 +85,14 @@ io.on('connection', (socket) => {
         }
     })
 
-
+    // Handler for disconnect events
     socket.on('disconnect', (reason) => {
         console.log(socket.handshake.auth.username, 'disconnected')
     })
-
 })
 
 
-
-// ===== Handlers
+// ===== Handler functions =======
 
 /**
  * Handler function to create a new User and add it to the database
@@ -258,7 +267,27 @@ let getComment = function (req, res, next) {
     res.status(200).json({ msg: `Added new comment '${comment}` })
 }
 
-//Set up routes
+/**
+ * Proxy request handler that gets a random joke from an external API
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+const getJoke = function (req, res, next) {
+    const options = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    axios.get('https://icanhazdadjoke.com/', options)
+        .then(response => res.status(200).json(response.data))
+        .catch(error => console.log(error));
+}
+
+/**
+ * The following API endpoints allow the client to interact with the server.
+ * */
 app.post('/api/create-user/', authenticate, createUser);
 app.post('/api/create-community/', authenticate, createCommunity);
 app.post('/api/create-thread/', authenticate, createThread);
@@ -268,8 +297,16 @@ app.get('/api/get-community/', authenticate, getCommunity);
 app.get('/api/get-thread/', authenticate, getThread);
 app.get('/api/get-comment/', authenticate, getComment);
 
+/*
+* The follotwing endpoints were introced as proxy in order to access external APIs that have
+* strict CORS policies which would not allow direct access from the client. Therefore, the client
+* request is send to this server, which executes the actual requests and sends back the response
+* to the client. This also gives us more control over what the client receives, i.e. we could filter
+* or enrich the response ourselves.
+ */
+app.get('/api/proxy/joke', getJoke);
 
-
+// Set the static folder
 app.use(express.static('content'));
 
 function run() {

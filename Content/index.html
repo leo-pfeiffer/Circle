@@ -302,9 +302,9 @@
                             </div>
                         </div>
 
-                        <!-- Personal calendar preview dashboard -->
-                        <div class="col-xl-4 col-lg-5" id="calendar-preview" v-show="state === 'dashboard'">
-                            <div class="card shadow mb-4 bg-secondary">
+                        <div class="col-xl-4 col-lg-5">
+                            <!-- Personal calendar preview dashboard -->
+                            <div class="card shadow mb-4 bg-secondary" id="calendar-preview" v-show="state === 'dashboard'">
                                 <!-- Card Header - Dropdown -->
                                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <p class="m-0 font-weight-bold text-warning">Calendar</p>
@@ -343,7 +343,23 @@
 
                                 </div>
                             </div>
+
+                            <div class="card shadow mb-4 bg-secondary" id="have-a-laugh" v-show="state === 'dashboard'">
+                                <!-- Joke Dropdown -->
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <p class="m-0 font-weight-bold text-warning">Have a laugh!</p>
+                                    <i class="fas fa-sync text-white float-right is-link" v-on:click="getJoke" ></i>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="text-white">
+                                        {{ joke }}
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
+
 
                     </div>
                     <!-- End of Dashboard Content Row -->
