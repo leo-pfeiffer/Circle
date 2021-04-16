@@ -102,10 +102,10 @@ const makeCommunityInfoVue = function() {
                 return client.state;
             },
             isMember() {
-                return this.users.map(el => el.name).includes(client.userData.username);
+                return this.users.map(el => el.name).includes(client.userData.name);
             },
             isAdmin() {
-                return this.admin === client.userData.username
+                return this.admin === client.userData.name
             }
         },
         methods: {
@@ -145,7 +145,7 @@ const makeCommunityInfoVue = function() {
                 // todo join via API
                 let apiResponse = {status: 'success'}
                 if (apiResponse.status === 'success') {
-                    this.users.push({name: client.userData.username, picture: client.userData.picture})
+                    this.users.push({name: client.userData.name, picture: client.userData.picture})
                 }
             }
         }
@@ -241,7 +241,7 @@ const makeCommunityFeedVue = function() {
                         text: this.newThread.text,
                         title: this.newThread.title,
                         time: formatDateTime(new Date()),
-                        author: client.userData.username,
+                        author: client.userData.name,
                         community: client.communityData.name,
                         comments: []
                     }

@@ -10,8 +10,8 @@ export const client = Vue.observable({
     state: 'login',
     userKey: '',
     userData: {
-        userId: '',
-        username: '',
+        id: '',
+        name: '',
         picture: '',
     },
     communityData: {
@@ -33,11 +33,9 @@ export const search = Vue.observable({term: '', type: ''})
  * Reset the userData of the client Vue observable to its default values
  * */
 const resetClientData = function() {
-    client.userData = {
-        userId: '',
-        username: '',
-        picture: '',
-    }
+    client.userData.id = '';
+    client.userData.name = '';
+    client.userData.picture = '';
 }
 
 /**
@@ -140,7 +138,7 @@ export const goToCommunity = function(communityId) {
 export const goToProfile = function(userId) {
     // todo call API
     // go to profile with of `userId`
-    client.userData = userId
+    client.userData.id = userId
     setState('profile')
 }
 
@@ -207,7 +205,7 @@ let socket = null;
  * Add authentication to socket.
  * */
 export const addAuthToSocket = function() {
-    let username = client.userData.username
+    let username = client.userData.name
     let password = client.userData.password
     socket.auth = { username: username, password: password };
 }
@@ -217,7 +215,7 @@ export const addAuthToSocket = function() {
  * Also define action handlers of socket.io
  * */
 export const makeSocket = function() {
-    if (client.userData.username !== '' || client.userData.username !== null) {
+    if (client.userData.name !== '' || client.userData.name !== null) {
         socket = io();
 
         addAuthToSocket();

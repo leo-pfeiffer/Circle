@@ -29,7 +29,7 @@ const makeHeaderVue = function() {
         },
         methods: {
             goToProfile: function() {
-                goToProfile(client.userData.userId)
+                goToProfile(client.userData.id)
             },
             goToSearch: function() {
                 setState('search')
@@ -158,7 +158,7 @@ const makeSidenavVue = function() {
         methods: {
             goToProfile: function() {
                 // go to own profile
-                goToProfile(client.userData.userId)
+                goToProfile(client.userData.id)
             },
             goToCommunity: function(communityId) {
                 goToCommunity(communityId)
