@@ -10,7 +10,7 @@ export const client = Vue.observable({
     state: 'login',
     userKey: '',
     userData: {
-        userId: null,
+        userId: '',
         username: '',
         picture: '',
     },
@@ -34,7 +34,7 @@ export const search = Vue.observable({term: '', type: ''})
  * */
 const resetClientData = function() {
     client.userData = {
-        userId: null,
+        userId: '',
         username: '',
         picture: '',
     }
