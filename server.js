@@ -30,8 +30,7 @@ let authenticate = function (req, res, next) {
     // check DB
     let validUser = true;
     if (!validUser) {
-        //make the browser ask for credentials if none/wrong are provided
-        // res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+        // make the browser ask for credentials if none/wrong are provided
         return res.sendStatus(401);
     }
     req.username = user.username;
@@ -298,7 +297,7 @@ app.get('/api/get-thread/', authenticate, getThread);
 app.get('/api/get-comment/', authenticate, getComment);
 
 /*
-* The follotwing endpoints were introced as proxy in order to access external APIs that have
+* The following endpoints were introduced as a proxy in order to access external APIs that have
 * strict CORS policies which would not allow direct access from the client. Therefore, the client
 * request is send to this server, which executes the actual requests and sends back the response
 * to the client. This also gives us more control over what the client receives, i.e. we could filter
