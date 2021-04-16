@@ -7,7 +7,6 @@ import {
     destroySocket,
     goToCommunity, goToProfile,
     joinRoom,
-    resetClient,
     search,
     setState
 } from "./clientUtils.js";
@@ -36,7 +35,6 @@ const makeHeaderVue = function() {
                 setState('search')
             },
             logout: function() {
-                resetClient();
                 setState('logout')
                 destroySocket();
             },

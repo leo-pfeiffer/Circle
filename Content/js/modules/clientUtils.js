@@ -28,12 +28,21 @@ export const search = Vue.observable({term: '', type: ''})
 /**
  * Reset the client Vue observable to its default values
  * */
-export const resetClient = function() {
-    client.state = 'login';
+const resetClientData = function() {
     client.userData = {
         userId: null,
         username: '',
         picture: '',
+    }
+}
+
+/**
+ * Reset the client Vue observable to its default values
+ * */
+const resetCommunityData = function() {
+    client.communityData = {
+        id: '',
+        name: '',
     }
 }
 
@@ -61,7 +70,8 @@ export const setState = function(newState) {
     }
 
     else if (newState === "dashboard") {
-        // todo
+        leaveRoom(client.communityData.id);
+        resetCommunityData();
     }
 
     else if (newState === "community") {
@@ -69,19 +79,24 @@ export const setState = function(newState) {
     }
 
     else if (newState === "profile") {
-        // todo
+        leaveRoom(client.communityData.id);
+        resetCommunityData();
     }
 
     else if (newState === "logout") {
-        // todo
+        leaveRoom(client.communityData.id);
+        resetCommunityData();
+        resetClientData();
     }
 
     else if (newState === "search") {
-        // todo
+        leaveRoom(client.communityData.id);
+        resetCommunityData();
     }
 
     else if (newState === "calendar") {
-        // todo
+        leaveRoom(client.communityData.id);
+        resetCommunityData();
     }
 
     // finally, set the new State
