@@ -56,27 +56,21 @@ io.on('connection', (socket) => {
     })
 
     socket.on('join', data => {
-        console.log(data);
         if (!socket.rooms.has(data.room)) {
             socket.join(data.room);
             let text = `${socket.handshake.auth.username} joined room ${data.room}`;
             io.to(data.room).emit('notify', {data: text})
             console.log(text)
-        } else {
-            console.log('User is already in the room.')
         }
 
     })
 
     socket.on('leave', data => {
-        console.log(data);
         if (socket.rooms.has(data.room)) {
             socket.leave(data.room);
             let text = `${socket.handshake.auth.username} left room ${data.room}`;
             io.to(data.room).emit('notify', {data: text})
             console.log(text)
-        } else {
-            console.log('User is not in the room anyway.')
         }
     })
 

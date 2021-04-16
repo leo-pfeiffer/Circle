@@ -127,8 +127,8 @@ const makeCommunityInfoVue = function() {
                 // todo connect to API
                 this.tags.splice(this.tags.indexOf(tag), 1)
             },
-            goToProfile: function(username) {
-                goToProfile(username)
+            goToProfile: function(userId) {
+                goToProfile(userId)
             },
             /**
              * Get n most frequent contributors.

@@ -607,7 +607,7 @@
                                             </a>
                                             <div id="collapseUsers" class="collapse">
                                                 <span v-for="u in getMostFrequentContributors()">
-                                                    <img v-bind:src="u.picture" class="small-user-img is-link" v-bind:title="u.name" v-on:click="goToProfile(u.name)">
+                                                    <img v-bind:src="u.picture" class="small-user-img is-link" v-bind:title="u.name" v-on:click="goToProfile(u.id)">
                                                 </span>
                                             </div>
                                         </div>

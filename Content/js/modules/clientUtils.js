@@ -17,6 +17,10 @@ export const client = Vue.observable({
     communityData: {
         id: '',
         name: '',
+    },
+    profileData: {
+        id: '',
+        name: '',
     }
 })
 
@@ -26,7 +30,7 @@ export const client = Vue.observable({
 export const search = Vue.observable({term: '', type: ''})
 
 /**
- * Reset the client Vue observable to its default values
+ * Reset the userData of the client Vue observable to its default values
  * */
 const resetClientData = function() {
     client.userData = {
@@ -37,10 +41,20 @@ const resetClientData = function() {
 }
 
 /**
- * Reset the client Vue observable to its default values
+ * Reset the communityData of the client Vue observable to its default values
  * */
 const resetCommunityData = function() {
     client.communityData = {
+        id: '',
+        name: '',
+    }
+}
+
+/**
+ * Reset the profileData of the client Vue observable to its default values
+ * */
+const resetProfileData = function() {
+    client.profileData = {
         id: '',
         name: '',
     }
@@ -72,10 +86,11 @@ export const setState = function(newState) {
     else if (newState === "dashboard") {
         leaveRoom(client.communityData.id);
         resetCommunityData();
+        resetProfileData();
     }
 
     else if (newState === "community") {
-        // todo
+        resetProfileData();
     }
 
     else if (newState === "profile") {
@@ -87,33 +102,45 @@ export const setState = function(newState) {
         leaveRoom(client.communityData.id);
         resetCommunityData();
         resetClientData();
+        resetProfileData();
     }
 
     else if (newState === "search") {
         leaveRoom(client.communityData.id);
         resetCommunityData();
+        resetProfileData();
     }
 
     else if (newState === "calendar") {
         leaveRoom(client.communityData.id);
         resetCommunityData();
+        resetProfileData();
     }
 
     // finally, set the new State
     client.state = newState;
 }
 
+/**
+ * Go to the community with ID `communityId`
+ * @param {string} communityId
+ * */
 export const goToCommunity = function(communityId) {
     // todo call API
     // go to community with id `communityId`
     setState('community')
+    client.communityData.id = communityId;
     joinRoom(communityId)
-    console.log('helloooooo')
 }
 
-export const goToProfile = function(username) {
+/**
+ * Go to the profile with ID `userId`
+ * @param {string} userId
+ * */
+export const goToProfile = function(userId) {
     // todo call API
-    // go to profile with of `username`
+    // go to profile with of `userId`
+    client.userData = userId
     setState('profile')
 }
 
