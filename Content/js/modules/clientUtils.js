@@ -17,6 +17,10 @@ export const client = Vue.observable({
     communityData: {
         id: '',
         name: '',
+    },
+    profileData: {
+        id: '',
+        name: '',
     }
 })
 
@@ -26,7 +30,7 @@ export const client = Vue.observable({
 export const search = Vue.observable({term: '', type: ''})
 
 /**
- * Reset the client Vue observable to its default values
+ * Reset the userData of the client Vue observable to its default values
  * */
 const resetClientData = function() {
     client.userData = {
@@ -37,10 +41,20 @@ const resetClientData = function() {
 }
 
 /**
- * Reset the client Vue observable to its default values
+ * Reset the communityData of the client Vue observable to its default values
  * */
 const resetCommunityData = function() {
     client.communityData = {
+        id: '',
+        name: '',
+    }
+}
+
+/**
+ * Reset the profileData of the client Vue observable to its default values
+ * */
+const resetProfileData = function() {
+    client.profileData = {
         id: '',
         name: '',
     }
@@ -72,10 +86,11 @@ export const setState = function(newState) {
     else if (newState === "dashboard") {
         leaveRoom(client.communityData.id);
         resetCommunityData();
+        resetProfileData();
     }
 
     else if (newState === "community") {
-        // todo
+        resetProfileData();
     }
 
     else if (newState === "profile") {
@@ -87,20 +102,143 @@ export const setState = function(newState) {
         leaveRoom(client.communityData.id);
         resetCommunityData();
         resetClientData();
+        resetProfileData();
     }
 
     else if (newState === "search") {
         leaveRoom(client.communityData.id);
         resetCommunityData();
+        resetProfileData();
     }
 
     else if (newState === "calendar") {
         leaveRoom(client.communityData.id);
         resetCommunityData();
+        resetProfileData();
     }
 
     // finally, set the new State
     client.state = newState;
+}
+
+/**
+ * Go to the community with ID `communityId`
+ * @param {string} communityId
+ * */
+export const goToCommunity = function(communityId) {
+    // todo call API
+    // go to community with id `communityId`
+    setState('community')
+    client.communityData.id = communityId;
+    joinRoom(communityId)
+}
+
+/**
+ * Go to the profile with ID `userId`
+ * @param {string} userId
+ * */
+export const goToProfile = function(userId) {
+    // todo call API
+    // go to profile with of `userId`
+    client.userData = userId
+    setState('profile')
+}
+
+/**
+ * Check if two Date objects have the same date (year, month, day).
+ * @param {Date} date1
+ * @param {Date} date2
+ * @return {boolean}
+ * */
+export const isDateMatch = function(date1, date2) {
+    return (
+        date1.getFullYear() === date2.getFullYear() &&
+        date1.getDate() === date2.getDate() &&
+        date1.getMonth() === date2.getMonth()
+    )
+}
+
+/**
+ * Return hour and minute in a nicer format
+ * @param {Date} datetime
+ * */
+export const timeOfDayFormatter = function(datetime) {
+    let hour = `${datetime.getHours()}`
+    let minute = `${datetime.getMinutes()}`
+    hour = hour.length === 2 ? hour : `0${hour}`
+    minute = minute.length === 2 ? minute : `0${minute}`
+    return hour + ':' + minute
+}
+
+/**
+ * Format a Date object as string.
+ * @param {Date} dateTime
+ * */
+export const formatDateTime = function(dateTime) {
+    let str = ''
+    str += dateTime.getDate() + '/'
+    str += (dateTime.getMonth() + 1) + '/'
+    str += dateTime.getFullYear() + ', '
+    str += dateTime.getHours() + ':'
+    str += dateTime.getMinutes()
+    return str
+}
+
+/**
+ * Create a bar chart 
+ * */
+export const createChart = function(chartId, chartData) {
+    const ctx = document.getElementById(chartId);
+    const myChart = new Chart(ctx, {
+        type: chartData.type,
+        data: chartData.data,
+        options: chartData.options,
+    });
+}
+
+
+// Socket.io related utility functions ======
+/**
+ * Create the variable that will eventually contain the socket connection.
+ * */
+let socket = null;
+
+/**
+ * Add authentication to socket.
+ * */
+export const addAuthToSocket = function() {
+    let username = client.userData.username
+    let password = client.userData.password
+    socket.auth = { username: username, password: password };
+}
+
+/**
+ * Make the actual socket, i.e. instantiate and connect it.
+ * Also define action handlers of socket.io
+ * */
+export const makeSocket = function() {
+    if (client.userData.username !== '' || client.userData.username !== null) {
+        socket = io();
+
+        addAuthToSocket();
+        socket.connect();
+
+        socket.on('notify', msg => {
+            console.log(msg.data);
+        })
+
+    } else {
+        console.log('No username provided. Socket not working')
+    }
+}
+
+/**
+ * Destroy the socket and reset it to it's initial state.
+ * */
+export const destroySocket = function() {
+    if (socket.connected) socket.disconnect();
+    socket = null;
+    console.log('disconnected from socket')
 }
 
 /**
@@ -121,106 +259,4 @@ export const joinRoom = function(room, params={}) {
 export const leaveRoom = function(room, params={}) {
     params.room = room
     socket.emit('leave', params);
-}
-
-
-/**
- * Format a Date object as string.
- * @param {Date} dateTime
- * */
-export const formatDateTime = function(dateTime) {
-    let str = ''
-    str += dateTime.getDate() + '/'
-    str += (dateTime.getMonth() + 1) + '/'
-    str += dateTime.getFullYear() + ', '
-    str += dateTime.getHours() + ':'
-    str += dateTime.getMinutes()
-    return str
-}
-
-/**
- * Return hour and minute in a nicer format
- * @param {Date} datetime
- * */
-export const timeOfDayFormatter = function(datetime) {
-    let hour = `${datetime.getHours()}`
-    let minute = `${datetime.getMinutes()}`
-    hour = hour.length === 2 ? hour : `0${hour}`
-    minute = minute.length === 2 ? minute : `0${minute}`
-    return hour + ':' + minute
-}
-
-export const goToCommunity = function(communityId) {
-    // todo call API
-    // go to community with id `communityId`
-    setState('community')
-    joinRoom(communityId)
-    console.log('helloooooo')
-}
-
-export const goToProfile = function(username) {
-    // todo call API
-    // go to profile with of `username`
-    setState('profile')
-}
-
-/**
- * Check if two Date objects have the same date (year, month, day).
- * @param {Date} date1
- * @param {Date} date2
- * @return {boolean}
- * */
-export const isDateMatch = function(date1, date2) {
-    return (
-        date1.getFullYear() === date2.getFullYear() &&
-        date1.getDate() === date2.getDate() &&
-        date1.getMonth() === date2.getMonth()
-    )
-}
-
-/**
- * Create a bar chart 
- * */
-export const createChart = function(chartId, chartData) {
-    const ctx = document.getElementById(chartId);
-    const myChart = new Chart(ctx, {
-        type: chartData.type,
-        data: chartData.data,
-        options: chartData.options,
-    });
-}
-
-/**
- * Create a socket connection.
- * */
-let socket = null;
-
-/**
- * Add authentication to socket.
- * */
-export const addAuthToSocket = function() {
-    let username = client.userData.username
-    socket.auth = { username };
-}
-
-export const makeSocket = function() {
-    if (client.userData.username !== '' || client.userData.username !== null) {
-        socket = io();
-
-        addAuthToSocket();
-        socket.connect();
-
-        socket.on('notify', msg => {
-            console.log(msg.data);
-        })
-
-    } else {
-        console.log('No username provided. Socket not working')
-    }
-}
-
-export const destroySocket = function() {
-    socket.disconnect();
-    socket = null;
-    console.log('disconnected from socket')
 }

@@ -38,14 +38,14 @@ User = class {
 
         // Create the new User instance and fill in the attributes
         let user = new User(userName, userEmail)
-        user.location = jsn.location;
-        user.communities = jsn.communities;
-        user.interests = jsn.interests;
-        user.gender = jsn.gender;
-        user.age = jsn.age;
-        user.adminCommunities = jsn.adminCommunities;
-        user.comments = jsn.comments;
-        user.threads = jsn.threads;
+        user.location = jsn.location || null;
+        user.communities = jsn.communities || [];
+        user.interests = jsn.interests || [];
+        user.gender = jsn.gender || null;
+        user.age = jsn.age || null;
+        user.adminCommunities = jsn.adminCommunities || [];
+        user.comments = jsn.comments || [];
+        user.threads = jsn.threads || [];
         return user;
     }
 
@@ -163,7 +163,7 @@ Thread = class {
         if (text === undefined || title === undefined || author === undefined || community === undefined) return null;
 
         let thread = new Thread(text, title, author, community)
-        thread.comments = jsn.comments;
+        thread.comments = jsn.comments || [];
         return thread;
     }
 
@@ -242,6 +242,7 @@ Community = class {
         this.admin = admin;
         this.users = []
         this.threads = []
+        this.events = []
 
         this.addUser(this.admin, true)
     }
@@ -252,13 +253,15 @@ Community = class {
      * */
     static fromJSON(jsn) {
         let communityName = jsn.communityName;
+        let id = jsn.id
         let admin = jsn.admin;
 
-        if (communityName === undefined || admin === undefined) return null;
+        if (communityName === undefined || admin === undefined || id === undefined) return null;
 
         let community = new Community(communityName, admin)
-        community.id = jsn.id;
-        community.threads = jsn.threads;
+        community.events = jsn.events || [];
+        community.threads = jsn.threads || [];
+        community.events = jsn.events || [];
         return community;
     }
 
@@ -275,8 +278,8 @@ Community = class {
 
     /**
      * Add a new user.
-     * @param {Object} user
-     * @param isAdmin
+     * @param {User} user
+     * @param {Boolean}isAdmin
      * */
     addUser(user, isAdmin = false) {
         if (!(this.users.includes(user))) {
@@ -284,6 +287,28 @@ Community = class {
             user.joinCommunity(this, isAdmin)
         }
     }
+
+    /**
+     * Add a new event.
+     * @param {Event} event
+     * */
+    addEvent(event) {
+        if (!(this.users.includes(event.organiser))) {
+            throw new Error("Cannot add event to a community without being a member")
+        }
+        else if (!(this.events.includes(event))) {
+            this.events.push(event)
+        }
+    }
+
+    /**
+     * Remove an event
+     * @param {Event} event
+     * */
+    removeEvent(event) {
+        this.events.splice(this.events.indexOf(event), 1)
+    }
+
 
     /**
      * Remove user from community.
@@ -333,9 +358,11 @@ Event = class {
         this.link = null;
 
         // Make sure the organiser is actually a member
-        if (!(community.users.includes(organiser))) {
+        if (!(this.community.users.includes(organiser))) {
             throw new Error("Cannot add event to a community without being a member")
         }
+
+        this.community.addEvent(this)
     }
 
     /**
@@ -354,8 +381,8 @@ Event = class {
 
         let event = new Event(title, description, community, organiser, datetime);
 
-        event.location = jsn.location;
-        event.link = jsn.link;
+        event.location = jsn.location || null;
+        event.link = jsn.link || null;
 
         return event;
     }

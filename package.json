@@ -18,11 +18,15 @@
   "author": "Group 20",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.21.1",
+    "basic-auth": "^2.0.1",
     "body-parser": "^1.19.0",
     "chai": "^4.3.4",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "mocha": "^8.3.2",
     "mongodb": "^3.6.6",
+    "socket.io": "^4.0.1",
     "uuid": "^8.3.2",
     "uuidv4": "^6.2.7"
   }

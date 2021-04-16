@@ -3,7 +3,7 @@ const chai = require('chai');
 const should = chai.should();
 const expect = chai.expect;
 
-const { User, Community, Thread, Comment } = require('../models.js');
+const { User, Community, Thread, Comment, Event} = require('../models.js');
 
 describe('User and Community', function() {
     it('should create & initialise a new user', function() {
@@ -79,5 +79,27 @@ describe("Comment and Thread", function() {
         let nonMemberAddsComment = () => new Comment('this is a text', bob, thread)
         expect(nonMemberAddsComment).to.throw(Error, /Cannot add comment/);
     });
+})
 
+describe("Event", function() {
+    it("should create a new event", function() {
+        let alice = new User('alice', 'alice@mail.com')
+        let community = new Community('cs5003', alice)
+        let event = new Event('title', 'some description', community, alice, new Date())
+        community.events.should.include(event);
+    });
+    it('should not create an event for a user who is not a member', function() {
+        let alice = new User('alice', 'alice@mail.com')
+        let bob = new User('bob', 'bob@mail.com')
+        let community = new Community('cs5003', alice)
+        let nonMemberCreatesEvent = () => new Event('title', 'some description', community, bob, new Date());
+        expect(nonMemberCreatesEvent).to.throw(Error, /Cannot add event/);
+    });
+    it('should remove an event', function() {
+        let alice = new User('alice', 'alice@mail.com')
+        let community = new Community('cs5003', alice)
+        let event = new Event('title', 'some description', community, alice, new Date())
+        community.removeEvent(event)
+        community.events.should.not.include(event);
+    })
 })

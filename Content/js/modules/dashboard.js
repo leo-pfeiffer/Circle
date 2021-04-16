@@ -2,7 +2,7 @@
  * This file contains the vue components of the dashboard.
  * */
 
-import {client, goToCommunity, isDateMatch, joinRoom, timeOfDayFormatter} from './clientUtils.js'
+import {client, goToCommunity, isDateMatch, timeOfDayFormatter} from './clientUtils.js'
 
 const makeDashboardHeaderVue = function() {
     const dashboardHeaderVue = new Vue({
@@ -151,10 +151,38 @@ const makeFeedVue = function() {
      })
  }
 
+const makeJokeVue = function() {
+    const jokeVue = new Vue({
+        el: '#have-a-laugh',
+        data: {
+            joke: "You're a smart cookie",
+        },
+        computed: {
+            state() {
+                return client.state;
+            },
+        },
+        methods: {
+            getJoke() {
+                fetch('/api/proxy/joke')
+                    .then(res => res.json())
+                    .then(jsn => {
+                        this.joke = jsn.joke;
+                    })
+                    .catch(err => console.log(err))
+            }
+        },
+        mounted() {
+            this.getJoke();
+        }
+    })
+}
+
 
 export const makeDashboard = function () {
     makeShortlistVue();
     makeFeedVue();
     makeCalendarPreviewVue();
     makeDashboardHeaderVue();
+    makeJokeVue();
 }

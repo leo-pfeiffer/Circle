@@ -157,7 +157,8 @@ const makeSidenavVue = function() {
         },
         methods: {
             goToProfile: function() {
-                goToProfile(client.userData.username)
+                // go to own profile
+                goToProfile(client.userData.userId)
             },
             goToCommunity: function(communityId) {
                 goToCommunity(communityId)
