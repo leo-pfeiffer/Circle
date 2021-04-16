@@ -2,7 +2,7 @@
  * This file contains the vue components of the login.
  * */
 
-import {client, setState} from './clientUtils.js'
+import {client, makeSocket, setState} from './clientUtils.js'
 
 const toggleEntryType = function() {
 
@@ -50,12 +50,14 @@ const makeLoginVue = function() {
                 let loginResponse = {status: status, username: this.username}
 
                 if (loginResponse.status === 'success') {
+                    // todo process other elements in loginResponse
+                    client.userData.username = loginResponse.username
+
+                    makeSocket();
                     console.log('Login successful')
 
                     // direct user to dashboard
                     setState('dashboard');
-                    client.userData.username = loginResponse.username
-                    // todo process other elements in loginResponse
                 } else {
                     console.log('Login failed.')
                     this.message = "Wrong username or password."

@@ -6,10 +6,50 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
+const http = require('http');
+const server = http.createServer(app);
+const io = require('socket.io')(server);
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 const API_PORT = 3000;
+
+// ===== Socket IO
+io.use((socket, next) => {
+    const username = socket.handshake.auth.username;
+    if (!username) {
+        return next(new Error('no username'));
+    }
+    socket.username = username;
+    next();
+})
+
+io.on('connection', (socket) => {
+    console.log(socket.handshake.auth.username, 'connected');
+
+    socket.on('ping', msg => {
+        console.log('received ping from', )
+        io.emit('pong', {data: 'pong'});
+    })
+
+    socket.on('join', data => {
+        console.log(data);
+        socket.join(data.room);
+        let text = `${socket.handshake.auth.username} joined room ${data.room}`;
+        io.to(data.room).emit('notify', {data: text})
+        console.log(socket.rooms)
+    })
+
+    socket.on('disconnect', (reason) => {
+        console.log(socket.handshake.auth.username, 'disconnected')
+    })
+
+})
+
+
+
+// ===== Handlers
 
 /**
  * Handler function to create a new User and add it to the database
@@ -201,8 +241,9 @@ app.use(express.static('content'));
 function run() {
     // initialise the database
     dao.init()
-        //only start listening once the database initialisation has finished successfully
-        .then(() => app.listen(API_PORT, () => console.log(`Listening on localhost: ${API_PORT}`)))
+        // only start listening once the database initialisation has finished successfully
+        // User the http server here instead of app since we're using Socket.io; all Restful endpoints are still valid.
+        .then(() => server.listen(API_PORT, () => console.log(`Listening on localhost: ${API_PORT}`)))
         .catch(err => console.log(`Could not start server`, err))
 }
 run()

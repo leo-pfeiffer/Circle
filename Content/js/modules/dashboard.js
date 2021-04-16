@@ -2,7 +2,7 @@
  * This file contains the vue components of the dashboard.
  * */
 
-import {client, goToCommunity, isDateMatch, setState, timeOfDayFormatter} from './clientUtils.js'
+import {client, goToCommunity, isDateMatch, joinRoom, timeOfDayFormatter} from './clientUtils.js'
 
 const makeDashboardHeaderVue = function() {
     const dashboardHeaderVue = new Vue({
@@ -95,8 +95,7 @@ const makeFeedVue = function() {
         },
         methods: {
             goToCommunity: function(communityId) {
-                // todo get right community
-                setState('community')
+                goToCommunity(communityId);
             },
         }
     })

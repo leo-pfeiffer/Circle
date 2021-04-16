@@ -14,7 +14,10 @@ export const client = Vue.observable({
         username: '',
         picture: '',
     },
-    community: '',
+    communityData: {
+        id: '',
+        name: '',
+    }
 })
 
 /**
@@ -86,6 +89,27 @@ export const setState = function(newState) {
 }
 
 /**
+ * Join a room.
+ * @param {string} room
+ * @param {Object} params - additional parameters
+ * */
+export const joinRoom = function(room, params={}) {
+    params.room = room
+    socket.emit('join', params);
+}
+
+/**
+ * Leave a room.
+ * @param {string} room
+ * @param {Object} params - additional parameters
+ * */
+export const leaveRoom = function(room, params={}) {
+    params.room = room
+    socket.emit('leave', params);
+}
+
+
+/**
  * Format a Date object as string.
  * @param {Date} dateTime
  * */
@@ -115,25 +139,14 @@ export const goToCommunity = function(communityId) {
     // todo call API
     // go to community with id `communityId`
     setState('community')
+    joinRoom(communityId)
+    console.log('helloooooo')
 }
 
 export const goToProfile = function(username) {
     // todo call API
     // go to profile with of `username`
     setState('profile')
-}
-
-/**
- * Get a list of all available Font Awesome unicode characters
- * @return {Promise<Array>}
- * */
-export const getAvailableIcons = function() {
-    const url = 'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/metadata/icons.json'
-
-    // use jQuery here instead due to Github's cross domain policy
-    return $.getJSON(url).then(data => {
-        return Object.entries(data).filter(el => el[1].styles.includes('solid')).map(el => el[1].unicode);
-    })
 }
 
 /**
@@ -160,4 +173,39 @@ export const createChart = function(chartId, chartData) {
         data: chartData.data,
         options: chartData.options,
     });
+}
+
+/**
+ * Create a socket connection.
+ * */
+let socket = null;
+
+/**
+ * Add authentication to socket.
+ * */
+export const addAuthToSocket = function() {
+    let username = client.userData.username
+    socket.auth = { username };
+}
+
+export const makeSocket = function() {
+    if (client.userData.username !== '' || client.userData.username !== null) {
+        socket = io();
+
+        addAuthToSocket();
+        socket.connect();
+
+        socket.on('notify', msg => {
+            console.log(msg.data);
+        })
+
+    } else {
+        console.log('No username provided. Socket not working')
+    }
+}
+
+export const destroySocket = function() {
+    socket.disconnect();
+    socket = null;
+    console.log('disconnected from socket')
 }

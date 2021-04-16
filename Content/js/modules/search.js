@@ -1,4 +1,4 @@
-import {client, search, setState} from "./clientUtils.js";
+import {client, joinRoom, search, setState} from "./clientUtils.js";
 
 /**
  * This file contains the vue components of the search results.
@@ -22,14 +22,12 @@ const makeSearchResultVue = function() {
             }
         },
         methods: {
-            setState: function(newState) {
-                setState(newState)
-            },
             goToProfile(username) {
-                // todo
+                setState('profile')
             },
             goToCommunity(communityId) {
-                // todo
+                setState('community')
+                joinRoom(communityId)
             }
         }
     })

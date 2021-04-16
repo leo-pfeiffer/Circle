@@ -47,7 +47,7 @@
         <ul class="navbar-nav bg-gradient-info sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center is-link" id="logo" v-on:click="setState('dashboard')">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center is-link" id="logo" v-on:click="goToDashboard">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="far fa-circle"></i>
                 </div>
@@ -58,7 +58,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active" v-on:click="setState('dashboard')">
+            <li class="nav-item active" v-on:click="goToDashboard">
                 <a class="nav-link">
                     <i class="fas fa-home"></i>
                     <span>Dashboard</span></a>
@@ -73,14 +73,14 @@
             </div>
 
             <!-- Nav Item - Profile -->
-            <li class="nav-item" v-on:click="setState('profile')">
+            <li class="nav-item" v-on:click="goToProfile">
                 <a class="nav-link">
                     <i class="fas fa-user"></i>
                     <span>Profile</span></a>
             </li>
 
             <!-- Nav Item - Calendar -->
-            <li class="nav-item" v-on:click="setState('calendar')">
+            <li class="nav-item" v-on:click="goToCalendar">
                 <a class="nav-link" href="#">
                     <i class="fas fa-calendar"></i>
                     <span>Calendar</span></a>
@@ -213,7 +213,7 @@
                         <div class="topbar-divider d-none d-sm-block"></div>
 
                         <!-- Nav Item - User Information -->
-                        <li class="nav-item" v-on:click="setState('profile')">
+                        <li class="nav-item" v-on:click="goToProfile">
                             <a class="nav-link" href="#" id="modal" role="button" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-400">Douglas McGee</span>
                             </a>
@@ -981,6 +981,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js" integrity="sha512-0QbL0ph8Tc8g5bLhfVzSqxe9GERORsKhIn1IrpxDAgUsbBGz/V7iSav2zzW325XGd1OMLdL4UiqRJj702IeqnQ==" crossorigin="anonymous"></script>
 <!--  ChartJS (for bootstrap template) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.0.2/chart.min.js" integrity="sha512-dnUg2JxjlVoXHVdSMWDYm2Y5xcIrJg1N+juOuRi0yLVkku/g26rwHwysJDAMwahaDfRpr1AxFz43ktuMPr/l1A==" crossorigin="anonymous"></script>
+<!--- Socket.io -->
+<script src="https://cdn.socket.io/4.0.1/socket.io.min.js" integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU" crossorigin="anonymous"></script>
 
 <!-- Bootstrap template scripts -->
 <script src="js/sb-admin-2.min.js"></script>

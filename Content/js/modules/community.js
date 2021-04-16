@@ -5,10 +5,8 @@
 import {
     client,
     formatDateTime,
-    goToCommunity,
     goToProfile,
     isDateMatch,
-    setState,
     timeOfDayFormatter
 } from './clientUtils.js'
 
@@ -244,7 +242,7 @@ const makeCommunityFeedVue = function() {
                         title: this.newThread.title,
                         time: formatDateTime(new Date()),
                         author: client.userData.username,
-                        community: client.community,
+                        community: client.communityData.name,
                         comments: []
                     }
 

@@ -67,13 +67,13 @@
                           ],
                     }],
                 },
-                options:{
-                    title:{
+                options: {
+                    title: {
                       display:true,
                       text:'Top active communities by number of comments written',
                       fontSize:20
                     },
-                    legend:{
+                    legend: {
                       display:true,
                       position:'right',
                       labels:{
