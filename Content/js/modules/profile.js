@@ -59,14 +59,62 @@
                 type: 'bar',
                 data: {
                     labels: ['Gardening', 'Yoga', 'Cooking'],
-                    datasets:[{
-                        label:'Number of comments',
+                    datasets:[
+                    {
+                        label:' # Comments written',
                         data: [20, 5, 13],
                         backgroundColor:[
                             '#1cc88a',
                           ],
-                    }],
+                    }, 
+                    {
+                        label:' # Threads opened',
+                        data: [3, 4, 1],
+                        backgroundColor:[
+                            '#4e73df',
+                          ],
+                    }
+                ],
+                }, 
+                options: {
+                    scales: {
+                        yAxes: [{ stacked: true}],
+                    },
+                    title: {
+                      display:true,
+                      text:'Top active communities by number of comments written',
+                      fontSize:20
+                    },
+                    legend: {
+                      display:true,
+                      position:'right',
+                      labels:{
+                        fontColor:'#white'
+                      }
+                    }
                 },
+            },
+            activityLineChartData: {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                    datasets:[
+                    {
+                        label:' # Comments written',
+                        data: [20, 9, 13, 6, 3],
+                        backgroundColor:[
+                            '#1cc88a',
+                          ],
+                    }, 
+                    {
+                        label:' # Threads opened',
+                        data: [3, 4, 1, 2, 1],
+                        backgroundColor:[
+                            '#4e73df',
+                          ],
+                    }
+                ],
+                }, 
                 options: {
                     title: {
                       display:true,
@@ -80,7 +128,8 @@
                         fontColor:'#white'
                       }
                     }
-                }  
+                },
+
             }
         },
         computed: {
@@ -95,6 +144,7 @@
         },
         mounted() {
             this.createChart('commentBarChart', this.commentBarChartData)
+            this.createChart('activityLineChart', this.activityLineChartData)
         }
     })
 }
@@ -134,9 +184,37 @@ const makeProfilePictureUploadVue = function() {
     })
 }
 
+const makeUpdateProfileInfoVue = function() {
+    const profileInfoVue = new Vue({
+       el: '#profile-info-modal',
+       data: {
+            // newEmail: email,
+            // newAge: age,
+            // newLocation: location,
+            // newStatus: status, 
+       },
+       computed: {
+            state() {
+                return client.state;
+            },
+            isOwnProfile() {
+                // todo probably change this to ID instead of username but for that we need to add API connection first
+                return this.name === client.userData.username
+           }
+       },
+       methods: {
+            updateInfo: function(event) {
+                // Todo post to DB; fetch and display updated info
+                console.log("Info updated")
+            }
+       },
+    })
+}
+
 
  export const makeProfile = function () {
      makeProfileInfoVue();
      makeUserStatsVue();
      makeProfilePictureUploadVue();
+     makeUpdateProfileInfoVue();
  }

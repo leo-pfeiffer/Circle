@@ -287,7 +287,7 @@ const makeCommunityFeedVue = function() {
                 } else {
                     console.err(`Thread with id ${threadId} not found.`)
                 }
-            }
+            },
         }
     })
 }
