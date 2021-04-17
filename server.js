@@ -25,17 +25,17 @@ const API_PORT = 3000;
  * @param {Response} res
  * @param {NextFunction} next
  * */
-// let authenticate = function (req, res, next) {
-//     let user = basicAuth(req);
-//     // check DB
-//     let validUser = true;
-//     if (!validUser) {
-//         // make the browser ask for credentials if none/wrong are provided
-//         return res.sendStatus(401);
-//     }
-//     req.username = user.username;
-//     next();
-// };
+let authenticate = function (req, res, next) {
+    let user = basicAuth(req);
+    // check DB
+    let validUser = true;
+    if (!validUser) {
+        // make the browser ask for credentials if none/wrong are provided
+        return res.sendStatus(401);
+    }
+    req.username = user.username;
+    next();
+};
 
 // ===== Socket IO =====
 // authentication using basicAuth
@@ -104,7 +104,6 @@ let createUser = function (req, res, next) {
 
     // Create a new instance of the class User
     let user = new User(body.userName, body.userEmail)
-    //res.status(200).json(user);
 
     //adding User instance to the database
     dao.addUser(user)
@@ -161,13 +160,13 @@ let createThread = (req, res, next) => {
     let communityName = body.communityName
     let userName = body.admin.userName
     let userEmail = body.admin.userEmail
-    //let author = User.fromJSON(body.author)
 
     //creating new instances of class User, Community and Thread
     let author = new User(userName, userEmail)
     let community = new Community(communityName, author)
     let thread = new Thread(text, title, author, community)
 
+    //adding new Thread to the database
     dao.addThread(thread)
         .then((id) => {
             res.status(200).json({ msg: `Added new thread '${thread}' in community ${community}` });
@@ -188,30 +187,25 @@ let createThread = (req, res, next) => {
 let createComment = (req, res, next) => {
     let body = req.body;
     let text = body.text;
-    let title = body.title;
-    let communityName = body.communityName
-    let userName = body.admin.userName
-    let userEmail = body.admin.userEmail
-    let text1 = body.text1;
-    //let author = User.fromJSON(body.author)
+    let userName = body.user.userName
+    let userEmail = body.user.userEmail
 
-    //creating new instances
+    //creating new User and Comment instances
     let author = new User(userName, userEmail)
-   // let community = new Community(communityName, author)
-   // let thread = new Thread(text, title, author)
-    let comment = new Comment(text1, author)
+    let comment = new Comment(text, author)
 
-     
+    //adding new Comment to database
     dao.addComment(comment)
-   .then((id) => {
-    res.status(200).json({ msg: `Added new comment '${comment}' with userName ${userName}` });
-   })
-   .catch(err => {
-       console.log(`Could not add comment`, err);
-       res.status(400).json({ msg: `Could not add comment` });
-   });
+        .then((id) => {
+            res.status(200).json({ msg: `Added new comment '${comment}' with userName ${userName}` });
+        })
+        .catch(err => {
+            console.log(`Could not add comment`, err);
+            res.status(400).json({ msg: `Could not add comment` });
+        });
 }
 
+// handler function for adding Event object 
 
 // let createEvent = (req, res, next) => {
 //     let body = req.body;
@@ -220,111 +214,113 @@ let createComment = (req, res, next) => {
 //     let communityName = body.communityName
 //     let userName = body.admin.userName
 //     let userEmail = body.admin.userEmail
+//     let datetime = new Date()
+
+//     //creating new User, Community and Event instances 
 //     let author = new User(userName, userEmail)
 //     let community = new Community(communityName, author)
-//     let datetime = new Date()
 //     let event = new Event(title,description,community, author,datetime)
-
+//
+//     //adding new Event instance to the database
 //     dao.addEvent(event)
 //     .then((id) => {
-//      res.status(200).json({ msg: `Added new event '${event}' with userName ${userName}` });
+//      res.status(200).json({ msg: `Added new event '${event}'` });
 //     })
 //     .catch(err => {
 //         console.log(`Could not add event`, err);
 //         res.status(400).json({ msg: `Could not add event` });
 //     });
-
 // }
 
 /**
- * Handler function to retrieve user_data
+ * Handler function to GET User objects
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
  * */
-let getAllUsers = function (req, res, next) {
+let getUser = function (req, res, next) {
+    //retrieving data from DB (from users_collection)
     dao.getUser()
         .then(docs => {
             res.status(200).json(docs);
         })
         .catch(err => {
-            console.log(`Could not get films`, err);
-            res.status(400).json({ msg: `Could not get films` });
+            console.log(`Could not get users`, err);
+            res.status(400).json({ msg: `Could not get users` });
         })
 }
 
 /**
- * Handler function to get Community object
+ * Handler function to GET Community objects 
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
  * */
 let getCommunity = function (req, res, next) {
-    //creating an instance of class Community manually
+    //retrieving data from DB (from communities_collection)
     dao.getCommunity()
-    .then(docs => {
-        res.status(200).json(docs);
-    })
-    .catch(err => {
-        console.log(`Could not get community`, err);
-        res.status(400).json({ msg: `Could not get community` });
-    })
-    //TODO: serialize/deserialize the object before sending it back
-    
+        .then(docs => {
+            res.status(200).json(docs);
+        })
+        .catch(err => {
+            console.log(`Could not get community`, err);
+            res.status(400).json({ msg: `Could not get community` });
+        })
 }
 
 /**
- * Handler function to get Thread object
+ * Handler function to GET Thread objects
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
  * */
 let getThread = function (req, res, next) {
-    
+    //retrieving data from DB (from threads_collection)
     dao.getThread()
-    .then(docs => {
-        res.status(200).json(docs);
-    })
-    .catch(err => {
-        console.log(`Could not get Thread`, err);
-        res.status(400).json({ msg: `Could not get Thread` });
-    })
+        .then(docs => {
+            res.status(200).json(docs);
+        })
+        .catch(err => {
+            console.log(`Could not get Thread`, err);
+            res.status(400).json({ msg: `Could not get Thread` });
+        })
 }
 
 /**
- * Handler function to get Comment object
+ * Handler function to GET Comment objects
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
  * */
 let getComment = function (req, res, next) {
+    //retrieving data from DB (from comments_collection)
     dao.getComment()
-    .then(docs => {
-        res.status(200).json(docs);
-    })
-    .catch(err => {
-        console.log(`Could not get Comment`, err);
-        res.status(400).json({ msg: `Could not get Comment` });
-    })
-  
+        .then(docs => {
+            res.status(200).json(docs);
+        })
+        .catch(err => {
+            console.log(`Could not get Comment`, err);
+            res.status(400).json({ msg: `Could not get Comment` });
+        })
+
 }
 
 /**
- * Handler function to get Comment object
+ * Handler function to GET Event objects
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
  * */
-let getEvent  = function (req, res, next) {
+let getEvent = function (req, res, next) {
+    //retrieving data from DB (from events_collection)
     dao.getEvent()
-    .then(docs => {
-        res.status(200).json(docs);
-    })
-    .catch(err => {
-        console.log(`Could not get event`, err);
-        res.status(400).json({ msg: `Could not get event` });
-    })
-  
+        .then(docs => {
+            res.status(200).json(docs);
+        })
+        .catch(err => {
+            console.log(`Could not get event`, err);
+            res.status(400).json({ msg: `Could not get event` });
+        })
 }
 
 /**
@@ -348,16 +344,16 @@ const getJoke = function (req, res, next) {
 /**
  * The following API endpoints allow the client to interact with the server.
  * */
-// app.post('/api/create-user/', authenticate, createUser);
-// app.post('/api/create-community/', authenticate, createCommunity);
-// app.post('/api/create-thread/', authenticate, createThread);
-// app.post('/api/create-comment/',authenticate,createComment);
-// app.post('/api/create-event/',authenticate, createEvent);
-// app.get('/api/get-all-users/',authenticate, getAllUsers);
-// app.get('/api/get-community/',authenticate, getCommunity);
-// app.get('/api/get-thread/',authenticate, getThread);
-// app.get('/api/get-comment/', getComment);
-   app.get('/api/get-event/', getEvent);
+app.post('/api/create-user/', authenticate, createUser);
+app.post('/api/create-community/', authenticate, createCommunity);
+app.post('/api/create-thread/', authenticate, createThread);
+app.post('/api/create-comment/', authenticate, createComment);
+//app.post('/api/create-event/',authenticate, createEvent);
+app.get('/api/get-all-users/', authenticate, getUser);
+app.get('/api/get-community/', authenticate, getCommunity);
+app.get('/api/get-thread/', authenticate, getThread);
+app.get('/api/get-comment/', authenticate, getComment);
+app.get('/api/get-event/', getEvent);
 
 /*
 * The following endpoints were introduced as a proxy in order to access external APIs that have
@@ -366,7 +362,7 @@ const getJoke = function (req, res, next) {
 * to the client. This also gives us more control over what the client receives, i.e. we could filter
 * or enrich the response ourselves.
  */
-//app.get('/api/proxy/joke', authenticate, getJoke);
+app.get('/api/proxy/joke', authenticate, getJoke);
 
 // Set the static folder
 app.use(express.static('content'));
