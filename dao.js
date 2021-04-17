@@ -7,30 +7,36 @@ const sanitisedUrl = fullurl.replace(/:([^:@]{1,})@/, ':****@');
 const client = new MongoClient(fullurl, { useUnifiedTopology: true });
 let collection = null; //we will give this a value after we connect to the database
 
-const user_data = [{ userName: "A", userEmail: 'abc@gmail.com' },
+const test_data = [{ userName: "A", userEmail: 'abc@gmail.com' },
 { userName: "B", userEmail: 'bcd@gmail.com' }];
 
-// client.connect()
-// .then(conn => {
-//     //if the collection does not exist it will automatically be created
-//     collection = client.db().collection(config.collection);
-//     console.log("Connected!", conn.s.fullurl.replace(/:([^:@]{1,})@/, ':****@')) 
-// })
-// .catch(err => { console.log(`Could not connect to ${fullurl.replace(/:([^:@]{1,})@/, ':****@')}`, err);  throw err; })
+const user_data= config.collection[0];
+const communities_data = config.collection[1];
+const threads_data = config.collection[2];
+const comments_data = config.collection[3];
+const events_data = config.collection[4];
+
 
 //initialise the database
 let init = function () {
     return client.connect()
         .then(conn => {
             //if the collection does not exist it will automatically be created
-            collection = client.db().collection(config.collection);
-            console.log("Connected!", sanitisedUrl);
+            user_collection = client.db().collection(user_data);
+            communities_collection = client.db().collection(communities_data);
+            threads_collection = client.db().collection(threads_data);
+            comments_collection = client.db().collection(comments_data);
+            events_collection = client.db().collection(events_data);
+
+            //for testing
+            collection = client.db().collection('test_collection');
+            console.log("Connected!", sanitisedUrl, 'collection name:',user_data);
         })
         .catch(err => {
             console.log(`Could not connect to ${sanitisedUrl}`, err);
             throw err;
         })
-        .then(() => collection.insertMany(user_data))
+        .then(() => collection.insertMany(test_data))
         .then(res => console.log("Data inserted with two users", res.insertedIds))
         .catch(err => {
             console.log("Could not add data ", err.message);
@@ -42,7 +48,7 @@ let init = function () {
         })
 }
 
-//get all data stored in user_data
+//get all data stored in test_data
 let getUser = function () {
     return collection.find({}).toArray()
         .then(users => users.map(user => User.fromJSON(user)));
@@ -50,12 +56,27 @@ let getUser = function () {
 
 //adding User object to db
 let addUser = function (user) {
-    return collection.insertOne(user)
+    return user_collection.insertOne(user)
         .then(res => res.insertedId);
 }
+
+//adding Community object to db
+let addCommunity = function (community) {
+    return communities_collection.insertOne(community)
+        .then(res => res.insertedId);
+}
+
+//adding Thread object to db
+let addThread = function (thread) {
+    return threads_collection.insertOne(thread)
+    .then(res =>  res.insertedId);
+}
+
 
 module.exports = {
     init: init,
     getUser: getUser,
-    addUser: addUser
+    addUser: addUser,
+    addCommunity: addCommunity,
+    addThread: addThread
 };
