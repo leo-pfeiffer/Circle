@@ -128,26 +128,6 @@ const makeCommunityInfoVue = function() {
                             }
                         }
                     },
-                    // scales: {
-                    //     x: {
-                    //         stacked: true,
-                    //         ticks: {
-                    //             color: 'rgb(255, 255, 255)',
-                    //         },
-                    //         grid: {
-                    //             color: 'rgb(165,165,165)',
-                    //         }
-                    //     },
-                    //     y: {
-                    //         stacked: true,
-                    //         ticks: {
-                    //             color: 'rgb(255, 255, 255)',
-                    //         },
-                    //         grid: {
-                    //             color: 'rgb(165,165,165)',
-                    //         }
-                    //     }
-                    // }
                 }
 
             },
@@ -287,6 +267,7 @@ const makeCommunityFeedVue = function() {
                 text: '',
             },
             newThreadMessage: '',
+            threadPicture: null,
         },
         computed: {
             state() {
@@ -294,6 +275,24 @@ const makeCommunityFeedVue = function() {
             },
         },
         methods: {
+            saveThreadPicture: function(event) {
+                if (!event.target.files.length) return;
+                const imgFile = event.target.files[0]
+            
+                // create a new file reader
+                const reader = new FileReader();
+            
+                // onload set imgUpload to the relevant file
+                reader.onload = (e) => {
+                    this.threadPicture = e.target.result;
+                }
+            
+                // read the imgFile in as data URL
+                reader.readAsDataURL(imgFile);
+            }, 
+            uploadThreadPicture: function() {
+                console.log("Picture for thread uploaded")
+            },
             submitNewThread: function() {
                 if ((this.newThread.title.trim() !== '') && (this.newThread.text.trim() !== '')) {
                     // todo push to API
@@ -321,9 +320,6 @@ const makeCommunityFeedVue = function() {
             },
             resetNewThreadMessage: function() {
                 this.newThreadMessage = '';
-            },
-            uploadThreadPicture: function() {
-                console.log("Picture for thread uploaded")
             },
             submitNewComment: function(threadId) {
                 if (this.newComments.hasOwnProperty(threadId) && this.newComments[threadId].length > 0) {
