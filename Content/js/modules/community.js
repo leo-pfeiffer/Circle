@@ -7,7 +7,8 @@ import {
     formatDateTime,
     goToProfile,
     isDateMatch,
-    timeOfDayFormatter
+    timeOfDayFormatter, 
+    createChart
 } from './clientUtils.js'
 
 const makeCommunityHeaderVue = function() {
@@ -96,6 +97,36 @@ const makeCommunityInfoVue = function() {
                 {name: 'dirk', picture: 'https://randomuser.me/api/portraits/men/15.jpg', numComments: 5},
             ],
             newTag: '',
+            activityPieChartData: {
+                type: 'doughnut',
+                data: {
+                    labels: ['Comments', 'Threads', 'Events'],
+                    datasets:[
+                    {
+                        data: [99, 12, 6],
+                        backgroundColor:[
+                            '#1cc88a',
+                            '#4e73df',
+                            '#e83e8c'
+                          ],
+                    }
+                ],
+                }, 
+                options: {
+                    title: {
+                      display:true,
+                      text:'Communitiy Activity',
+                      fontSize:20
+                    },
+                    legend: {
+                      display:true,
+                      position:'right',
+                      labels:{
+                        fontColor:'#white'
+                      }
+                    }
+                },
+            },
         },
         computed: {
             state() {
@@ -147,7 +178,13 @@ const makeCommunityInfoVue = function() {
                 if (apiResponse.status === 'success') {
                     this.users.push({name: client.userData.name, picture: client.userData.picture})
                 }
-            }
+            },
+            createChart: function(chartId, chartData) {
+                createChart(chartId, chartData)
+            },
+        },
+        mounted() {
+            this.createChart('activityDoughnutChart', this.activityPieChartData)
         }
     })
 }
@@ -260,6 +297,9 @@ const makeCommunityFeedVue = function() {
             },
             resetNewThreadMessage: function() {
                 this.newThreadMessage = '';
+            },
+            uploadThreadPicture: function() {
+                console.log("Picture for thread uploaded")
             },
             submitNewComment: function(threadId) {
                 if (this.newComments.hasOwnProperty(threadId) && this.newComments[threadId].length > 0) {

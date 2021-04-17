@@ -501,6 +501,19 @@
                                                             </button>
                                                         </div>
                                                         <hr>
+                                                        <div>
+                                                            <div>
+                                                                <a class="collapsed" href="#" data-toggle="collapse" data-target="#collapseUploadSection" aria-expanded="true" aria-controls="collapseStats">
+                                                                    <button class="btn btn-sm btn-danger float-right" v-on:click="uploadThreadPicture">
+                                                                        <i class="text-white fas fa-camera"></i> Add picture
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                            <div id="collapseUploadSection" class="collapse">
+                                                                <p>Upload picture form here</p> 
+                                                            </div>
+                                                            
+                                                        </div>
                                                         <input type="text" class="form-control form-control-user text-xs" placeholder="Title" v-model="newThread.title">
                                                         <textarea type="text" class="form-control form-control-user" placeholder="Text" rows="2" v-model="newThread.text"></textarea>
                                                         <p class="text-danger" v-show="newThreadMessage !== ''">{{ newThreadMessage }}</p>
@@ -627,6 +640,19 @@
                                                     <img v-bind:src="u.picture" class="small-user-img is-link" v-bind:title="u.name" v-on:click="goToProfile(u.id)">
                                                 </span>
                                             </div>
+                                        </div>
+                                        <hr>
+                                        <div>
+                                            <div>
+                                                <a class="collapsed" href="#" data-toggle="collapse" data-target="#collapseStats" aria-expanded="true" aria-controls="collapseStats">
+                                                    <i class="fas fa-chart-bar text-white"></i>
+                                                    <span class="text-white">Community Stats</span>
+                                                </a>
+                                            </div>
+                                            <div id="collapseStats" class="collapse">
+                                                <canvas id="activityDoughnutChart" v-show="state === 'community'"></canvas>
+                                            </div>
+                                            
                                         </div>
                                     </div>
                                 </div>

@@ -79,3 +79,7 @@
   float: right;
 }
 
+.btn-sm {
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
