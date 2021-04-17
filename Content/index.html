@@ -511,7 +511,12 @@
                                                                 </a>
                                                             </div>
                                                             <div id="collapseUploadSection" class="collapse">
-                                                                <p>Upload picture form here</p> 
+                                                                <form class="user">
+                                                                    <div class="form-group">
+                                                                        <input type="file" id="thread-picture-upload" accept="image/*" v-on:change="saveThreadPicture"/>
+                                                                    </div>
+                                                                    <img v-bind:src="threadPicture">
+                                                                </form>
                                                             </div>
                                                             
                                                         </div>
