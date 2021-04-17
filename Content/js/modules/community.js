@@ -105,27 +105,51 @@ const makeCommunityInfoVue = function() {
                     {
                         data: [99, 12, 6],
                         backgroundColor:[
-                            '#1cc88a',
+                            '#e74a3b',
                             '#4e73df',
-                            '#e83e8c'
+                            '#1cc88a'
                           ],
+                        borderColor: 'rgb(165,165,165)',
                     }
                 ],
                 }, 
                 options: {
-                    title: {
-                      display:true,
-                      text:'Communitiy Activity',
-                      fontSize:20
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Total community activity',
+                            fontSize: 20,
+                            color: 'rgb(255, 255, 255)'
+                        },
+                        legend: {
+                            display: true,
+                            labels: {
+                                color: 'rgb(255, 255, 255)'
+                            }
+                        }
                     },
-                    legend: {
-                      display:true,
-                      position:'right',
-                      labels:{
-                        fontColor:'#white'
-                      }
-                    }
-                },
+                    // scales: {
+                    //     x: {
+                    //         stacked: true,
+                    //         ticks: {
+                    //             color: 'rgb(255, 255, 255)',
+                    //         },
+                    //         grid: {
+                    //             color: 'rgb(165,165,165)',
+                    //         }
+                    //     },
+                    //     y: {
+                    //         stacked: true,
+                    //         ticks: {
+                    //             color: 'rgb(255, 255, 255)',
+                    //         },
+                    //         grid: {
+                    //             color: 'rgb(165,165,165)',
+                    //         }
+                    //     }
+                    // }
+                }
+
             },
         },
         computed: {

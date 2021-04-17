@@ -183,7 +183,7 @@ export const formatDateTime = function(dateTime) {
 }
 
 /**
- * Create a bar chart 
+ * Create a chart 
  * */
 export const createChart = function(chartId, chartData) {
     const ctx = document.getElementById(chartId);
