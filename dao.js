@@ -30,7 +30,7 @@ let init = function () {
 
             //for testing
             collection = client.db().collection('test_collection');
-            console.log("Connected!", sanitisedUrl, 'collection name:',user_data);
+            console.log("Connected!", sanitisedUrl, 'collection name:', user_data);
         })
         .catch(err => {
             console.log(`Could not connect to ${sanitisedUrl}`, err);
@@ -63,7 +63,10 @@ let addUser = function (user) {
 //adding Community object to db
 let addCommunity = function (community) {
     return communities_collection.insertOne(community)
-        .then(res => res.insertedId);
+        .then(res => {
+            console.log('success')
+            return res.insertedId
+        });
 }
 
 //adding Thread object to db

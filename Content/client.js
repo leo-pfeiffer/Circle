@@ -54,32 +54,41 @@
 
 // function to POST new user
 const addUser = function(){
-let data = new Object();
-data.userName = "Achintya";
-data.userEmail = "A@SpeechGrammarList.com";
-fetch(`api/create-user`, {
-method: 'POST',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify(data) 
-})
-.then (res => res.json())
-.then (jsn => { console.log(jsn), console.log("Hello");})}
+    let data = new Object();
+    data.userName = "Achintya";
+    data.userEmail = "A@SpeechGrammarList.com";
+    fetch(`api/create-user`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            "Authorization": "Basic " + btoa('user:pw')
+        },
+        body: JSON.stringify(data)
+    })
+    .then (res => res.json())
+    .then (jsn => {
+        console.log(jsn), console.log("Hello");
+    }
+)}
 addUser();
 
-//function to POST new community
-// const addCommunity = function(){
-// let data = new Object();
-// data.communityName = "DIFFERENT COMMUNITY";
-// data.admin = {userName: "New User", userEmail: "@gmail.com"};
-// fetch(`api/create-community`, {
-// method: 'POST',
-// headers: { 'Content-Type': 'application/json' },
-// body: JSON.stringify(data) 
-// })
-// .then (res => res.json())
-// .then (jsn => { console.log(jsn)})
-// }
-// addCommunity();
+// function to POST new community
+const addCommunity = function(){
+    let data = new Object();
+    data.communityName = "DIFFERENT COMMUNITY";
+    data.admin = {userName: "New User", userEmail: "@gmail.com"};
+    fetch(`api/create-community`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            "Authorization": "Basic " + btoa('user:pw')
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(jsn => { console.log(jsn)})
+}
+addCommunity();
 
 //function to POST new thread
 // const addThread = function(){

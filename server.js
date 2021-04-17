@@ -302,8 +302,8 @@ const getJoke = function (req, res, next) {
 /**
  * The following API endpoints allow the client to interact with the server.
  * */
-app.post('/api/create-user/', createUser);
-app.post('/api/create-community/', createCommunity);
+app.post('/api/create-user/', authenticate, createUser);
+app.post('/api/create-community/', authenticate, createCommunity);
 app.post('/api/create-thread/', authenticate, createThread);
 app.post('/api/create-comment/', authenticate, createComment);
 app.get('/api/get-all-users/', authenticate, getAllUsers);
@@ -318,7 +318,7 @@ app.get('/api/get-comment/', authenticate, getComment);
 * to the client. This also gives us more control over what the client receives, i.e. we could filter
 * or enrich the response ourselves.
  */
-app.get('/api/proxy/joke', getJoke);
+app.get('/api/proxy/joke', authenticate, getJoke);
 
 // Set the static folder
 app.use(express.static('content'));
