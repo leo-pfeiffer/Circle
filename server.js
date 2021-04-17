@@ -60,8 +60,8 @@ io.on('connection', (socket) => {
 
     // Basic ping event handler for testing
     socket.on('ping', msg => {
-        console.log('received ping from', )
-        io.emit('pong', {data: 'pong'});
+        console.log('received ping from',)
+        io.emit('pong', { data: 'pong' });
     })
 
     // Handler for join events
@@ -69,7 +69,7 @@ io.on('connection', (socket) => {
         if (!socket.rooms.has(data.room)) {
             socket.join(data.room);
             let text = `${socket.handshake.auth.username} joined room ${data.room}`;
-            io.to(data.room).emit('notify', {data: text})
+            io.to(data.room).emit('notify', { data: text })
             console.log(text)
         }
     })
@@ -79,7 +79,7 @@ io.on('connection', (socket) => {
         if (socket.rooms.has(data.room)) {
             socket.leave(data.room);
             let text = `${socket.handshake.auth.username} left room ${data.room}`;
-            io.to(data.room).emit('notify', {data: text})
+            io.to(data.room).emit('notify', { data: text })
             console.log(text)
         }
     })
@@ -137,8 +137,15 @@ let createCommunity = (req, res, next) => {
     // create a new instance of the class Community
     let community = new Community(body.communityName, user)
 
-    res.status(200).json({ msg: `Added user '${body.communityName}' with userName ` });
-    //res.status(200).json({msg : `Added user '${body.communityName}' with userName ${body.admin}`});
+    //adding new Community instance to the database
+    dao.addCommunity(community)
+        .then((id) => {
+            res.status(200).json({ msg: `Added community '${body.communityName}' with ID ${id}` });
+        })
+        .catch(err => {
+            console.log(`Could not add community '${body.communityName}`, err);
+            res.status(400).json({ msg: `Could not add community '${body.communityName}` });
+        });
 }
 
 /**
@@ -161,7 +168,15 @@ let createThread = (req, res, next) => {
     let community = new Community(communityName, author)
     let thread = new Thread(text, title, author, community)
 
-    res.status(200).json({ msg: `Added new thread '${thread}' with userName ${userName}` });
+    dao.addThread(thread)
+        .then((id) => {
+            res.status(200).json({ msg: `Added new thread '${thread}' in community ${community}` });
+        })
+        .catch(err => {
+            console.log(`Could not add thread`, err);
+            res.status(400).json({ msg: `Could not add thread` });
+        });
+
 }
 
 /**
@@ -287,8 +302,8 @@ const getJoke = function (req, res, next) {
 /**
  * The following API endpoints allow the client to interact with the server.
  * */
-app.post('/api/create-user/', authenticate, createUser);
-app.post('/api/create-community/', authenticate, createCommunity);
+app.post('/api/create-user/', createUser);
+app.post('/api/create-community/', createCommunity);
 app.post('/api/create-thread/', authenticate, createThread);
 app.post('/api/create-comment/', authenticate, createComment);
 app.get('/api/get-all-users/', authenticate, getAllUsers);
