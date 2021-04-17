@@ -59,41 +59,62 @@
                 type: 'bar',
                 data: {
                     labels: ['Gardening', 'Yoga', 'Cooking'],
-                    datasets:[{
-                        label:'Number of comments',
+                    datasets:[
+                    {
+                        label:' # Comments written',
                         data: [20, 5, 13],
                         backgroundColor:[
                             '#1cc88a',
                           ],
-                    }],
-                },
-                options: {
-                    title: {
-                      display:true,
-                      text:'Top active communities by number of comments written',
-                      fontSize:20
-                    },
-                    legend: {
-                      display:true,
-                      position:'right',
-                      labels:{
-                        fontColor:'#white'
-                      }
-                    }
-                }  
-            },
-            threadBarChartData: {
-                type: 'bar',
-                data: {
-                    labels: ['Gardening', 'Yoga', 'Cooking'],
-                    datasets:[{
-                        label:'Number of threads',
-                        data: [20, 5, 13],
+                    }, 
+                    {
+                        label:' # Threads opened',
+                        data: [3, 4, 1],
                         backgroundColor:[
-                            '#f6c23e',
+                            '#4e73df',
                           ],
-                    }],
+                    }
+                ],
+                }, 
+                options: {
+                    scales: {
+                        yAxes: [{ stacked: true}],
+                    },
+                    title: {
+                      display:true,
+                      text:'Top active communities by number of comments written',
+                      fontSize:20
+                    },
+                    legend: {
+                      display:true,
+                      position:'right',
+                      labels:{
+                        fontColor:'#white'
+                      }
+                    }
                 },
+            },
+            activityLineChartData: {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                    datasets:[
+                    {
+                        label:' # Comments written',
+                        data: [20, 9, 13, 6, 3],
+                        backgroundColor:[
+                            '#1cc88a',
+                          ],
+                    }, 
+                    {
+                        label:' # Threads opened',
+                        data: [3, 4, 1, 2, 1],
+                        backgroundColor:[
+                            '#4e73df',
+                          ],
+                    }
+                ],
+                }, 
                 options: {
                     title: {
                       display:true,
@@ -107,7 +128,8 @@
                         fontColor:'#white'
                       }
                     }
-                }  
+                },
+
             }
         },
         computed: {
@@ -122,7 +144,7 @@
         },
         mounted() {
             this.createChart('commentBarChart', this.commentBarChartData)
-            this.createChart('threadBarChart', this.threadBarChartData)
+            this.createChart('activityLineChart', this.activityLineChartData)
         }
     })
 }
