@@ -77,7 +77,6 @@ Thread = class {
      * @param {string} text - The content of the thread
      * @param {string} title - The title of the thread
      * @param {User} author - The authoring User
-     * @param {Community} community - The community the thread belongs to
      * */
     constructor(text, title, author) {
         this.text = text
@@ -126,7 +125,6 @@ Comment = class {
      * Create a new Comment.
      * @param {string} text - The content of the comment
      * @param {User} author - The authoring User
-     * @param {Thread} thread - The thread the comment belongs to
      * */
     constructor(text, author) {
         this.text = text
@@ -141,7 +139,7 @@ Comment = class {
         let text = jsn.text;
         let author = jsn.author;
 
-        if (text === undefined || author === author) return null;
+        if (text === undefined || author === undefined) return null;
         return new Comment(text, author);
     }
 }
@@ -302,7 +300,7 @@ Event = class {
         let organiser = jsn.organiser;
         let datetime = jsn.datetime;
 
-        if (title === undefined || description === author || community === undefined ||
+        if (title === undefined || description === undefined || community === undefined ||
             organiser === undefined || datetime === undefined) return null;
 
         let event = new Event(title, description, community, organiser, datetime);

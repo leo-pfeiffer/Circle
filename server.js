@@ -25,17 +25,17 @@ const API_PORT = 3000;
  * @param {Response} res
  * @param {NextFunction} next
  * */
-let authenticate = function (req, res, next) {
-    let user = basicAuth(req);
-    // check DB
-    let validUser = true;
-    if (!validUser) {
-        // make the browser ask for credentials if none/wrong are provided
-        return res.sendStatus(401);
-    }
-    req.username = user.username;
-    next();
-};
+// let authenticate = function (req, res, next) {
+//     let user = basicAuth(req);
+//     // check DB
+//     let validUser = true;
+//     if (!validUser) {
+//         // make the browser ask for credentials if none/wrong are provided
+//         return res.sendStatus(401);
+//     }
+//     req.username = user.username;
+//     next();
+// };
 
 // ===== Socket IO =====
 // authentication using basicAuth
@@ -197,12 +197,44 @@ let createComment = (req, res, next) => {
 
     //creating new instances
     let author = new User(userName, userEmail)
-    let community = new Community(communityName, author)
-    let thread = new Thread(text, title, author, community)
-    let comment = new Comment(text1, author, thread)
+   // let community = new Community(communityName, author)
+   // let thread = new Thread(text, title, author)
+    let comment = new Comment(text1, author)
 
+     
+    dao.addComment(comment)
+   .then((id) => {
     res.status(200).json({ msg: `Added new comment '${comment}' with userName ${userName}` });
+   })
+   .catch(err => {
+       console.log(`Could not add comment`, err);
+       res.status(400).json({ msg: `Could not add comment` });
+   });
 }
+
+
+// let createEvent = (req, res, next) => {
+//     let body = req.body;
+//     let title = body.title;
+//     let description = body.description;
+//     let communityName = body.communityName
+//     let userName = body.admin.userName
+//     let userEmail = body.admin.userEmail
+//     let author = new User(userName, userEmail)
+//     let community = new Community(communityName, author)
+//     let datetime = new Date()
+//     let event = new Event(title,description,community, author,datetime)
+
+//     dao.addEvent(event)
+//     .then((id) => {
+//      res.status(200).json({ msg: `Added new event '${event}' with userName ${userName}` });
+//     })
+//     .catch(err => {
+//         console.log(`Could not add event`, err);
+//         res.status(400).json({ msg: `Could not add event` });
+//     });
+
+// }
 
 /**
  * Handler function to retrieve user_data
@@ -229,13 +261,16 @@ let getAllUsers = function (req, res, next) {
  * */
 let getCommunity = function (req, res, next) {
     //creating an instance of class Community manually
-    let userName = 'abc'
-    let userEmail = 'test@gmail.com'
-    let communityName = "CS5003";
-    let admin = new User(userName, userEmail)
-    let community = new Community(communityName, admin)
+    dao.getCommunity()
+    .then(docs => {
+        res.status(200).json(docs);
+    })
+    .catch(err => {
+        console.log(`Could not get community`, err);
+        res.status(400).json({ msg: `Could not get community` });
+    })
     //TODO: serialize/deserialize the object before sending it back
-    res.status(200).json(community.communityName)
+    
 }
 
 /**
@@ -245,17 +280,15 @@ let getCommunity = function (req, res, next) {
  * @param {NextFunction} next
  * */
 let getThread = function (req, res, next) {
-    //creating an instance of class Thread manually
-    let userName = 'abc'
-    let userEmail = 'test@gmail.com'
-    let communityName = "CS5003";
-    let text = 'thread text..'
-    let title = 'title of thread'
-    let author = new User(userName, userEmail)
-    let community = new Community(communityName, author)
-    let thread = new Thread(text, title, author, community)
-    //TODO: serialize/deserialize the object before sending it back
-    res.status(200).json(thread.title)
+    
+    dao.getThread()
+    .then(docs => {
+        res.status(200).json(docs);
+    })
+    .catch(err => {
+        console.log(`Could not get Thread`, err);
+        res.status(400).json({ msg: `Could not get Thread` });
+    })
 }
 
 /**
@@ -265,20 +298,33 @@ let getThread = function (req, res, next) {
  * @param {NextFunction} next
  * */
 let getComment = function (req, res, next) {
-    //creating a instance of class Comment manually
-    console.log("inside getComment")
-    let userName = 'abc'
-    let userEmail = 'test@gmail.com'
-    let communityName = "CS5003";
-    let text = 'thread text..'
-    let title = 'title of thread'
-    let text1 = 'comment text'
-    let author = new User(userName, userEmail)
-    let community = new Community(communityName, author)
-    let thread = new Thread(text, title, author, community)
-    let comment = new Comment(text1, author, thread)
-    //TODO: serialize/deserialize the object before sending it back
-    res.status(200).json({ msg: `Added new comment '${comment}` })
+    dao.getComment()
+    .then(docs => {
+        res.status(200).json(docs);
+    })
+    .catch(err => {
+        console.log(`Could not get Comment`, err);
+        res.status(400).json({ msg: `Could not get Comment` });
+    })
+  
+}
+
+/**
+ * Handler function to get Comment object
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+let getEvent  = function (req, res, next) {
+    dao.getEvent()
+    .then(docs => {
+        res.status(200).json(docs);
+    })
+    .catch(err => {
+        console.log(`Could not get event`, err);
+        res.status(400).json({ msg: `Could not get event` });
+    })
+  
 }
 
 /**
@@ -302,14 +348,16 @@ const getJoke = function (req, res, next) {
 /**
  * The following API endpoints allow the client to interact with the server.
  * */
-app.post('/api/create-user/', authenticate, createUser);
-app.post('/api/create-community/', authenticate, createCommunity);
-app.post('/api/create-thread/', authenticate, createThread);
-app.post('/api/create-comment/', authenticate, createComment);
-app.get('/api/get-all-users/', authenticate, getAllUsers);
-app.get('/api/get-community/', authenticate, getCommunity);
-app.get('/api/get-thread/', authenticate, getThread);
-app.get('/api/get-comment/', authenticate, getComment);
+// app.post('/api/create-user/', authenticate, createUser);
+// app.post('/api/create-community/', authenticate, createCommunity);
+// app.post('/api/create-thread/', authenticate, createThread);
+// app.post('/api/create-comment/',authenticate,createComment);
+// app.post('/api/create-event/',authenticate, createEvent);
+// app.get('/api/get-all-users/',authenticate, getAllUsers);
+// app.get('/api/get-community/',authenticate, getCommunity);
+// app.get('/api/get-thread/',authenticate, getThread);
+// app.get('/api/get-comment/', getComment);
+   app.get('/api/get-event/', getEvent);
 
 /*
 * The following endpoints were introduced as a proxy in order to access external APIs that have
@@ -318,7 +366,7 @@ app.get('/api/get-comment/', authenticate, getComment);
 * to the client. This also gives us more control over what the client receives, i.e. we could filter
 * or enrich the response ourselves.
  */
-app.get('/api/proxy/joke', authenticate, getJoke);
+//app.get('/api/proxy/joke', authenticate, getJoke);
 
 // Set the static folder
 app.use(express.static('content'));

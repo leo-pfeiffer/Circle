@@ -22,7 +22,7 @@ let init = function () {
     return client.connect()
         .then(conn => {
             //if the collection does not exist it will automatically be created
-            user_collection = client.db().collection(user_data);
+            users_collection = client.db().collection(user_data);
             communities_collection = client.db().collection(communities_data);
             threads_collection = client.db().collection(threads_data);
             comments_collection = client.db().collection(comments_data);
@@ -50,13 +50,33 @@ let init = function () {
 
 //get all data stored in test_data
 let getUser = function () {
-    return collection.find({}).toArray()
+    return users_collection.find({}).toArray()
         .then(users => users.map(user => User.fromJSON(user)));
+}
+
+let getCommunity = function () {
+    return communities_collection.find({}).toArray()
+        .then(users => users.map(user => Community.fromJSON(user)));
+}
+
+let getThread = function () {
+    return threads_collection.find({}).toArray()
+        .then(users => users.map(user => Thread.fromJSON(user)));
+}
+
+let getComment = function () {
+    return comments_collection.find({}).toArray()
+        .then(users => users.map(user => Comment.fromJSON(user)));
+}
+
+let getEvent = function () {
+    return events_collection.find({}).toArray()
+        .then(users => users.map(user => Event.fromJSON(user)));
 }
 
 //adding User object to db
 let addUser = function (user) {
-    return user_collection.insertOne(user)
+    return users_collection.insertOne(user)
         .then(res => res.insertedId);
 }
 
@@ -64,7 +84,7 @@ let addUser = function (user) {
 let addCommunity = function (community) {
     return communities_collection.insertOne(community)
         .then(res => {
-            console.log('success')
+          //console.log('success')
             return res.insertedId
         });
 }
@@ -72,14 +92,42 @@ let addCommunity = function (community) {
 //adding Thread object to db
 let addThread = function (thread) {
     return threads_collection.insertOne(thread)
-    .then(res =>  res.insertedId);
+    .then(res => {
+        //console.log('success')
+        return res.insertedId
+    });
 }
 
+//adding comment to db 
+
+let addComment = function (comment) {
+    return comments_collection.insertOne(comment)
+    .then(res => {
+      //  console.log('success')
+        return res.insertedId
+    });
+}
+
+//adding event to db 
+
+let addEvent = function (event) {
+    return events_collection.insertOne(event)
+    .then(res => {
+        console.log('success')
+        return res.insertedId
+    });
+}
 
 module.exports = {
     init: init,
     getUser: getUser,
     addUser: addUser,
     addCommunity: addCommunity,
-    addThread: addThread
+    addThread: addThread,
+    addComment: addComment,
+    addEvent: addEvent,
+    getCommunity: getCommunity,
+    getThread: getThread,
+    getComment: getComment,
+    getEvent: getEvent
 };
