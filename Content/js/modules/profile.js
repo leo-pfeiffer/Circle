@@ -59,40 +59,55 @@
                 type: 'bar',
                 data: {
                     labels: ['Gardening', 'Yoga', 'Cooking'],
-                    datasets:[
-                    {
-                        label:' # Comments written',
-                        data: [20, 5, 13],
-                        backgroundColor:[
-                            '#1cc88a',
-                          ],
-                    }, 
-                    {
-                        label:' # Threads opened',
-                        data: [3, 4, 1],
-                        backgroundColor:[
-                            '#4e73df',
-                          ],
-                    }
-                ],
-                }, 
-                options: {
-                    scales: {
-                        yAxes: [{ stacked: true}],
-                    },
-                    title: {
-                      display:true,
-                      text:'Top active communities by number of comments written',
-                      fontSize:20
-                    },
-                    legend: {
-                      display:true,
-                      position:'right',
-                      labels:{
-                        fontColor:'#white'
-                      }
-                    }
+                    datasets: [
+                        {
+                            label:' # Comments written',
+                            data: [20, 5, 13],
+                            backgroundColor:['#1cc88a',],
+                        },
+                        {
+                            label:' # Threads opened',
+                            data: [3, 4, 1],
+                            backgroundColor:['#4e73df',],
+                        }
+                    ],
                 },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Top active communities by number of comments written',
+                            fontSize: 20,
+                            color: 'rgb(255, 255, 255)'
+                        },
+                        legend: {
+                            display: true,
+                            labels: {
+                                color: 'rgb(255, 255, 255)'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            ticks: {
+                                color: 'rgb(255, 255, 255)',
+                            },
+                            grid: {
+                                color: 'rgb(165,165,165)',
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            ticks: {
+                                color: 'rgb(255, 255, 255)',
+                            },
+                            grid: {
+                                color: 'rgb(165,165,165)',
+                            }
+                        }
+                    }
+                }
             },
             activityLineChartData: {
                 type: 'line',
