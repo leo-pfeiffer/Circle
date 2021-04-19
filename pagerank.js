@@ -92,7 +92,12 @@ const PageRank = class {
          * General distribution vector (uniform over the nodes if not specified).
          * @type {Array<Number>}
          * */
-        this.v = this.v || new Array(this.pageCount).fill(this.initProb)
+        this.v = v || new Array(this.pageCount).fill(this.initProb)
+
+        /**
+         * Contains result of ranking.
+         * */
+        this.result = {};
     }
 
     /**
@@ -110,9 +115,10 @@ const PageRank = class {
 
     /**
      * Perform the Power Method iterations of the algorithm.
-     *  @return {Object} - Contains the resulting array, number of iterations, and whether the algorithm converged
+     * @param {Object<string, Number> | null} nameMap - optional. Keys are node names, values are index in adjacency matrix.
+     * @return {Object} - Contains the resulting array, number of iterations, and whether the algorithm converged
      * */
-    iterate() {
+    iterate(nameMap=null) {
 
         // the object we will return
         let output = {result: null, iterations: this.maxIt, converged: false}
@@ -148,8 +154,16 @@ const PageRank = class {
             // save pi vector of current iteration
             piPrevious = math.clone(pi);
         }
-        // add result to the outpu
-        output.result = pi.toArray();
+
+        // add result to the output
+        output.pi = pi.toArray();
+
+        // add mapped results if nameMap supplied
+        output.mappedResult = nameMap ? PageRank.getMappedResults(output.pi, nameMap) : null;
+
+        // save output
+        this.result = output;
+
         return output
     }
 
@@ -167,6 +181,20 @@ const PageRank = class {
             }
         })
         return dangling
+    }
+
+    /**
+     * Map the results of a pi vector to the names in a nameMap.
+     * @param {Array<Number>} pi - Results of PageRank
+     * @param {Object<string, Number>} nameMap - Keys are name of node, values are index in pi
+     * @return {Object<string, Number>} keys are name of node, values are ranking
+     * */
+    static getMappedResults(pi, nameMap) {
+        let mappedResults = {}
+        Object.entries(nameMap).forEach(([k, v], _) => {
+            mappedResults[k] = pi[v]
+        })
+        return mappedResults;
     }
 }
 
@@ -305,15 +333,31 @@ const CommunityNetwork = class {
             }
         }
     }
+
+
+    /**
+     * Create a distribution vector based on tha shared interests. Used as `v` in PageRank.
+     * Vector is created by weighting the similarity of user interests and community tags with a uniform distribution.
+     * @param {Number} u - Weight of uniform distribution. Defaults to 0.5
+     * @return {Array<Number>}
+     * */
+    getDistributionVector(u=0.5) {
+
+        if (u < 0 || u > 1) {
+            throw new Error('`u` must be between 0 and 1.')
+        }
+
+        const interests = this.user.interests;
+        let custom = this.communities.map(com => com.tags.filter(v => interests.includes(v)).length / interests.length);
+        const customSum = custom.reduce((a, b) => a + b, 0);
+        custom = custom.map(el => el / customSum);
+
+        const uniform = new Array(custom.length).fill(1 / custom.length);
+        return custom.map((el, i) => (1-u) * el + u * uniform[i])
+    }
 }
 
 // ======== Test CommunityNetwork ========
-
-const peter = new User('peter', 'mail')
-const tom = new User('tom', 'mail')
-const anna = new User('anna', 'mail')
-const jenny = new User('jenny', 'mail')
-const fred = new User('fred', 'mail')
 
 /**
  * Add users from an array to a community.
@@ -326,26 +370,85 @@ const addUsersToCommunity = function(community, users) {
     }
 }
 
+/**
+ * Add tags from an array to a the tags of a community.
+ * @param {Community} community
+ * @param {Array<string>} tags
+ * */
+const addTagsToCommunity = function(community, tags) {
+    for (let tag of tags) {
+        community.addTag(tag)
+    }
+}
+
+/**
+ * Add interests from an array to a user.
+ * @param {User} user
+ * @param {Array<string>} interests
+ * */
+const addInterestsToUser = function(user, interests) {
+    for (let interest of interests) {
+        user.addInterest(interest)
+    }
+}
+
+const peter = new User('peter', 'mail')
+addInterestsToUser(peter, ['hobby1', 'hobby2', 'hobby3'])
+
+const tom = new User('tom', 'mail')
+const anna = new User('anna', 'mail')
+const jenny = new User('jenny', 'mail')
+const fred = new User('fred', 'mail')
+
 const comA = new Community('A', peter)
 addUsersToCommunity(comA, [tom, anna, jenny])
+addTagsToCommunity(comA, ['hobby1', 'hobby3', 'hobby5'])
 
 const comB = new Community('B', peter)
 addUsersToCommunity(comB, [anna, fred])
+addTagsToCommunity(comB, ['hobby3'])
 
 const comC = new Community('C', peter)
 addUsersToCommunity(comC, [tom, jenny])
+addTagsToCommunity(comC, ['hobby4', 'hobby5'])
 
 const comD = new Community('D', fred)
 addUsersToCommunity(comD, [tom, jenny])
+addTagsToCommunity(comD, ['hobby1', 'hobby2', 'hobby3'])
 
 const comE = new Community('E', anna)
 addUsersToCommunity(comE, [jenny])
+addTagsToCommunity(comE, ['hobby1', 'hobby5'])
 
 let communities = [comA, comB, comC, comD, comE]
 
 let network = new CommunityNetwork(communities, peter)
 network.createGraph();
 network.createAdjacency();
+let v = network.getDistributionVector(0.5);
+
+console.log(math.matrix(network.adjacency))
+
+// adjacency should be:
+//     [ 0, 0, 1, 0, 0 ],
+//     [ 1, 0, 0, 0, 0 ],
+//     [ 1, 0, 0, 0, 0 ],
+//     [ 1, 0, 1, 0, 0 ],
+//     [ 1, 0, 0, 0, 0 ]
+
+// v should be:
+//     [
+//      0.24285714285714285,
+//      0.17142857142857143,
+//      0.1,
+//      0.3142857142857143,
+//      0.17142857142857143
+//     ]
+
+let rank = new PageRank(network.adjacency, v);
+let result = rank.iterate(network.communityHash);
+console.log(result)
+
 
 // ======== Test PageRank ========
 // Adjacency matrix
@@ -358,6 +461,6 @@ let A = [
     [0, 0, 0, 1, 0, 0]
 ]
 
-let rank = new PageRank(A);
-let result = rank.iterate();
-console.log(result)
+// let rank = new PageRank(A);
+// let result = rank.iterate();
+// console.log(result)

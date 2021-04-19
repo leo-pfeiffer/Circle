@@ -167,6 +167,7 @@ Community = class {
         this.users = []
         this.threads = []
         this.events = []
+        this.tags = []
 
         this.addUser(this.admin, true)
     }
@@ -245,6 +246,24 @@ Community = class {
         } else {
             throw new Error("Cannot remove admin of a community.")
         }
+    }
+
+    /**
+     * Add a new tag.
+     * @param {string} tag
+     * */
+    addTag(tag) {
+        if (!(this.tags.includes(tag))) {
+            this.tags.push(tag)
+        }
+    }
+
+    /**
+     * Remove a tag.
+     * @param {string} tag
+     * */
+    removeTag(tag) {
+        this.tags.splice(this.tags.indexOf(tag), 1)
     }
 }
 
