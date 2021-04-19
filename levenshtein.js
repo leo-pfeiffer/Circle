@@ -15,7 +15,6 @@
  let userInterest;
  let communityTag;
  
- const levenshteinAlgorithm = function(userInterest, communityTag) {
    const levenshteinDistance = (userInterest = '', communityTag = '') => {
      const track = Array(communityTag.length + 1).fill(null).map(() =>
      Array(userInterest.length + 1).fill(null));
@@ -37,7 +36,37 @@
      }
      return track[communityTag.length][userInterest.length];
    };
-   console.log(levenshteinDistance(userInterest, communityTag));
- }
  
+ 
+ // get user interests array and community tags 
+ // todo: implement db requests 
+ // dummy data
+ 
+ userInterests = ["swimming", "Gardening", "OutDoor", "watersport"];
+ 
+ allCommunitiesTags = [	
+   { _id: 1, name: "Swimming London", tags: ["Swimclub", "Swimming", "water"]},
+   { _id: 2, name: "Hiking", tags: ["outdoors", "Nature"]},
+   { _id: 3, name: "Healthy Cooking", tags: ["healthy", "Food", "Cooking"]}
+   ];
+ 
+ 
+ // get recommendation based on Levenshtein Distance
+ const makeRecommendation = function() {
+   // for every community
+   for (let i=0; i < allCommunitiesTags.length; i++) {
+     // for every community tag
+     var scores = new Array();
+     for (tag of allCommunitiesTags[i].tags) {
+       communityTag = tag.toLowerCase();  
+       // find Levenshtein Distance with each user interest tag
+       for (interest of userInterests) {
+         userInterest = interest.toLowerCase();
+         // push all values into an array
+         scores.push(levenshteinDistance(userInterest, communityTag))
+       }
+     }
+     console.log(scores)
+   }
+ }
  
