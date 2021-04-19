@@ -33,7 +33,9 @@ let init = function () {
             communities_collection = client.db().collection(communities_data);
             threads_collection = client.db().collection(threads_data);
             comments_collection = client.db().collection(comments_data);
-            events_collection = client.db().collection(events_data);
+
+            // todo obsolete
+            // events_collection = client.db().collection(events_data);
 
             //for testing
             collection = client.db().collection('test_collection');
@@ -71,6 +73,47 @@ let getCommunity = function () {
 let getThread = function () {
     return threads_collection.find({}).toArray()
         .then(threads => threads.map(thread => Thread.fromJSON(thread)));
+}
+
+let getMostRecentComments = async function(userId, n) {
+
+    const pipeline = [
+        {
+            $match: {"users.id": userId}
+        },
+        {
+            $unwind: {path: '$threads'}
+        },
+        {
+            $unwind: {path: '$threads.comments'}
+        },
+        // group, but keep some community info
+        {
+            $group: {_id: "$threads", communityId: {$first: "$id"}, communityName: {$first: "$communityName"}}
+        },
+        // sort in descending order
+        {
+            $sort: {"_id.comments.datetime": -1}
+        },
+        // keep only communityName, communityId, threadId, threatTitle, comment
+        {
+            $project: {
+                "communityName": 1,
+                "communityId": 1,
+                "_id.id": 1,
+                "_id.title": 1,
+                "_id.comments": 1,
+            }
+        },
+        // only show n entries
+        {
+            $limit: n
+        }
+    ]
+
+    const aggregationCursor = communities_collection.aggregate(pipeline)
+
+    return aggregationCursor
 }
 
 //returns all data stored in comments_collection
@@ -238,18 +281,7 @@ const getPageRankCommunities = async function(userId) {
  * @return {Promise}
  * */
 const getUserEvents = async function(userId) {
-    const eventsRaw = communities_collection.find({ "users.id" :  userId}, {'events': 1, _id: 0})
-
-    const events = [];
-    await eventsRaw.forEach(arr => {
-        arr.events.forEach((event) => {
-            let newEvent = Event.fromJSON(event)
-            if (!events.map(el => el.id).includes(newEvent.id))
-                events.push(newEvent);
-        })
-    })
-
-    return events;
+    return communities_collection.find({"users.id": userId}, {'events': 1, _id: 0});
 }
 
 /**
@@ -296,4 +328,5 @@ module.exports = {
     dropCollections: dropCollections,
     getPageRankCommunities: getPageRankCommunities,
     getUserEvents: getUserEvents,
+    getMostRecentComments: getMostRecentComments
 };

@@ -1,4 +1,6 @@
-const { User, Community, Thread, Comment } = require('./models')
+const { User, Community, Thread, Comment, Event } = require('./models')
+const {PageRank, CommunityNetwork} = require("./pagerank");
+
 const dao = require('./dao');
 
 const express = require('express');
@@ -10,8 +12,6 @@ const axios = require('axios');
 const app = express();
 
 const http = require('http');
-const {PageRank} = require("./pagerank");
-const {CommunityNetwork} = require("./pagerank");
 const server = http.createServer(app);
 const io = require('socket.io')(server);
 
@@ -36,6 +36,8 @@ let authenticate = function (req, res, next) {
         return res.sendStatus(401);
     }
     req.username = user.username;
+    // todo
+    // req.userId = user.id;
     next();
 };
 
@@ -288,6 +290,38 @@ let getThread = function (req, res, next) {
 }
 
 /**
+ * Handler function to GET most recent comments
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+let getMostRecentComments = function (req, res, next) {
+
+    // how many of the most recent threads to get
+    let num = req.body.num;
+
+    dao.getMostRecentComments(req.userId, num)
+        .then(cursor => async function() {
+            const comments = [];
+            await cursor.forEach(arr => {
+                let obj = {}
+                obj.community = {id: arr.communityId, name: arr.communityName}
+                obj.thread = {id: arr._id.id, title: arr._id.title}
+                console.log(arr._id.comments.id)
+                obj.comment = new Comment(arr._id.comments)
+                console.log(obj.comment.id)
+                comments.push(obj);
+            })
+            return comments
+        })
+        .then(docs => res.status(200).json(docs))
+        .catch(err => {
+            console.log(`Could not get Thread`, err);
+            res.status(400).json({ msg: `Could not get Thread` });
+        })
+}
+
+/**
  * Handler function to GET Comment objects
  * @param {Request} req
  * @param {Response} res
@@ -335,6 +369,18 @@ let getUserEvents = function (req, res, next) {
     const userId = req.body.userId
 
     dao.getUserEvents(userId)
+        .then(async function(eventsRaw) {
+            const events = [];
+            await eventsRaw.forEach(arr => {
+                arr.events.forEach((event) => {
+                    let newEvent = Event.fromJSON(event)
+                    if (!events.map(el => el.id).includes(newEvent.id))
+                        events.push(newEvent);
+                })
+            })
+
+            return events;
+        })
         .then(docs => res.status(200).json(docs))
         .catch(err => {
             console.log(`Could not get event`, err);

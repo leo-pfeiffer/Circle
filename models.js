@@ -31,7 +31,7 @@ User = class {
         let userEmail = jsn.userEmail;
 
         // Assert that the values required for the constructor are not null
-        if (id === undefined || userName === undefined || userEmail === undefined) return null;
+        if (id === null || userName === null || userEmail === null) return null;
 
         // Create the new User instance and fill in the attributes
         let user = new User(userName, userEmail)
@@ -96,7 +96,7 @@ Thread = class {
         let id = jsn.id;
         let title = jsn.title;
         let author = jsn.author;
-        if (id === undefined || text === undefined || title === undefined || author === undefined) return null;
+        if (id === null || text === null || title === null || author === null) return null;
 
         let thread = new Thread(text, title, author)
         thread.id = id;
@@ -109,10 +109,8 @@ Thread = class {
      * @param {Object} comment
      * */
     addComment (comment) {
-        // todo how do we check that comment.user is actually in the community?
         if (!this.comments.includes(comment)) {
             this.comments.push(comment)
-            comment.thread = this
         }
     }
 }
@@ -132,6 +130,7 @@ Comment = class {
      * */
     constructor(text, author) {
         this.id = uuidv4()
+        this.datetime = new Date();
         this.text = text
         this.author = author
     }
@@ -144,10 +143,12 @@ Comment = class {
         let id = jsn.id;
         let text = jsn.text;
         let author = jsn.author;
+        let datetime = jsn.datetime;
 
-        if (id === jsn.id || text === undefined || author === undefined) return null;
+        if (id === null || text === null || author === null || datetime === null) return null;
         let comment = new Comment(text, author)
         comment.id = id;
+        comment.datetime = datetime
         return comment
     }
 }
@@ -189,10 +190,10 @@ Community = class {
         let id = jsn.id
         let admin = jsn.admin;
 
-        if (communityName === undefined || admin === undefined || id === undefined) return null;
+        if (communityName === null || admin === null || id === null) return null;
 
         let community = new Community(communityName, admin)
-        community.id = id
+        community.id = jsn.id
         community.events = jsn.events || [];
         community.users = jsn.users || [];
         community.threads = jsn.threads || [];
@@ -322,8 +323,8 @@ Event = class {
         let organiser = jsn.organiser;
         let datetime = jsn.datetime;
 
-        if (id === undefined || title === undefined || description === undefined ||
-            organiser === undefined || datetime === undefined) return null;
+        if (id === null || title === null || description === null ||
+            organiser === null || datetime === null) return null;
 
         let event = new Event(title, description, organiser, datetime);
 

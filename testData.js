@@ -3,7 +3,7 @@
  * @param {Community} community
  * @param {Array<User>} users
  * */
-const {Community, Event, User} = require("./models");
+const {Community, Event, User, Comment, Thread} = require("./models");
 const addUsersToCommunity = function(community, users) {
     for (let user of users) {
         community.addUser(user)
@@ -29,6 +29,28 @@ const addTagsToCommunity = function(community, tags) {
 const addEventsToCommunity = function(community, events) {
     for (let event of events) {
         community.addEvent(event);
+    }
+}
+
+/**
+ * Add threads from an array to a community.
+ * @param {Community} community
+ * @param {Array<Thread>} threads
+ * */
+const addThreadsToCommunity = function(community, threads) {
+    for (let thread of threads) {
+        community.addThread(thread);
+    }
+}
+
+/**
+ * Add comments from array to thread.
+ * @param {Thread} thread
+ * @param {Array<comment>} comments
+ * */
+const addCommentsToThread = function(thread, comments) {
+    for (let comment of comments) {
+        thread.addComment(comment);
     }
 }
 
@@ -89,6 +111,7 @@ const makePageRankDemoData = function() {
 const makeGeneralTestData = function() {
 
     const adrian = new User('adrian', 'mail')
+    adrian.id = "e0cc6987-121e-4181-bc9f-0a4c0cff2bda"
     addInterestsToUser(adrian, ['hobby1', 'hobby2', 'hobby3'])
 
     const betty = new User('betty', 'mail')
@@ -99,6 +122,23 @@ const makeGeneralTestData = function() {
     const brunch = new Event('Brunch', 'Yummie brunch', adrian, new Date(2021, 3, 20))
     const lunch = new Event('Lunch', 'Yummie lunch', adrian, new Date(2021, 3, 21))
     const dinner = new Event('Dinner', 'Yummie dinner', adrian, new Date(2021, 3, 22))
+
+    const comment1 = new Comment('some interesting text1', adrian)
+    comment1.datetime = new Date(2015, 1, 1)
+    const comment2 = new Comment('some interesting text2', adrian)
+    comment2.datetime = new Date(2016, 1, 1)
+    const comment3 = new Comment('some interesting text3', adrian)
+    comment3.datetime = new Date(2017, 1, 1)
+    const comment4 = new Comment('some interesting text4', adrian)
+    comment4.datetime = new Date(2018, 1, 1)
+    const comment5 = new Comment('some interesting text5', betty)
+    comment5.datetime = new Date(2019, 1, 1)
+
+    const thread1 = new Thread('some text', 'some title1', adrian)
+    const thread2 = new Thread('some text', 'some title2', jon)
+
+    addCommentsToThread(thread1, [comment1, comment2, comment3])
+    addCommentsToThread(thread2, [comment4, comment5])
 
     const comF = new Community('F', adrian)
     addUsersToCommunity(comF, [jon, darren, aida])
@@ -117,6 +157,7 @@ const makeGeneralTestData = function() {
     addUsersToCommunity(comI, [jon, betty, adrian])
     addTagsToCommunity(comI, ['hobby1', 'hobby2', 'hobby3'])
     addEventsToCommunity(comI, [dinner])
+    addThreadsToCommunity(comI, [thread1, thread2])
 
     const comJ = new Community('J', jon)
     addUsersToCommunity(comJ, [betty])
