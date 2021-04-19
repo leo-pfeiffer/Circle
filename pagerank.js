@@ -121,7 +121,7 @@ const PageRank = class {
     iterate(nameMap=null) {
 
         // the object we will return
-        let output = {result: null, iterations: this.maxIt, converged: false}
+        let output = {iterations: this.maxIt, converged: false}
 
         // pi vector - the target of our convergence
         let pi = math.matrix(new Array(this.pageCount).fill(1/this.pageCount))
@@ -208,9 +208,10 @@ const CommunityNetwork = class {
     /**
      * Create a new community network instance.
      * @param {Array<Community>} communities - An array containing all the communities that ought to be in the network.
-     * @param {User} user - The user for whom the network graph is built for. Must be in one of the communities.
+     * @param {string} userId - The user for whom the network graph is built for. Must be in one of the communities.
+     * @param {Array<string>} interests - The user's interests.
      * */
-    constructor(communities, user) {
+    constructor(communities, userId, interests) {
 
         /**
          * An array containing all the communities that ought to be in the network.
@@ -219,10 +220,16 @@ const CommunityNetwork = class {
         this.communities = communities;
 
         /**
-         * The user for whom the network graph is built for. Must be in one of the communities.
-         * @type {User}
+         * The user id for whom the network graph is built for. Must be in one of the communities.
+         * @type {string}
          * */
-        this.user = user;
+        this.userId = userId;
+
+        /**
+         * The user's interests.
+         * @type{Array<string>}
+         * */
+        this.interests = interests;
 
         /**
          * A hashmap that contains the row/column index of the adjacency matrix as value and the corresponding
@@ -260,7 +267,7 @@ const CommunityNetwork = class {
         })
 
         // Assert that user is in one of the communities
-        if (!this.communities.map(el => el.users).reduce((a, b) => a.concat(b), []).includes(this.user)) {
+        if (!this.communities.map(el => el.users).reduce((a, b) => a.concat(b), []).map(el => el.id).includes(this.userId)) {
             throw new Error ("User must be a member of one of the communities.")
         }
     }
@@ -347,8 +354,7 @@ const CommunityNetwork = class {
             throw new Error('`w` must be between 0 and 1.')
         }
 
-        const interests = this.user.interests;
-        let d = this.communities.map(com => com.tags.filter(v => interests.includes(v)).length / interests.length);
+        let d = this.communities.map(com => com.tags.filter(v => this.interests.includes(v)).length / this.interests.length);
         const dSum = d.reduce((a, b) => a + b, 0);
         d = d.map(el => el / dSum);
 
@@ -392,75 +398,7 @@ const addInterestsToUser = function(user, interests) {
     }
 }
 
-const peter = new User('peter', 'mail')
-addInterestsToUser(peter, ['hobby1', 'hobby2', 'hobby3'])
-
-const tom = new User('tom', 'mail')
-const anna = new User('anna', 'mail')
-const jenny = new User('jenny', 'mail')
-const fred = new User('fred', 'mail')
-
-const comA = new Community('A', peter)
-addUsersToCommunity(comA, [tom, anna, jenny])
-addTagsToCommunity(comA, ['hobby1', 'hobby3', 'hobby5'])
-
-const comB = new Community('B', peter)
-addUsersToCommunity(comB, [anna, fred])
-addTagsToCommunity(comB, ['hobby3'])
-
-const comC = new Community('C', peter)
-addUsersToCommunity(comC, [tom, jenny])
-addTagsToCommunity(comC, ['hobby4', 'hobby5'])
-
-const comD = new Community('D', fred)
-addUsersToCommunity(comD, [tom, jenny])
-addTagsToCommunity(comD, ['hobby1', 'hobby2', 'hobby3'])
-
-const comE = new Community('E', anna)
-addUsersToCommunity(comE, [jenny])
-addTagsToCommunity(comE, ['hobby1', 'hobby5'])
-
-let communities = [comA, comB, comC, comD, comE]
-
-let network = new CommunityNetwork(communities, peter)
-network.createGraph();
-network.createAdjacency();
-let v = network.getDistributionVector(0.5);
-
-console.log(math.matrix(network.adjacency))
-
-// adjacency should be:
-//     [ 0, 0, 1, 0, 0 ],
-//     [ 1, 0, 0, 0, 0 ],
-//     [ 1, 0, 0, 0, 0 ],
-//     [ 1, 0, 1, 0, 0 ],
-//     [ 1, 0, 0, 0, 0 ]
-
-// v should be:
-//     [
-//      0.24285714285714285,
-//      0.17142857142857143,
-//      0.1,
-//      0.3142857142857143,
-//      0.17142857142857143
-//     ]
-
-let rank = new PageRank(network.adjacency, v);
-let result = rank.iterate(network.communityHash);
-console.log(result)
-
-
-// ======== Test PageRank ========
-// Adjacency matrix
-let A = [
-    [0, 1, 1, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [1, 1, 0, 0, 1, 0],
-    [0, 0, 0, 0, 1, 1],
-    [0, 0, 0, 1, 0, 1],
-    [0, 0, 0, 1, 0, 0]
-]
-
-// let rank = new PageRank(A);
-// let result = rank.iterate();
-// console.log(result)
+module.exports = {
+    PageRank: PageRank,
+    CommunityNetwork: CommunityNetwork
+}
