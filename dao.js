@@ -5,14 +5,19 @@ const fullurl = `mongodb://${config.username}:${config.password}@${config.url}:$
 const sanitisedUrl = fullurl.replace(/:([^:@]{1,})@/, ':****@');
 
 const client = new MongoClient(fullurl, { useUnifiedTopology: true });
-let collection = null; //we will give this a value after we connect to the database
 
 //retrieving collection names from config.db file
-const user_data = config.collection[0];
+const users_data = config.collection[0];
 const communities_data = config.collection[1];
 const threads_data = config.collection[2];
 const comments_data = config.collection[3];
 const events_data = config.collection[4];
+
+/**
+ * MongoDB collections.
+ * @type {Collection}
+ * */
+let collection, users_collection, communities_collection, threads_collection, comments_collection, events_collection
 
 //=== test data ===
 //this is added to the DB everytime the program runs 
@@ -24,7 +29,7 @@ let init = function () {
     return client.connect()
         .then(conn => {
             //if the collection does not exist it will automatically be created
-            users_collection = client.db().collection(user_data);
+            users_collection = client.db().collection(users_data);
             communities_collection = client.db().collection(communities_data);
             threads_collection = client.db().collection(threads_data);
             comments_collection = client.db().collection(comments_data);
@@ -32,7 +37,7 @@ let init = function () {
 
             //for testing
             collection = client.db().collection('test_collection');
-            console.log("Connected!", sanitisedUrl, 'collection name:', user_data);
+            console.log("Connected!", sanitisedUrl, 'collection name:', users_data);
         })
         .catch(err => {
             console.log(`Could not connect to ${sanitisedUrl}`, err);
@@ -80,13 +85,31 @@ let getEvent = function () {
         .then(events => events.map(event => Event.fromJSON(event)));
 }
 
-//adding User object to db
-let addUser = function (user) {
+/**
+ * Insert User object into DB.
+ * @param {User} user
+ * @return {Promise}
+ * */
+const addUser = function (user) {
     return users_collection.insertOne(user)
         .then(res => res.insertedId);
 }
 
-//adding Community object to db
+/**
+ * Insert many User objects into DB.
+ * @param {Array<User>} users
+ * @return {Promise}
+ * */
+const addUsers = function (users) {
+    return users_collection.insertMany(users)
+        .then(res => res.insertedId);
+}
+
+/**
+ * Insert Community object into DB.
+ * @param {Community} community
+ * @return {Promise}
+ * */
 let addCommunity = function (community) {
     return communities_collection.insertOne(community)
         .then(res => {
@@ -94,7 +117,21 @@ let addCommunity = function (community) {
         });
 }
 
-//adding Thread object to db
+/**
+ * Insert many Community objects into DB.
+ * @param {Array<Community>} communities
+ * @return {Promise}
+ * */
+let addCommunities = function (communities) {
+    return communities_collection.insertMany(communities)
+        .then(res => res.insertedIds);
+}
+
+/**
+ * Insert Thread object into DB.
+ * @param {Thread} thread
+ * @return {Promise}
+ * */
 let addThread = function (thread) {
     return threads_collection.insertOne(thread)
         .then(res => {
@@ -102,7 +139,11 @@ let addThread = function (thread) {
         });
 }
 
-//adding Comment object to db 
+/**
+ * Insert Comment object into DB.
+ * @param {Comment} comment
+ * @return {Promise}
+ * */
 let addComment = function (comment) {
     return comments_collection.insertOne(comment)
         .then(res => {
@@ -110,7 +151,11 @@ let addComment = function (comment) {
         });
 }
 
-//adding Event object to db 
+/**
+ * Insert Event object into DB.
+ * @param {Event} event
+ * @return {Promise}
+ * */
 let addEvent = function (event) {
     return events_collection.insertOne(event)
         .then(res => {
@@ -118,11 +163,116 @@ let addEvent = function (event) {
         });
 }
 
+/**
+ * Get the communities required for the PageRank algorithm for a specific user.
+ * @param {string} userId
+ * */
+const getPageRankCommunities = async function(userId) {
+
+    // aggregation pipeline to get all users that are in communities with the user with userId.
+    const pipeline = [
+        // match user
+        {
+            $match: {
+                "users.id": userId
+            },
+        },
+        // unwind the user array
+        {
+            $unwind: {
+                path: '$users'
+            }
+        },
+        // return user id as ID
+        {
+            $group: {
+                _id: "$users",
+            }
+        },
+        {
+            $project: {
+                "_id.id": 1,
+                "_id.interests": 1,
+            }
+        }
+    ]
+
+    // perform aggregation
+    const aggCursor = communities_collection.aggregate(pipeline);
+
+    const users = []
+
+    // fetch results of aggregation
+    await aggCursor.forEach(community => {
+        users.push(community._id)
+    });
+
+    // query all communities of the users found in the previous step
+    const query = {
+        "users.id": {
+            $in: users.map(el => el.id)
+        }
+    }
+
+    const projection = {
+        fields: {
+            _id: 0,
+            id: 1,
+            admin: 1,
+            communityName: 1,
+            users: 1,
+            tags: 1
+        }
+    }
+
+    const communityCursor = communities_collection.find(query, projection)
+
+    const communities = [];
+
+    // fetch the results
+    await communityCursor.forEach(community => {
+        console.log(community)
+        communities.push(community)
+    })
+
+    return communities
+}
+
+
+
+/**
+ * Drop all data collections.
+ * WARNING: This cannot be undone!
+ * */
+const dropCollections = function() {
+    let collections = [
+        users_data,
+        communities_data,
+        threads_data,
+        comments_data,
+        events_data,
+        'test_collection',
+        'collection'
+    ]
+
+    // drop the collections if they exist
+    return collections.forEach((col) => {
+        client.db().listCollections({name: col})
+            .next((err, collectionInfo) => {
+                if (collectionInfo) {
+                    client.db().collection(col).drop()
+                }
+            });
+    })
+}
+
 //exporting modules
 module.exports = {
     init: init,
     addUser: addUser,
+    addUsers: addUsers,
     addCommunity: addCommunity,
+    addCommunities: addCommunities,
     addThread: addThread,
     addComment: addComment,
     addEvent: addEvent,
@@ -130,5 +280,7 @@ module.exports = {
     getCommunity: getCommunity,
     getThread: getThread,
     getComment: getComment,
-    getEvent: getEvent
+    getEvent: getEvent,
+    dropCollections: dropCollections,
+    getPageRankCommunities: getPageRankCommunities
 };

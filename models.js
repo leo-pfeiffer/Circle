@@ -185,8 +185,10 @@ Community = class {
 
         let community = new Community(communityName, admin)
         community.events = jsn.events || [];
+        community.users = jsn.users || [];
         community.threads = jsn.threads || [];
         community.events = jsn.events || [];
+        community.tags = jsn.tags || [];
         return community;
     }
 

@@ -10,6 +10,8 @@ const axios = require('axios');
 const app = express();
 
 const http = require('http');
+const {PageRank} = require("./pagerank");
+const {CommunityNetwork} = require("./pagerank");
 const server = http.createServer(app);
 const io = require('socket.io')(server);
 
@@ -205,32 +207,31 @@ let createComment = (req, res, next) => {
         });
 }
 
-// handler function for adding Event object 
+// handler function for adding Event object
+let createEvent = (req, res, next) => {
+    let body = req.body;
+    let title = body.title;
+    let description = body.description;
+    let communityName = body.communityName
+    let userName = body.admin.userName
+    let userEmail = body.admin.userEmail
+    let datetime = new Date()
 
-// let createEvent = (req, res, next) => {
-//     let body = req.body;
-//     let title = body.title;
-//     let description = body.description;
-//     let communityName = body.communityName
-//     let userName = body.admin.userName
-//     let userEmail = body.admin.userEmail
-//     let datetime = new Date()
+    //creating new User, Community and Event instances
+    let author = new User(userName, userEmail)
+    let community = new Community(communityName, author)
+    let event = new Event(title,description,community, author,datetime)
 
-//     //creating new User, Community and Event instances 
-//     let author = new User(userName, userEmail)
-//     let community = new Community(communityName, author)
-//     let event = new Event(title,description,community, author,datetime)
-//
-//     //adding new Event instance to the database
-//     dao.addEvent(event)
-//     .then((id) => {
-//      res.status(200).json({ msg: `Added new event '${event}'` });
-//     })
-//     .catch(err => {
-//         console.log(`Could not add event`, err);
-//         res.status(400).json({ msg: `Could not add event` });
-//     });
-// }
+    //adding new Event instance to the database
+    dao.addEvent(event)
+    .then((id) => {
+     res.status(200).json({ msg: `Added new event '${event}'` });
+    })
+    .catch(err => {
+        console.log(`Could not add event`, err);
+        res.status(400).json({ msg: `Could not add event` });
+    });
+}
 
 /**
  * Handler function to GET User objects
@@ -324,6 +325,39 @@ let getEvent = function (req, res, next) {
 }
 
 /**
+ * Handler function to get community recommendations
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+let getRecommendation = function (req, res, next) {
+    let body = req.body;
+    let userId = body.user.id
+    let interests = body.user.interests
+
+    //retrieving data from DB (from events_collection)
+    dao.getPageRankCommunities(userId)
+        .then((res) => {
+            let communities = res.map(com => Community.fromJSON(com))
+
+            let network = new CommunityNetwork(communities, userId, interests)
+            network.createGraph();
+            network.createAdjacency();
+            let v = network.getDistributionVector(0.5);
+
+            let rank = new PageRank(network.adjacency, v);
+            let result = rank.iterate(network.communityHash);
+
+            res.status(200).json(result);
+
+        })
+        .catch(err => {
+            console.log(`Could not get PageRank recommendation`, err);
+            res.status(500).json({ msg: `Could not get PageRank recommendation` });
+        })
+}
+
+/**
  * Proxy request handler that gets a random joke from an external API
  * @param {Request} req
  * @param {Response} res
@@ -348,12 +382,13 @@ app.post('/api/create-user/', authenticate, createUser);
 app.post('/api/create-community/', authenticate, createCommunity);
 app.post('/api/create-thread/', authenticate, createThread);
 app.post('/api/create-comment/', authenticate, createComment);
-//app.post('/api/create-event/',authenticate, createEvent);
+app.post('/api/create-event/', authenticate, createEvent);
 app.get('/api/get-all-users/', authenticate, getUser);
 app.get('/api/get-community/', authenticate, getCommunity);
 app.get('/api/get-thread/', authenticate, getThread);
 app.get('/api/get-comment/', authenticate, getComment);
 app.get('/api/get-event/', authenticate, getEvent);
+app.get('/api/get-recommendation/', authenticate, getRecommendation);
 
 /*
 * The following endpoints were introduced as a proxy in order to access external APIs that have
