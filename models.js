@@ -279,14 +279,12 @@ Event = class {
      * Create a new Event.
      * @param {string} title - The title of the event
      * @param {string} description - A description of the event
-     * @param {Community} community - The community the event belongs to
      * @param {User} organiser - The user that created the event
      * @param {Date} datetime - The date and time of the event
      * */
-    constructor(title, description, community, organiser, datetime) {
+    constructor(title, description, organiser, datetime) {
         this.title = title
         this.description = description
-        this.community = community
         this.organiser = organiser
         this.datetime = datetime
 
@@ -299,13 +297,6 @@ Event = class {
          * @type {string | null}
          * */
         this.link = null;
-
-        // Make sure the organiser is actually a member
-        if (!(this.community.users.includes(organiser))) {
-            throw new Error("Cannot add event to a community without being a member")
-        }
-
-        this.community.addEvent(this)
     }
 
     /**
@@ -315,14 +306,13 @@ Event = class {
     static fromJSON(jsn) {
         let title = jsn.title;
         let description = jsn.description;
-        let community = jsn.community;
         let organiser = jsn.organiser;
         let datetime = jsn.datetime;
 
-        if (title === undefined || description === undefined || community === undefined ||
+        if (title === undefined || description === undefined ||
             organiser === undefined || datetime === undefined) return null;
 
-        let event = new Event(title, description, community, organiser, datetime);
+        let event = new Event(title, description, organiser, datetime);
 
         event.location = jsn.location || null;
         event.link = jsn.link || null;

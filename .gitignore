@@ -2,3 +2,4 @@ config-db.js
 /node_modules/
 /sb-admin-2/
 /package-lock.json
+/resources/
