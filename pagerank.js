@@ -338,22 +338,22 @@ const CommunityNetwork = class {
     /**
      * Create a distribution vector based on tha shared interests. Used as `v` in PageRank.
      * Vector is created by weighting the similarity of user interests and community tags with a uniform distribution.
-     * @param {Number} u - Weight of uniform distribution. Defaults to 0.5
+     * @param {Number} w - Weight of uniform distribution. Defaults to 0.5
      * @return {Array<Number>}
      * */
-    getDistributionVector(u=0.5) {
+    getDistributionVector(w=0.5) {
 
-        if (u < 0 || u > 1) {
-            throw new Error('`u` must be between 0 and 1.')
+        if (w < 0 || w > 1) {
+            throw new Error('`w` must be between 0 and 1.')
         }
 
         const interests = this.user.interests;
-        let custom = this.communities.map(com => com.tags.filter(v => interests.includes(v)).length / interests.length);
-        const customSum = custom.reduce((a, b) => a + b, 0);
-        custom = custom.map(el => el / customSum);
+        let d = this.communities.map(com => com.tags.filter(v => interests.includes(v)).length / interests.length);
+        const dSum = d.reduce((a, b) => a + b, 0);
+        d = d.map(el => el / dSum);
 
-        const uniform = new Array(custom.length).fill(1 / custom.length);
-        return custom.map((el, i) => (1-u) * el + u * uniform[i])
+        const u = new Array(d.length).fill(1 / d.length);
+        return d.map((el, i) => (1-w) * el + w * u[i])
     }
 }
 
