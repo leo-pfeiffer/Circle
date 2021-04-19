@@ -423,6 +423,24 @@ let getRecommendation = function (req, res, next) {
 }
 
 /**
+ * Handler function to GET a user object
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+let getUserObject = function (req, res, next) {
+
+    const userId = req.body.userId
+
+    dao.getUserObject(userId)
+        .then(docs => res.status(200).json(docs))
+        .catch(err => {
+            console.log(`Could not get user`, err);
+            res.status(400).json({ msg: `Could not get user` });
+        })
+}
+
+/**
  * Proxy request handler that gets a random joke from an external API
  * @param {Request} req
  * @param {Response} res
@@ -455,6 +473,7 @@ app.get('/api/get-comment/', authenticate, getComment);
 app.get('/api/get-event/', authenticate, getEvent);
 app.get('/api/get-user-event/', authenticate, getUserEvents);
 app.get('/api/get-recommendation/', authenticate, getRecommendation);
+app.get('/api/get-user-object/', authenticate, getUserObject);
 
 /*
 * The following endpoints were introduced as a proxy in order to access external APIs that have

@@ -24,7 +24,9 @@ let collection, users_collection, communities_collection, threads_collection, co
 const test_data = [{ userName: "A", userEmail: 'abc@gmail.com' },
 { userName: "B", userEmail: 'bcd@gmail.com' }];
 
-//initialise the database
+/**
+ * Initialise the database.
+ * */
 let init = function () {
     return client.connect()
         .then(conn => {
@@ -57,24 +59,44 @@ let init = function () {
         })
 }
 
-//returns all data stored in users_collection
+/**
+ * Returns all data stored in users_collection.
+ * @param {Array<User>} users
+ * @return {Promise}
+ * */
 let getUser = function () {
     return users_collection.find({}).toArray()
         .then(users => users.map(user => User.fromJSON(user)));
 }
 
-//returns all data stored in communities_collection
+/**
+ * Returns all data stored in communities_collection
+ * @param {Array<Community>} communities
+ * @return {Promise}
+ * */
 let getCommunity = function () {
     return communities_collection.find({}).toArray()
-        .then(communities => communities.map(community => Community.fromJSON(community)));
+        .then(communities => communities.map(community => Community.fromJSON(community)))
+        .catch(err=>console.log("Could not find",err.message));
 }
 
-//returns all data stored in threads_collection
+/**
+ * Returns all data stored in threads_collection
+ * @param {Array<Thread>} threads
+ * @return {Promise}
+ * */
 let getThread = function () {
     return threads_collection.find({}).toArray()
-        .then(threads => threads.map(thread => Thread.fromJSON(thread)));
+        .then(threads => threads.map(thread => Thread.fromJSON(thread)))
+        .catch(err=>console.log("Could not find",err.message));
 }
 
+/**
+ * Returns n most recent comments
+ * @param {string} userId
+ * @param {Number} n
+ * @return {Promise}
+ * */
 let getMostRecentComments = async function(userId, n) {
 
     const pipeline = [
@@ -116,16 +138,26 @@ let getMostRecentComments = async function(userId, n) {
     return aggregationCursor
 }
 
-//returns all data stored in comments_collection
+/**
+ * Returns all data stored in comments_collection
+ * @param {Array<Comment>} comments
+ * @return {Promise}
+ * */
 let getComment = function () {
     return comments_collection.find({}).toArray()
-        .then(comments => comments.map(comment => Comment.fromJSON(comment)));
+        .then(comments => comments.map(comment => Comment.fromJSON(comment)))
+        .catch(err=>console.log("Could not find",err.message));
 }
 
-//returns all data stored in events_collection
+/**
+ * Returns all data stored in events_collection
+ * @param {Array<Event>} events
+ * @return {Promise}
+ * */
 let getEvent = function () {
     return events_collection.find({}).toArray()
-        .then(events => events.map(event => Event.fromJSON(event)));
+        .then(events => events.map(event => Event.fromJSON(event)))
+        .catch(err=>console.log("Could not find",err.message));
 }
 
 /**
@@ -135,7 +167,10 @@ let getEvent = function () {
  * */
 const addUser = function (user) {
     return users_collection.insertOne(user)
-        .then(res => res.insertedId);
+        .then(res => res.insertedId)
+        .catch(err => {
+            console.log("Could not add data ", err.message)
+        })
 }
 
 /**
@@ -285,6 +320,23 @@ const getUserEvents = async function(userId) {
 }
 
 /**
+ * Get an entire user object.
+ * @param {string} userId
+ * @return {Promise}
+ * */
+ let getUserObject = function () {
+    return users_collection.findOne({ "users.id" :  userId}).toArray()
+        .then(user => {
+            if ( user != null ) res.status(200).json(user);
+            else res.status(400).send("No such user");
+        })
+        .catch(err => {
+            console.log("Could not get user", err.message);
+            res.status(400).send("Could not get user");
+        })
+};
+
+/**
  * Drop all data collections.
  * WARNING: This cannot be undone!
  * */
@@ -328,5 +380,6 @@ module.exports = {
     dropCollections: dropCollections,
     getPageRankCommunities: getPageRankCommunities,
     getUserEvents: getUserEvents,
+    getUserObject: getUserObject,
     getMostRecentComments: getMostRecentComments
 };

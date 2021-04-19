@@ -13,11 +13,16 @@ let demoData = makeGeneralTestData();
 let userId = demoData.adrian.id
 
 dao.init()
+    // drop old data
     .then(dao.dropCollections)
+
+    // add new data
     .then(() => dao.addUsers(pageRankDemoData.users))
     .then(() => dao.addCommunities(pageRankDemoData.communities))
     .then(() => dao.addUsers(demoData.users))
     .then(() => dao.addCommunities(demoData.communities))
+
+    // // your functions here and comment them out if needed
     // .then(() => dao.getMostRecentComments(userId, 3))
     // .then(async function(cursor) {
     //     const comments = [];
@@ -31,19 +36,26 @@ dao.init()
     //     return comments
     // })
     // .then(() => dao.getPageRankCommunities(pageRankDemoData.peter.id))
-    .then(() => dao.getUserEvents(userId))
-    .then(async function(eventsRaw) {
-        const events = [];
-        await eventsRaw.forEach(arr => {
-            arr.events.forEach((event) => {
-                let newEvent = Event.fromJSON(event)
-                if (!events.map(el => el.id).includes(newEvent.id))
-                    events.push(newEvent);
-            })
-        })
 
-        return events;
-    })
+    // .then(() => dao.getUserEvents(userId))
+    // .then(async function(eventsRaw) {
+    //     const events = [];
+    //     await eventsRaw.forEach(arr => {
+    //         arr.events.forEach((event) => {
+    //             let newEvent = Event.fromJSON(event)
+    //             if (!events.map(el => el.id).includes(newEvent.id))
+    //                 events.push(newEvent);
+    //         })
+    //     })
+    //
+    //     return events;
+    // })
+
+    // .then(() => dao.getPageRankCommunities(pageRankDemoData.peter.id))
+
+    // .then(() => dao.getUserEvents(demoData.adrian.id))
+
+    .then(() => dao.getUserObject(demoData.adrian.id))
     .then((res) => {
         console.log(res)
         console.log('done')
