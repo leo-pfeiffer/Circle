@@ -26,11 +26,12 @@ User = class {
      * */
     static fromJSON(jsn) {
 
+        let id = jsn.id;
         let userName = jsn.userName;
         let userEmail = jsn.userEmail;
 
         // Assert that the values required for the constructor are not null
-        if (userName === undefined || userEmail === undefined) return null;
+        if (id === undefined || userName === undefined || userEmail === undefined) return null;
 
         // Create the new User instance and fill in the attributes
         let user = new User(userName, userEmail)
@@ -79,6 +80,7 @@ Thread = class {
      * @param {User} author - The authoring User
      * */
     constructor(text, title, author) {
+        this.id = uuidv4()
         this.text = text
         this.title = title
         this.author = author
@@ -91,11 +93,13 @@ Thread = class {
      * */
     static fromJSON(jsn) {
         let text = jsn.text;
+        let id = jsn.id;
         let title = jsn.title;
         let author = jsn.author;
-        if (text === undefined || title === undefined || author === undefined) return null;
+        if (id === undefined || text === undefined || title === undefined || author === undefined) return null;
 
         let thread = new Thread(text, title, author)
+        thread.id = id;
         thread.comments = jsn.comments || [];
         return thread;
     }
@@ -127,6 +131,7 @@ Comment = class {
      * @param {User} author - The authoring User
      * */
     constructor(text, author) {
+        this.id = uuidv4()
         this.text = text
         this.author = author
     }
@@ -136,11 +141,14 @@ Comment = class {
      * @param {Object} jsn - The object to deserialize
      * */
     static fromJSON(jsn) {
+        let id = jsn.id;
         let text = jsn.text;
         let author = jsn.author;
 
-        if (text === undefined || author === undefined) return null;
-        return new Comment(text, author);
+        if (id === jsn.id || text === undefined || author === undefined) return null;
+        let comment = new Comment(text, author)
+        comment.id = id;
+        return comment
     }
 }
 
@@ -184,6 +192,7 @@ Community = class {
         if (communityName === undefined || admin === undefined || id === undefined) return null;
 
         let community = new Community(communityName, admin)
+        community.id = id
         community.events = jsn.events || [];
         community.users = jsn.users || [];
         community.threads = jsn.threads || [];
@@ -285,6 +294,7 @@ Event = class {
      * @param {Date} datetime - The date and time of the event
      * */
     constructor(title, description, organiser, datetime) {
+        this.id = uuidv4();
         this.title = title
         this.description = description
         this.organiser = organiser
@@ -306,16 +316,18 @@ Event = class {
      * @param {Object} jsn - The object to deserialize
      * */
     static fromJSON(jsn) {
+        let id = jsn.id;
         let title = jsn.title;
         let description = jsn.description;
         let organiser = jsn.organiser;
         let datetime = jsn.datetime;
 
-        if (title === undefined || description === undefined ||
+        if (id === undefined || title === undefined || description === undefined ||
             organiser === undefined || datetime === undefined) return null;
 
         let event = new Event(title, description, organiser, datetime);
 
+        event.id = id
         event.location = jsn.location || null;
         event.link = jsn.link || null;
 

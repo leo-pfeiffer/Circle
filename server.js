@@ -325,6 +325,25 @@ let getEvent = function (req, res, next) {
 }
 
 /**
+ * Handler function to GET all Events of the communities the user is a member of.
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+let getUserEvents = function (req, res, next) {
+
+    const userId = req.body.userId
+
+    dao.getUserEvents(userId)
+        .then(docs => res.status(200).json(docs))
+        .catch(err => {
+            console.log(`Could not get event`, err);
+            res.status(400).json({ msg: `Could not get event` });
+        })
+}
+
+
+/**
  * Handler function to get community recommendations
  * @param {Request} req
  * @param {Response} res
@@ -388,6 +407,7 @@ app.get('/api/get-community/', authenticate, getCommunity);
 app.get('/api/get-thread/', authenticate, getThread);
 app.get('/api/get-comment/', authenticate, getComment);
 app.get('/api/get-event/', authenticate, getEvent);
+app.get('/api/get-user-event/', authenticate, getUserEvents);
 app.get('/api/get-recommendation/', authenticate, getRecommendation);
 
 /*

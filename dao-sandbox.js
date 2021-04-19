@@ -3,44 +3,24 @@
  * */
 
 const dao = require('./dao');
-const {makeMoreDemoData} = require("./testData");
+const {makeGeneralTestData} = require("./testData");
 const {makePageRankDemoData} = require("./testData");
-const {PageRank} = require("./pagerank");
-const {CommunityNetwork} = require("./pagerank");
-const {getPageRankCommunities} = require("./dao");
-const {addCommunities} = require("./dao");
-const {addUsers} = require("./dao");
 const {Community} = require("./models");
 
-const {getUser} = require("./dao");
-const {dropCollections} = require("./dao");
-
 let pageRankDemoData = makePageRankDemoData();
-let moreDemoData = makeMoreDemoData();
+let demoData = makeGeneralTestData();
 
 dao.init()
-    .then(dropCollections)
-    .then(() => addUsers(pageRankDemoData.users))
-    .then(() => addCommunities(pageRankDemoData.communities))
-    .then(() => addUsers(moreDemoData.users))
-    .then(() => addCommunities(moreDemoData.communities))
-    .then(() => getPageRankCommunities(pageRankDemoData.peter.id))
+    .then(dao.dropCollections)
+    .then(() => dao.addUsers(pageRankDemoData.users))
+    .then(() => dao.addCommunities(pageRankDemoData.communities))
+    .then(() => dao.addUsers(demoData.users))
+    .then(() => dao.addCommunities(demoData.communities))
+    .then(() => dao.getPageRankCommunities(pageRankDemoData.peter.id))
+    .then(() => dao.getUserEvents(demoData.adrian.id))
     .then((res) => {
-        console.log('there we go...')
-
-        let communities = res.map(com => Community.fromJSON(com))
-        let userId = pageRankDemoData.peter.id
-        let interests = pageRankDemoData.peter.interests
-
-        let network = new CommunityNetwork(communities, userId, interests)
-        network.createGraph();
-        network.createAdjacency();
-        let v = network.getDistributionVector(0.5);
-
-        let rank = new PageRank(network.adjacency, v);
-        let result = rank.iterate(network.communityHash);
-        console.log(result)
-
+        console.log(res)
+        console.log('done')
     })
     .then(res => {
         process.exit(0);

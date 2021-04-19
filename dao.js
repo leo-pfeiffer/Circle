@@ -166,6 +166,7 @@ let addEvent = function (event) {
 /**
  * Get the communities required for the PageRank algorithm for a specific user.
  * @param {string} userId
+ * @return {Promise}
  * */
 const getPageRankCommunities = async function(userId) {
 
@@ -173,21 +174,15 @@ const getPageRankCommunities = async function(userId) {
     const pipeline = [
         // match user
         {
-            $match: {
-                "users.id": userId
-            },
+            $match: {"users.id": userId},
         },
         // unwind the user array
         {
-            $unwind: {
-                path: '$users'
-            }
+            $unwind: {path: '$users'}
         },
         // return user id as ID
         {
-            $group: {
-                _id: "$users",
-            }
+            $group: {_id: "$users",}
         },
         {
             $project: {
@@ -231,14 +226,31 @@ const getPageRankCommunities = async function(userId) {
 
     // fetch the results
     await communityCursor.forEach(community => {
-        console.log(community)
         communities.push(community)
     })
 
     return communities
 }
 
+/**
+ * Get all Events of the communities the user is a member of.
+ * @param {string} userId
+ * @return {Promise}
+ * */
+const getUserEvents = async function(userId) {
+    const eventsRaw = communities_collection.find({ "users.id" :  userId}, {'events': 1, _id: 0})
 
+    const events = [];
+    await eventsRaw.forEach(arr => {
+        arr.events.forEach((event) => {
+            let newEvent = Event.fromJSON(event)
+            if (!events.map(el => el.id).includes(newEvent.id))
+                events.push(newEvent);
+        })
+    })
+
+    return events;
+}
 
 /**
  * Drop all data collections.
@@ -282,5 +294,6 @@ module.exports = {
     getComment: getComment,
     getEvent: getEvent,
     dropCollections: dropCollections,
-    getPageRankCommunities: getPageRankCommunities
+    getPageRankCommunities: getPageRankCommunities,
+    getUserEvents: getUserEvents,
 };

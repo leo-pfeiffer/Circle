@@ -3,8 +3,7 @@
  * @param {Community} community
  * @param {Array<User>} users
  * */
-const {Community} = require("./models");
-const {User} = require("./models");
+const {Community, Event, User} = require("./models");
 const addUsersToCommunity = function(community, users) {
     for (let user of users) {
         community.addUser(user)
@@ -21,6 +20,18 @@ const addTagsToCommunity = function(community, tags) {
         community.addTag(tag)
     }
 }
+
+/**
+ * Add events from an array to a community.
+ * @param {Community} community
+ * @param {Array<Event>} events
+ * */
+const addEventsToCommunity = function(community, events) {
+    for (let event of events) {
+        community.addEvent(event);
+    }
+}
+
 
 /**
  * Add interests from an array to a user.
@@ -75,7 +86,7 @@ const makePageRankDemoData = function() {
 /**
  * Make some more demo data
  * */
-const makeMoreDemoData = function() {
+const makeGeneralTestData = function() {
 
     const adrian = new User('adrian', 'mail')
     addInterestsToUser(adrian, ['hobby1', 'hobby2', 'hobby3'])
@@ -85,9 +96,14 @@ const makeMoreDemoData = function() {
     const darren = new User('darren', 'mail')
     const aida = new User('aida', 'mail')
 
+    const brunch = new Event('Brunch', 'Yummie brunch', adrian, new Date(2021, 3, 20))
+    const lunch = new Event('Lunch', 'Yummie lunch', adrian, new Date(2021, 3, 21))
+    const dinner = new Event('Dinner', 'Yummie dinner', adrian, new Date(2021, 3, 22))
+
     const comF = new Community('F', adrian)
     addUsersToCommunity(comF, [jon, darren, aida])
     addTagsToCommunity(comF, ['hobby1', 'hobby3', 'hobby5'])
+    addEventsToCommunity(comF, [brunch, lunch])
 
     const comG = new Community('G', betty)
     addUsersToCommunity(comG, [jon, darren])
@@ -98,8 +114,9 @@ const makeMoreDemoData = function() {
     addTagsToCommunity(comH, ['hobby4', 'hobby5'])
 
     const comI = new Community('I', darren)
-    addUsersToCommunity(comI, [jon, betty])
+    addUsersToCommunity(comI, [jon, betty, adrian])
     addTagsToCommunity(comI, ['hobby1', 'hobby2', 'hobby3'])
+    addEventsToCommunity(comI, [dinner])
 
     const comJ = new Community('J', jon)
     addUsersToCommunity(comJ, [betty])
@@ -108,10 +125,10 @@ const makeMoreDemoData = function() {
     let users = [adrian, jon, betty, aida, darren]
     let communities = [comF, comG, comH, comI, comJ]
 
-    return {users, communities}
+    return {users, communities, adrian}
 }
 
 module.exports = {
     makePageRankDemoData: makePageRankDemoData,
-    makeMoreDemoData: makeMoreDemoData
+    makeGeneralTestData: makeGeneralTestData
 };
