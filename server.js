@@ -353,7 +353,7 @@ app.get('/api/get-all-users/', authenticate, getUser);
 app.get('/api/get-community/', authenticate, getCommunity);
 app.get('/api/get-thread/', authenticate, getThread);
 app.get('/api/get-comment/', authenticate, getComment);
-app.get('/api/get-event/', getEvent);
+app.get('/api/get-event/', authenticate, getEvent);
 
 /*
 * The following endpoints were introduced as a proxy in order to access external APIs that have
