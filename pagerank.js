@@ -14,7 +14,6 @@
 
 // MathJS
 const math = require('mathjs')
-const {User} = require("./models");
 const {Community} = require("./models");
 
 /**
@@ -363,40 +362,6 @@ const CommunityNetwork = class {
     }
 }
 
-// ======== Test CommunityNetwork ========
-
-/**
- * Add users from an array to a community.
- * @param {Community} community
- * @param {Array<User>} users
- * */
-const addUsersToCommunity = function(community, users) {
-    for (let user of users) {
-        community.addUser(user)
-    }
-}
-
-/**
- * Add tags from an array to a the tags of a community.
- * @param {Community} community
- * @param {Array<string>} tags
- * */
-const addTagsToCommunity = function(community, tags) {
-    for (let tag of tags) {
-        community.addTag(tag)
-    }
-}
-
-/**
- * Add interests from an array to a user.
- * @param {User} user
- * @param {Array<string>} interests
- * */
-const addInterestsToUser = function(user, interests) {
-    for (let interest of interests) {
-        user.addInterest(interest)
-    }
-}
 
 module.exports = {
     PageRank: PageRank,
