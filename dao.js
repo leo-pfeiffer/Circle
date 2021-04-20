@@ -419,6 +419,30 @@ const getUserEventsOfCommunity = async function(userId, communityId) {
 }
 
 /**
+ * Handler function to GET all tags of all communities.
+ * @param {string} communityId
+ * @return {Promise}
+ * */
+ const getAllCommunityTags = async function(communityId) {
+
+    const pipeline = [
+        {
+            $match: {"id": communityId}
+        },
+        // unwind the tags
+        {
+            $unwind: {path: "$tags"}
+        },
+        // group tags by community id 
+        {
+            $group: {_id: "$tags", communityId: {$first: "$id"}, communityTags: {$first: "$tags"}}
+        },
+    ]
+
+    return communities_collection.aggregate(pipeline);
+}
+
+/**
  * Drop all data collections.
  * WARNING: This cannot be undone!
  * */
@@ -454,7 +478,7 @@ module.exports = {
     addThreadToCommunity: addThreadToCommunity,
     addComment: addComment,
     addEvent: addEvent,
-    getUser: getUser,
+    //getUser: getUser,
     getCommunityById: getCommunityById,
     getThreadsOfCommunity: getThreadsOfCommunity,
     // getComment: getComment,
@@ -467,5 +491,6 @@ module.exports = {
     getUserEventsOfCommunity: getUserEventsOfCommunity,
     getNumberComments: getNumberComments,
     getNumberThreads: getNumberThreads,
+    getAllCommunityTags: getAllCommunityTags,
 
 };

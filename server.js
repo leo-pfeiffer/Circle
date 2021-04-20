@@ -522,6 +522,33 @@ let getUserEventsOfCommunity = function (req, res, next) {
 };
 
 /**
+ * Handler function to GET the total number of threads a user has opened. 
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+ let getAllCommunityTags = function (req, res, next) {
+    
+    const communityId = req.body.communityId
+
+    dao.getAllCommunityTags(communityId)
+    .then(async function(cursor) {
+        const allCommunityTags = [];
+        await cursor.forEach(el => {
+            let obj = {}
+                obj.community = {id: el.communityId, tags: el.communityTags}
+            allCommunityTags.push(obj);
+        })
+        return allCommunityTags
+    })
+    .then(allCommunityTags => res.status(200).json(allCommunityTags))
+    .catch(err => {
+        console.log(`Could not get all community tags`, err);
+        res.status(400).json({ msg: `Could not get all community tags` });
+    })
+};
+
+/**
  * Handler function to get community recommendations
  * @param {Request} req
  * @param {Response} res
@@ -608,8 +635,11 @@ app.get('/api/get-recommendation/', authenticate, getRecommendation);
 
 // get a user object by ID
 app.get('/api/get-user-object/', authenticate, getUserObject);
-app.get('/api/get-user-comments/', authenticate, getNumberComments),
-app.get('/api/get-user-threads/', authenticate, getNumberThreads)
+app.get('/api/get-user-comments/', authenticate, getNumberComments);
+app.get('/api/get-user-threads/', authenticate, getNumberThreads);
+
+// get tags for levenshtein distance algorithm 
+app.get('/api/get-all-community-tags', authenticate, getAllCommunityTags);
 
 // TODO LIKELY UNNECESSARY
 // app.get('/api/get-all-users/', authenticate, getUser);
