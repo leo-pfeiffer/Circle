@@ -4,7 +4,7 @@
 
 import {
     client,
-    formatDateTime,
+    formatDateTime, goToCommunity,
     goToProfile,
     isDateMatch,
     timeOfDayFormatter,
@@ -19,6 +19,68 @@ const makeCommunityHeaderVue = function() {
             },
             communityData() {
                 return client.communityData
+            }
+        },
+    })
+}
+
+const makeNewEventModalVue = function() {
+    const newEventModalVue = new Vue({
+        el: '#new-event-modal',
+        data: {
+            title: '',
+            description: '',
+            datetime: '',
+            location: '',
+            link: '',
+            message: '',
+        },
+        computed: {
+            state() {
+                return client.state;
+            },
+            communityData() {
+                return client.communityData
+            }
+        },
+        methods: {
+            createEvent() {
+                if (!(this.title && this.description && this.datetime)) {
+                    this.message = "Please enter at least a title, description and time."
+                } else if (this.datetime < new Date()){
+                    this.message = "Event should be in the future."
+                } else {
+                    const payload = {
+                        title: this.title,
+                        description: this.description,
+                        datetime: this.datetime,
+                        location: this.location,
+                        link: this.link,
+                        communityId: this.communityData.id,
+                    };
+                    fetch('/api/create-event/', {
+                        method: "POST",
+                        headers: {
+                            "Authorization": "Basic " + client.userKey,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(payload)
+                    }).then((res) => {
+                        if (!res.ok) {
+                            throw new Error('Failed to create event')
+                        } else {
+                            return res.json()
+                        }
+                    }).then((jsn) => {
+                        console.log(jsn)
+                        this.message = 'Successfully created event.'
+                        // trigger reload of the current community data
+                        goToCommunity(this.communityData.id)
+                    }).catch(err => {
+                        console.log(err)
+                        this.message = 'Failed to create event. Please try again.'
+                    })
+                }
             }
         },
     })
@@ -77,7 +139,7 @@ const makeCommunityInfoVue = function() {
                 return client.state;
             },
             isMember() {
-                return this.communityData.users.map(el => el.name).includes(client.userData.name);
+                return this.communityData.users.map(el => el.userName).includes(client.userData.name);
             },
             isAdmin() {
                 return this.communityData.admin.userName === client.userData.name;
@@ -226,4 +288,5 @@ export const makeCommunity = function () {
     makeCommunityFeedVue();
     makeCommunityCalendarVue();
     makeCommunityInfoVue();
+    makeNewEventModalVue();
 }
