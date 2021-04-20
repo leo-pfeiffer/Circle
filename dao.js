@@ -133,9 +133,7 @@ let getMostRecentComments = async function(userId, n) {
         }
     ]
 
-    const aggregationCursor = communities_collection.aggregate(pipeline)
-
-    return aggregationCursor
+    return communities_collection.aggregate(pipeline)
 }
 
 /**
@@ -320,6 +318,36 @@ const getUserEvents = async function(userId) {
 }
 
 /**
+ * Handler function to GET all Events of a specific community.
+ * @param {string} userId
+ * @param {string} communityId
+ * @return {Promise}
+ * */
+const getUserEventsOfCommunity = async function(userId, communityId) {
+
+    const pipeline = [
+        {
+            $match: {
+                "users.id": userId,
+                "id": communityId
+            }
+        },
+        // unwind the events
+        {
+            $unwind: {
+                path: "$events"
+            }
+        },
+        // group, but keep some community info
+        {
+            $group: {_id: "$events", communityId: {$first: "$id"}, communityName: {$first: "$communityName"}}
+        },
+    ]
+
+    return communities_collection.aggregate(pipeline);
+}
+
+/**
  * Get an entire user object.
  * @param {string} userId
  * @return {Promise}
@@ -381,5 +409,7 @@ module.exports = {
     getPageRankCommunities: getPageRankCommunities,
     getUserEvents: getUserEvents,
     getUserObject: getUserObject,
-    getMostRecentComments: getMostRecentComments
+    getMostRecentComments: getMostRecentComments,
+    getUserEventsOfCommunity: getUserEventsOfCommunity
+
 };

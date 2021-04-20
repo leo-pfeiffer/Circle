@@ -301,7 +301,7 @@ let getMostRecentComments = function (req, res, next) {
     let num = req.body.num;
 
     dao.getMostRecentComments(req.userId, num)
-        .then(cursor => async function() {
+        .then(async function(cursor) {
             const comments = [];
             await cursor.forEach(arr => {
                 let obj = {}
@@ -314,7 +314,7 @@ let getMostRecentComments = function (req, res, next) {
             })
             return comments
         })
-        .then(docs => res.status(200).json(docs))
+        .then(comments => res.status(200).json(comments))
         .catch(err => {
             console.log(`Could not get Thread`, err);
             res.status(400).json({ msg: `Could not get Thread` });
@@ -387,6 +387,38 @@ let getUserEvents = function (req, res, next) {
             res.status(400).json({ msg: `Could not get event` });
         })
 }
+
+/**
+ * Handler function to GET all Events of a specific community.
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+let getUserEventsOfCommunity = function (req, res, next) {
+
+    // todo get from auth
+    const userId = req.userId
+    const communityId = req.communityId
+
+    dao.getUserEventsOfCommunity(userId, communityId)
+        .then(async function(cursor) {
+            const events = [];
+            await cursor.forEach(arr => {
+                let obj = {}
+                obj.community = {id: arr.communityId, name: arr.communityName}
+                obj.event = new Event(arr._id)
+                events.push(obj);
+            })
+            return events
+        })
+        .then(events => res.status(200).json(events))
+        .catch(err => {
+            console.log(`Could not get event`, err);
+            res.status(400).json({ msg: `Could not get event` });
+        })
+}
+
+
 
 
 /**
@@ -472,6 +504,7 @@ app.get('/api/get-thread/', authenticate, getThread);
 app.get('/api/get-comment/', authenticate, getComment);
 app.get('/api/get-event/', authenticate, getEvent);
 app.get('/api/get-user-event/', authenticate, getUserEvents);
+app.get('/api/get-user-events-of-community/', authenticate, getUserEventsOfCommunity);
 app.get('/api/get-recommendation/', authenticate, getRecommendation);
 app.get('/api/get-user-object/', authenticate, getUserObject);
 

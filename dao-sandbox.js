@@ -51,11 +51,27 @@ dao.init()
     //     return events;
     // })
 
+    .then(() => {
+        let communityId = "c50fc1fb-55c3-4f09-8774-59150286bfb4"
+        return dao.getUserEventsOfCommunity(userId, communityId)
+    })
+    .then(async function(cursor) {
+        const events = [];
+        await cursor.forEach(arr => {
+            let obj = {}
+            obj.community = {id: arr.communityId, name: arr.communityName}
+            obj.event = new Event(arr._id)
+            events.push(obj);
+        })
+        return events
+    })
+
     // .then(() => dao.getPageRankCommunities(pageRankDemoData.peter.id))
 
     // .then(() => dao.getUserEvents(demoData.adrian.id))
 
-    .then(() => dao.getUserObject(demoData.adrian.id))
+    // .then(() => dao.getUserObject(demoData.adrian.id))
+
     .then((res) => {
         console.log(res)
         console.log('done')

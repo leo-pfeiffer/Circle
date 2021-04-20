@@ -111,6 +111,7 @@ const makePageRankDemoData = function() {
 const makeGeneralTestData = function() {
 
     const adrian = new User('adrian', 'mail')
+    // fix ID for testing purposes
     adrian.id = "e0cc6987-121e-4181-bc9f-0a4c0cff2bda"
     addInterestsToUser(adrian, ['hobby1', 'hobby2', 'hobby3'])
 
@@ -144,6 +145,8 @@ const makeGeneralTestData = function() {
     addUsersToCommunity(comF, [jon, darren, aida])
     addTagsToCommunity(comF, ['hobby1', 'hobby3', 'hobby5'])
     addEventsToCommunity(comF, [brunch, lunch])
+    // fix ID for testing purposes
+    comF.id = "c50fc1fb-55c3-4f09-8774-59150286bfb4";
 
     const comG = new Community('G', betty)
     addUsersToCommunity(comG, [jon, darren])
