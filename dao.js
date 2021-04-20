@@ -703,5 +703,5 @@ module.exports = {
     getMemberCommunities: getMemberCommunities,
     getOwnedCommunities: getOwnedCommunities,
     getRecentlyActiveCommunities: getRecentlyActiveCommunities,
-    updateUserInfo: updateUserInfo,
+    //updateUserInfo: updateUserInfo,
 };
