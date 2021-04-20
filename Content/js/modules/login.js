@@ -64,21 +64,39 @@ const makeLoginVue = function() {
                 }
             },
             register: function() {
-                // todo send user information to API and register the user
 
-                this.message = ""
+                this.message = ''
 
-                // todo API call to register a new user
-                let status = this.username === 'fail' ? 'fail' : 'success';
-                let registerResponse = {status: status, username: this.username}
-
-                if (registerResponse.status === 'success') {
-                    console.log('Registration successful.')
-                    this.message = "Registration successful. Please login.";
-                    this.toggleEntryType();
-                } else {
-                    console.log('Registration failed.')
-                    this.message = "Registration failed. Please try again.";
+                if (this.confirmPasswordMessage === "") {
+                    fetch('/api/register', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            username: this.username,
+                            password: this.password,
+                            email: this.email,
+                            gender: this.gender,
+                            age: this.age,
+                            location: this.location,
+                            picture: this.picture,
+                        })
+                    }).then((res) => {
+                        if (res.status === 409) {
+                            this.message = "Registration failed. Username taken. Try again.";
+                            throw new Error('Registration failed.')
+                        } else if (!res.ok) {
+                            this.message = "Registration failed. Try again.";
+                        }
+                        else {
+                            return res.json()
+                        }
+                    }).then((jsn) => {
+                        console.log('Registration successful.')
+                        this.message = "Registration successful. Please login.";
+                        this.toggleEntryType();
+                    }).catch((err) => console.log(err))
                 }
             },
             saveUploadedPicture: function(event) {

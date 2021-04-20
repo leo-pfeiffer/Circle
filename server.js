@@ -541,7 +541,10 @@ const register = async (req, res) => {
 
     const email = req.body.email;
 
-    // todo add other data
+    const gender = req.body.gender;
+    const age = req.body.age;
+    const location = req.body.location;
+    const picture = req.body.picture;
 
     let existingUser = await dao.getUserObjectByName(username)
     if (existingUser.length > 0) {
