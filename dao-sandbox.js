@@ -1,7 +1,6 @@
 /**
  * Run this file to create test data.
  * */
-
 const dao = require('./dao');
 const {makeGeneralTestData} = require("./testData");
 const {makePageRankDemoData} = require("./testData");
@@ -18,6 +17,7 @@ dao.init()
     .then(dao.dropCollections)
 
     // some users
+    .then(() => dao.registerNewUserPassword('test', 'test'))
     .then(() => dao.registerNewUserPassword('akl8', 'password'))
     .then(() => dao.registerNewUserPassword('adrian', 'password'))
     .then(() => dao.registerNewUserPassword('am557', 'password'))
@@ -205,25 +205,3 @@ dao.init()
     .then(res => {
         process.exit(0)
     })
-
-// const rl = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout
-// });
-//
-// rl.question("Running this script will wipe the data base collections? Are you sure you want to proceed? [y/n]", function(confirm) {
-//     if (confirm.toLowerCase() === 'n') {
-//         rl.close()
-//     } else {
-//         console.log('Deleting now...')
-//         dao.init()
-//             .then(dropCollections)
-//             .then(res => console.log(res))
-//             .finally(() => rl.close())
-//
-//     }
-// });
-//
-// rl.on("close", function() {
-//     process.exit(0);
-// });
