@@ -12,6 +12,7 @@ const axios = require('axios');
 const app = express();
 
 const http = require('http');
+const auth = require('basic-auth');
 const server = http.createServer(app);
 const io = require('socket.io')(server);
 
@@ -526,7 +527,7 @@ let getUserEventsOfCommunity = function (req, res, next) {
 };
 
 /**
- * Handler function to GET the total number of threads a user has opened. 
+ * Handler function to GET all community tags per community 
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -536,7 +537,7 @@ let getUserEventsOfCommunity = function (req, res, next) {
     const communityId = req.body.communityId
 
     dao.getAllCommunityTags(communityId)
-    .then(async function(cursor) {
+    .then(async function() {
         const allCommunityTags = [];
         await cursor.forEach(el => {
             let obj = {}
@@ -551,6 +552,60 @@ let getUserEventsOfCommunity = function (req, res, next) {
         res.status(400).json({ msg: `Could not get all community tags` });
     })
 };
+
+/**
+ * Handler function to GET all communities the user is a member of.
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+ let getMemberCommunities = function (req, res, next) {
+
+    const userId = req.body.userId
+
+    dao.getMemberCommunities(userId)
+        .then(async function(communityList) {
+            const memberCommunities = [];
+            await communityList.forEach(arr => {
+                arr.memberCommunities.forEach((community) => {
+                    let newComm = Event.fromJSON(community)
+                    if (!memberCommunities.map(el => el.id).includes(newComm.id))
+                    memberCommunities.push(newComm);
+                })
+            })
+
+            return events;
+        })
+        .then(docs => res.status(200).json(docs))
+        .catch(err => {
+            console.log(`Could not get member communities`, err);
+            res.status(400).json({ msg: `Could not get member communities` });
+        })
+}
+
+// let getUserEvents = function (req, res, next) {
+
+//     const userId = req.body.userId
+
+//     dao.getUserEvents(userId)
+//         .then(async function(eventsRaw) {
+//             const events = [];
+//             await eventsRaw.forEach(arr => {
+//                 arr.events.forEach((event) => {
+//                     let newEvent = Event.fromJSON(event)
+//                     if (!events.map(el => el.id).includes(newEvent.id))
+//                         events.push(newEvent);
+//                 })
+//             })
+
+//             return events;
+//         })
+//         .then(docs => res.status(200).json(docs))
+//         .catch(err => {
+//             console.log(`Could not get event`, err);
+//             res.status(400).json({ msg: `Could not get event` });
+//         })
+// }
 
 /**
  * Handler function to get community recommendations
@@ -690,6 +745,10 @@ app.get('/api/get-recommendation/', authenticate, getRecommendation);
 app.get('/api/get-user-object/', authenticate, getUserObject);
 app.get('/api/get-user-comments/', authenticate, getNumberComments);
 app.get('/api/get-user-threads/', authenticate, getNumberThreads);
+
+// get community lists for sidenav access
+// get all communities the user is a member of 
+app.get('/api/get-member-communities/', authenticate, getMemberCommunities)
 
 // get tags for levenshtein distance algorithm 
 app.get('/api/get-all-community-tags', authenticate, getAllCommunityTags);

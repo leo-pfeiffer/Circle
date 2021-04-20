@@ -197,9 +197,7 @@ dao.init()
     // .then(async function(cursor) {
     //     await cursor.forEach(el => console.log(el))
     // })
-       
-    
-
+   
     .then((res) => {
         console.log(res)
         console.log('done')
