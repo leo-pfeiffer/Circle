@@ -230,7 +230,7 @@
                     <!-- Community header with name -->
                     <div id="community-header" v-show="state === 'community'">
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                            <h1 class="h3 mb-0 text-white"><i class="text-white" v-bind:class="symbol"></i> {{ name }} </h1>
+                            <h1 class="h3 mb-0 text-white"><i class="text-white" v-bind:class="communityData.symbol"></i> {{ communityData.communityName }} </h1>
                         </div>
                     </div>
                     <!-- End of Community header with name -->
@@ -238,7 +238,7 @@
                     <!-- Dashboard header -->
                     <div id="dashboard-header" v-show="state === 'dashboard'">
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                            <h1 class="h3 mb-0 text-white">Shortlisted communities</h1>
+                            <h1 class="h3 mb-0 text-white">Recently active communities</h1>
                         </div>
                     </div>
                     <!-- End of Community header with name -->
@@ -251,7 +251,7 @@
                                 <div class="card-body bg-secondary">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <div class="h5 mb-0 font-weight-bold text-white">{{ community.name }}</div>
+                                            <div class="h5 mb-0 font-weight-bold text-white">{{ community.communityName }}</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-users fa-2x text-gray-300"></i>
@@ -460,14 +460,15 @@
 
                                         <div v-for="(event, index) in eventsOnSelectedDay">
                                             <div class="card border-left-warning shadow">
-                                                <div class="card-body is-link" v-on:click="goToCommunity(event.community.id)">
+                                                <!-- Add link to event -->
+                                                <div class="card-body is-link">
                                                     <div class="row no-gutters align-items-center">
                                                         <div class="col mr-2">
                                                             <h5>{{ event.title }} @ {{ timeOfDayFormatter(event.datetime) }}</h5>
                                                             <div class="text text-danger mb-1">
-                                                                <span class="text-primary">Created by </span> {{ event.organiser.username }}<span class="text-primary">.</span>
+                                                                <span class="text-primary">Created by </span> {{ event.organiser.userName }}<span class="text-primary">.</span>
                                                             </div>
-                                                            <div>{{ event.desciption }}</div>
+                                                            <div>{{ event.description }}</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -529,10 +530,10 @@
                                             </div>
                                         </div>
 
-                                        <hr class="sidebar-divider" v-show="threads.length > 0">
+                                        <hr class="sidebar-divider" v-show="communityData.threads.length > 0">
 
                                         <!-- Threads -->
-                                        <div class="card shadow mb-4" v-for="(thread, index) in threads">
+                                        <div class="card shadow mb-4" v-for="(thread, index) in communityData.threads">
                                             <a v-bind:href="`#thread${thread.id}`" class="d-block card-header py-3" data-toggle="collapse" role="button">
                                                 <h6 class="m-0 font-weight-bold text-primary">{{ thread.title }}</h6>
                                             </a>
@@ -546,7 +547,7 @@
                                                         <div class="card-body">
                                                             <div class="row no-gutters align-items-center">
                                                                 <div class="col mr-2">
-                                                                    <div class="text-xs text-warning mb-1">{{ thread.author }} <span class="text-gray-700">{{ thread.time }}</span></div>
+                                                                    <div class="text-xs text-warning mb-1">{{ thread.author.userName }} <span class="text-gray-700">{{ thread.time }}</span></div>
                                                                     <div>{{ thread.text }}</div>
                                                                 </div>
                                                             </div>
@@ -561,7 +562,7 @@
                                                             <div class="card-body">
                                                                 <div class="row no-gutters align-items-center">
                                                                     <div class="col mr-2">
-                                                                        <div class="text-xs text-primary mb-1">{{ comment.author}} <span class="text-gray-700">{{ comment.time }}</span></div>
+                                                                        <div class="text-xs text-primary mb-1">{{ comment.author.userName}} <span class="text-gray-700">{{ comment.time }}</span></div>
                                                                         <div>{{ comment.text }}</div>
                                                                     </div>
                                                                 </div>
@@ -613,20 +614,20 @@
                                 <div class="card-body bg-secondary">
                                     <div class="text-white">
                                         <h2 class="h3 mb-0 text-white">
-                                            <i class="text-white" v-bind:class="symbol"></i>{{ name }}
+                                            <i class="text-white" v-bind:class="communityData.symbol"></i>{{ communityData.communityName }}
                                             <button class="btn btn-sm btn-primary float-right" v-on:click="join" v-show="!isMember">
                                                 Join <i class="text-white fas fa-sign-in-alt"></i>
                                             </button>
                                         </h2>
 
                                         <hr>
-                                        <p>{{ description }}</p>
+                                        <p>{{ communityData.description }}</p>
                                         <hr>
-                                        <p>Admin: {{ admin }}</p>
+                                        <p>Admin: {{ communityData.admin.userName }}</p>
                                         <hr>
                                         <div class="custom-tag-container">
                                             <!-- display existing tags -->
-                                            <span class="custom-tag" v-for="tag in tags" v-bind:class="[ isAdmin ? 'editable' : '']">
+                                            <span class="custom-tag" v-for="tag in communityData.tags" v-bind:class="[ isAdmin ? 'editable' : '']">
                                                 <button class="btn btn-info btn-circle btn-sm font-weight-bolder" v-on:click="removeTag(tag)" v-show="isAdmin">&times;</button> {{ tag }}
                                             </span>
                                             <!-- add tags -->
@@ -642,8 +643,8 @@
                                                 <span class="text-white">Users</span>
                                             </a>
                                             <div id="collapseUsers" class="collapse">
-                                                <span v-for="u in getMostFrequentContributors()">
-                                                    <img v-bind:src="u.picture" class="small-user-img is-link" v-bind:title="u.name" v-on:click="goToProfile(u.id)">
+                                                <span v-for="u in this.communityData.users">
+                                                    <img v-bind:src="u.picture" class="small-user-img is-link" v-bind:title="u.userName" v-on:click="goToProfile(u.id)">
                                                 </span>
                                             </div>
                                         </div>

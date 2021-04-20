@@ -17,6 +17,11 @@ export const client = Vue.observable({
     communityData: {
         id: '',
         name: '',
+        admin: {},
+        users: [],
+        events: [],
+        threads: [],
+        symbol: '',
     },
     profileData: {
         id: '',
@@ -38,15 +43,6 @@ const resetClientData = function () {
     client.userData.picture = '';
 }
 
-/**
- * Reset the communityData of the client Vue observable to its default values
- * */
-const resetCommunityData = function () {
-    client.communityData = {
-        id: '',
-        name: '',
-    }
-}
 
 /**
  * Reset the profileData of the client Vue observable to its default values
@@ -83,8 +79,8 @@ export const setState = function (newState) {
 
     else if (newState === "dashboard") {
         getMostRecentActivities();
+        getMostRecentlyActiveCommunities();
         leaveRoom(client.communityData.id);
-        resetCommunityData();
         resetProfileData();
         getUpdateCalendar();
     }
@@ -95,25 +91,21 @@ export const setState = function (newState) {
 
     else if (newState === "profile") {
         leaveRoom(client.communityData.id);
-        resetCommunityData();
     }
 
     else if (newState === "logout") {
         leaveRoom(client.communityData.id);
-        resetCommunityData();
         resetClientData();
         resetProfileData();
     }
 
     else if (newState === "search") {
         leaveRoom(client.communityData.id);
-        resetCommunityData();
         resetProfileData();
     }
 
     else if (newState === "calendar") {
         leaveRoom(client.communityData.id);
-        resetCommunityData();
         resetProfileData();
     }
 
@@ -224,11 +216,76 @@ const getMostRecentActivities = function () {
 }
 
 /**
+ * Vue observable for the most recent activities.
+ * */
+export const mostRecentCommunities = Vue.observable({
+    communities: [],
+})
+
+/**
+ * Get the most recent activities to display on the dashboard.
+ * */
+const getMostRecentlyActiveCommunities = function() {
+
+    fetch('/api/get-recent-communities/', {
+        method: "POST",
+        headers: {
+            "Authorization": "Basic " + client.userKey,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            // at most 4 communities
+            num: 4
+        })
+    }).then((res) => {
+        if (!res.ok) {
+            throw new Error('Failed to get most recent activities')
+        } else {
+            return res.json();
+        }
+    }).then((jsn) => {
+        mostRecentCommunities.communities = [];
+
+        jsn.forEach(comm => {
+            mostRecentCommunities.communities.push(comm)
+        })
+    }).catch(err => console.log(err))
+}
+
+
+/**
+ * Get a community with all its data and save it to the client observable.
+ * */
+const getCommunity = function (communityId) {
+
+    fetch('/api/community-by-id/', {
+        method: "POST",
+        headers: {
+            "Authorization": "Basic " + client.userKey,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            communityId: communityId
+        })
+    }).then((res) => {
+        if (!res.ok) {
+            throw new Error('Failed to get most recent activities')
+        } else {
+            return res.json();
+        }
+    }).then((jsn) => {
+        client.communityData = jsn;
+        console.log('getCommunity', jsn.id)
+    }).catch(err => console.log(err))
+}
+
+/**
  * Go to the community with ID `communityId`
  * @param {string} communityId
  * */
-export const goToCommunity = function (communityId) {
-    // todo call API
+export const goToCommunity = function(communityId) {
+    console.log('supposed to got to community', communityId)
+    getCommunity(communityId)
     // go to community with id `communityId`
     setState('community')
     client.communityData.id = communityId;

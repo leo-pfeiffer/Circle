@@ -289,13 +289,15 @@ let getCommunityById = async function (req, res, next) {
 
     let communityId = req.body.communityId
 
-    dao.getCommunityById(communityId)
-        .then(community => Community.fromJSON(community))
-        .then(community => res.status(200).json(community))
-        .catch(err => {
-            console.log(`Could not get community`, err);
-            res.status(400).json({ msg: `Could not get community` });
-        })
+    let cursor = dao.getCommunityById(communityId)
+    let communities = await cursor.toArray();
+
+    if (communities.length > 0) {
+        let community = Community.fromJSON(communities[0])
+        res.status(200).json(community)
+    } else {
+        res.status(400).json({msg: 'Could not get community'})
+    }
 }
 
 /**
@@ -353,6 +355,33 @@ let getMostRecentComments = function (req, res, next) {
         .catch(err => {
             console.log(`Could not get Thread`, err);
             res.status(400).json({ msg: `Could not get Thread` });
+        })
+}
+
+/**
+ * Handler function to GET most recent Communities
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+let getMostRecentCommunities = function (req, res, next) {
+
+    // how many of the most recent threads to get
+    let num = req.body.num;
+
+    dao.getMostRecentCommunities(req.userId, num)
+        .then(async function(cursor) {
+            let communities = [];
+            await cursor.forEach(com => {
+                let community = Community.fromJSON(com)
+                communities.push(community);
+            })
+            return communities
+        })
+        .then(communities => res.status(200).json(communities))
+        .catch(err => {
+            console.log(`Could not get Thread`, err);
+            res.status(400).json({ msg: `Could not get most recent communities` });
         })
 }
 
@@ -531,7 +560,7 @@ let getNumberCommentsOfCommunity = function (req, res, next) {
  * */
  let getNumberThreads = function (req, res, next) {
     
-    const userId = req.body.userId
+    const userId = req.userId
 
     dao.getNumberThreads(userId)
     .then(async function(cursor) {
@@ -633,7 +662,7 @@ let getNumberCommentsOfCommunity = function (req, res, next) {
  * */
  let getMemberCommunities = function (req, res, next) {
 
-    const userId = req.body.userId
+    const userId = req.userId
 
     dao.getMemberCommunities(userId)
         .then(async function(communityList) {
@@ -655,29 +684,63 @@ let getNumberCommentsOfCommunity = function (req, res, next) {
         })
 }
 
-// let getUserEvents = function (req, res, next) {
+/**
+ * Handler function to GET all communities the user is the owner of.
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+ let getOwnedCommunities = function (req, res, next) {
 
-//     const userId = req.body.userId
+    const userId = req.userId
 
-//     dao.getUserEvents(userId)
-//         .then(async function(eventsRaw) {
-//             const events = [];
-//             await eventsRaw.forEach(arr => {
-//                 arr.events.forEach((event) => {
-//                     let newEvent = Event.fromJSON(event)
-//                     if (!events.map(el => el.id).includes(newEvent.id))
-//                         events.push(newEvent);
-//                 })
-//             })
+    dao.getOwnedCommunities(userId)
+        .then(async function(communityList) {
+            const ownedCommunities = [];
+            await communityList.forEach(arr => {
+                arr.ownedCommunities.forEach((community) => {
+                    let newComm = Event.fromJSON(community)
+                    if (!ownedCommunities.map(el => el.id).includes(newComm.id))
+                    memberCommunities.push(newComm);
+                })
+            })
 
-//             return events;
-//         })
-//         .then(docs => res.status(200).json(docs))
-//         .catch(err => {
-//             console.log(`Could not get event`, err);
-//             res.status(400).json({ msg: `Could not get event` });
-//         })
-// }
+            return events;
+        })
+        .then(docs => res.status(200).json(docs))
+        .catch(err => {
+            console.log(`Could not get owned communities`, err);
+            res.status(400).json({ msg: `Could not get owned communities` });
+        })
+}
+
+/**
+ * Handler function to GET recently active communities
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+ let getRecentlyActiveCommunities = function (req, res, next) {
+
+    // how many of the recently active communities to get
+    let num = req.body.num;
+
+    dao.getRecentlyActiveCommunities(req.userId, num)
+        .then(async function(cursor) {
+            const communities = [];
+            await cursor.forEach(arr => {
+                let obj = {}
+                obj.communities = {id: arr.communityId, name: arr.communityName}
+                communities.push(obj);
+            })
+            return communities
+        })
+        .then(communities => res.status(200).json(communities))
+        .catch(err => {
+            console.log(`Could not get recently active communities`, err);
+            res.status(400).json({ msg: `Could not get recently active communities` });
+        })
+}
 
 /**
  * Handler function to get community recommendations
@@ -809,7 +872,7 @@ app.post('/api/create-comment/', authenticate, createComment);
 app.post('/api/create-event/', authenticate, createEvent);
 
 // get a community by its ID
-app.get('/api/get-community-by-id/', authenticate, getCommunityById);
+app.post('/api/community-by-id/', authenticate, getCommunityById);
 
 // get all threads of a community
 app.get('/api/get-threads-of-community/', authenticate, getThreadsOfCommunity);
@@ -822,6 +885,7 @@ app.post('/api/get-user-events-of-community/', authenticate, getUserEventsOfComm
 
 // get most recent comments of a user
 app.post('/api/get-recent-comments/', authenticate, getMostRecentComments);
+app.post('/api/get-recent-communities/', authenticate, getMostRecentCommunities);
 
 // get result of the recommendation system
 app.get('/api/get-recommendation/', authenticate, getRecommendation);
@@ -836,10 +900,11 @@ app.get('/api/get-number-threads-community/', authenticate, getNumberThreadsOfCo
 app.get('/api/get-number-events-community/', authenticate, getNumberEventsOfCommunity);
 
 
-
 // get community lists for sidenav access
 // get all communities the user is a member of 
-app.get('/api/get-member-communities/', authenticate, getMemberCommunities)
+app.get('/api/get-member-communities/', authenticate, getMemberCommunities);
+app.get('/api/get-owned-communities/', authenticate, getOwnedCommunities);
+app.get('/api/get-recently-active-communities/', authenticate, getRecentlyActiveCommunities);
 
 // get tags for levenshtein distance algorithm 
 app.get('/api/get-all-community-tags', authenticate, getAllCommunityTags);
