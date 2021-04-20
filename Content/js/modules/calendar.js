@@ -30,6 +30,7 @@ const makeMainCalendarVue = function () {
             },
             events() {
                 return updateCalendar.events
+                console.log(updateCalendar.events)
             },
             /**
              * Return all events of the currently selected day sorted by time of event.
