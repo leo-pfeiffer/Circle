@@ -12,12 +12,13 @@ const communities_data = config.collection[1];
 const threads_data = config.collection[2];
 const comments_data = config.collection[3];
 const events_data = config.collection[4];
+const user_passwords_data = config.collection[5];
 
 /**
  * MongoDB collections.
  * @type {Collection}
  * */
-let collection, users_collection, communities_collection, threads_collection, comments_collection, events_collection
+let collection, users_collection, communities_collection, user_passwords_collection
 
 //=== test data ===
 //this is added to the DB everytime the program runs 
@@ -33,6 +34,7 @@ let init = function () {
             //if the collection does not exist it will automatically be created
             users_collection = client.db().collection(users_data);
             communities_collection = client.db().collection(communities_data);
+            user_passwords_collection = client.db().collection(user_passwords_data);
 
             // todo obsolete
             // events_collection = client.db().collection(events_data);
@@ -441,6 +443,26 @@ const getUserEventsOfCommunity = async function(userId, communityId) {
 
     return communities_collection.aggregate(pipeline);
 }
+/**  Get an entire user object by name.
+ * @param {string} userName
+ * @return {Promise}
+ */
+
+let getUserObjectByName = function (userName) {
+    return user_passwords_collection.find({ "userName" :  userName}).toArray()
+};
+
+let registerNewUserPassword = function(username, password) {
+    return user_passwords_collection.insertOne({userName: username, password: password})
+}
+
+let authenticateUser = async function(username, password) {
+    let results = await user_passwords_collection.find({userName: username, password: password}).toArray()
+    let length = results.length
+    return length === 1;
+}
+
+
 
 /**
  * Drop all data collections.
@@ -453,6 +475,7 @@ const dropCollections = function() {
         threads_data,
         comments_data,
         events_data,
+        user_passwords_data,
         'test_collection',
         'collection'
     ]
@@ -462,6 +485,7 @@ const dropCollections = function() {
         client.db().listCollections({name: col})
             .next((err, collectionInfo) => {
                 if (collectionInfo) {
+                    console.log(col)
                     client.db().collection(col).drop()
                 }
             });
@@ -477,8 +501,9 @@ module.exports = {
     addCommunities: addCommunities,
     addThreadToCommunity: addThreadToCommunity,
     addComment: addComment,
+    getUserObjectByName: getUserObjectByName,
     addEvent: addEvent,
-    //getUser: getUser,
+    // getUser: getUser,
     getCommunityById: getCommunityById,
     getThreadsOfCommunity: getThreadsOfCommunity,
     // getComment: getComment,
@@ -492,5 +517,6 @@ module.exports = {
     getNumberComments: getNumberComments,
     getNumberThreads: getNumberThreads,
     getAllCommunityTags: getAllCommunityTags,
-
+    registerNewUserPassword: registerNewUserPassword,
+    authenticateUser: authenticateUser
 };

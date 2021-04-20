@@ -27,17 +27,21 @@ const API_PORT = 3000;
  * @param {Response} res
  * @param {NextFunction} next
  * */
-let authenticate = function (req, res, next) {
-    let user = basicAuth(req);
+let authenticate = async function (req, res, next) {
+    let loginData = basicAuth(req);
+
     // check DB
-    let validUser = true;
+    let validUser = await dao.authenticateUser(loginData.name, loginData.pass);
     if (!validUser) {
         // make the browser ask for credentials if none/wrong are provided
         return res.sendStatus(401);
     }
-    req.username = user.username;
-    // todo
-    // req.userId = user.id;
+
+    let userObjects = await dao.getUserObjectByName(loginData.name)
+    let user = User.fromJSON(userObjects[0])
+
+    req.username = user.userName;
+    req.userId = user.id;
     next();
 };
 
@@ -600,8 +604,54 @@ const getJoke = function (req, res, next) {
 }
 
 /**
+ * Handler function to allow registration.
+ * @param {Request} req
+ * @param {Response} res
+ * */
+const register = async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const email = req.body.email;
+
+    // todo add other data
+
+    let existingUser = await dao.getUserObjectByName(username)
+    if (existingUser.length > 0) {
+        res.status(409).json({'msg': `Username ${username} is already taken.`})
+    } else {
+        dao.registerNewUserPassword(username, password).then((res) => {
+            console.log(res)
+            return new User(username, email)
+        }).then(async (user) => {
+            let addedUserIds = await dao.addUser(user)
+            console.log(addedUserIds)
+            res.status(200).json({msg: 'added', user: user})
+        }).catch(err => res.status(400).json({msg: 'registration failed'}))
+    }
+}
+
+
+/**
+ * Login a user. Send only a response as the point is to go through authentication once to
+ * verify the user. If that fails, we don't even get to this point.
+ * @param {Request} req
+ * @param {Response} res
+ * */
+const login = async function(req, res) {
+    res.status(200).json({'msg': 'success'});
+}
+
+/**
  * The following API endpoints allow the client to interact with the server.
  * */
+
+// Register
+app.post('/api/register', register)
+
+// Login an existing user
+app.post('/api/register', authenticate, login)
+
 
 // Create a new user
 app.post('/api/create-user/', authenticate, createUser);
