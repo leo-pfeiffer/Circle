@@ -226,61 +226,68 @@ let createComment = async (req, res, next) => {
 }
 
 // handler function for adding Event object
-let createEvent = (req, res, next) => {
+let createEvent = async (req, res, next) => {
     let body = req.body;
     let title = body.title;
     let description = body.description;
-    let communityName = body.communityName
-    let userName = body.admin.userName
-    let userEmail = body.admin.userEmail
-    let datetime = new Date()
 
-    //creating new User, Community and Event instances
-    let author = new User(userName, userEmail)
-    let community = new Community(communityName, author)
-    let event = new Event(title,description,community, author,datetime)
+    let communityId = body.communityId
+    let datetime = body.datetime
+
+    // todo authenticate
+    let  userId = req.userId;
+
+    // get user
+    let author = await dao.getUserObject(userId)
+        .then((res) => {
+            return User.fromJSON(res)
+        }).catch(err => {
+            console.log(`Could not find user`, err);
+            res.status(404).json({ msg: `Could not find user` });
+        });
+
+    let event = new Event(title, description, author, datetime)
 
     //adding new Event instance to the database
-    dao.addEvent(event)
-    .then((id) => {
-     res.status(200).json({ msg: `Added new event '${event}'` });
-    })
-    .catch(err => {
-        console.log(`Could not add event`, err);
-        res.status(400).json({ msg: `Could not add event` });
-    });
-}
-
-/**
- * Handler function to GET User objects
- * @param {Request} req
- * @param {Response} res
- * @param {NextFunction} next
- * */
-let getUser = function (req, res, next) {
-    //retrieving data from DB (from users_collection)
-    dao.getUser()
-        .then(docs => {
-            res.status(200).json(docs);
-        })
+    dao.addEvent(communityId, event)
+        .then(() => res.status(200).json({ msg: `Added new comment '${event.id}' to community ${communityId}` }))
         .catch(err => {
-            console.log(`Could not get users`, err);
-            res.status(400).json({ msg: `Could not get users` });
-        })
+            console.log(`Could not add comment`, err);
+            res.status(400).json({ msg: `Could not add comment` });
+        });
 }
 
+// /**  TODO: LIKELY OBSOLETE
+//  * Handler function to GET User objects
+//  * @param {Request} req
+//  * @param {Response} res
+//  * @param {NextFunction} next
+//  * */
+// let getUser = function (req, res, next) {
+//     //retrieving data from DB (from users_collection)
+//     dao.getUser()
+//         .then(docs => {
+//             res.status(200).json(docs);
+//         })
+//         .catch(err => {
+//             console.log(`Could not get users`, err);
+//             res.status(400).json({ msg: `Could not get users` });
+//         })
+// }
+
 /**
- * Handler function to GET Community objects 
+ * Handler function to GET Community object by id
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
  * */
-let getCommunity = function (req, res, next) {
-    //retrieving data from DB (from communities_collection)
-    dao.getCommunity()
-        .then(docs => {
-            res.status(200).json(docs);
-        })
+let getCommunityById = async function (req, res, next) {
+
+    let communityId = req.body.communityId
+
+    dao.getCommunityById(communityId)
+        .then(community => Community.fromJSON(community))
+        .then(community => res.status(200).json(community))
         .catch(err => {
             console.log(`Could not get community`, err);
             res.status(400).json({ msg: `Could not get community` });
@@ -347,45 +354,40 @@ let getMostRecentComments = function (req, res, next) {
         })
 }
 
-/**
- *
- * TODO THIS IS LIKELY UNNECESSARY
- *
- * Handler function to GET Comment objects
- * @param {Request} req
- * @param {Response} res
- * @param {NextFunction} next
- * */
-let getComment = function (req, res, next) {
-    //retrieving data from DB (from comments_collection)
-    dao.getComment()
-        .then(docs => {
-            res.status(200).json(docs);
-        })
-        .catch(err => {
-            console.log(`Could not get Comment`, err);
-            res.status(400).json({ msg: `Could not get Comment` });
-        })
+// /**
+//  * TODO LIKELY OBSOLETE
+//  *
+//  * Handler function to GET Comment objects
+//  * @param {Request} req
+//  * @param {Response} res
+//  * @param {NextFunction} next
+//  * */
+// let getComment = function (req, res, next) {
+//     //retrieving data from DB (from comments_collection)
+//     dao.getComment()
+//         .then(docs => res.status(200).json(docs))
+//         .catch(err => {
+//             console.log(`Could not get Comment`, err);
+//             res.status(400).json({ msg: `Could not get Comment` });
+//         })
+// }
 
-}
-
-/**
- * Handler function to GET Event objects
- * @param {Request} req
- * @param {Response} res
- * @param {NextFunction} next
- * */
-let getEvent = function (req, res, next) {
-    //retrieving data from DB (from events_collection)
-    dao.getEvent()
-        .then(docs => {
-            res.status(200).json(docs);
-        })
-        .catch(err => {
-            console.log(`Could not get event`, err);
-            res.status(400).json({ msg: `Could not get event` });
-        })
-}
+// /**
+//  * TODO OBSOLETE
+//  * Handler function to GET Event objects
+//  * @param {Request} req
+//  * @param {Response} res
+//  * @param {NextFunction} next
+//  * */
+// let getEvent = function (req, res, next) {
+//     //retrieving data from DB (from events_collection)
+//     dao.getEvent()
+//         .then(docs => res.status(200).json(docs))
+//         .catch(err => {
+//             console.log(`Could not get event`, err);
+//             res.status(400).json({ msg: `Could not get event` });
+//         })
+// }
 
 /**
  * Handler function to GET all Events of the communities the user is a member of.
@@ -427,7 +429,7 @@ let getUserEventsOfCommunity = function (req, res, next) {
 
     // todo get from auth
     const userId = req.userId
-    const communityId = req.communityId
+    const communityId = req.body.communityId
 
     dao.getUserEventsOfCommunity(userId, communityId)
         .then(async function(cursor) {
@@ -573,25 +575,46 @@ const getJoke = function (req, res, next) {
 /**
  * The following API endpoints allow the client to interact with the server.
  * */
+
+// Create a new user
 app.post('/api/create-user/', authenticate, createUser);
+
+// Create a new community
 app.post('/api/create-community/', authenticate, createCommunity);
+
+// Create a new thread in a community
 app.post('/api/create-thread/', authenticate, createThread);
+
+// Create a new comment in a thread
 app.post('/api/create-comment/', authenticate, createComment);
+
+// Create a new event in a community
 app.post('/api/create-event/', authenticate, createEvent);
-app.get('/api/get-all-users/', authenticate, getUser);
-app.get('/api/get-community/', authenticate, getCommunity);
+
+// get a community by its ID
+app.get('/api/get-community-by-id/', authenticate, getCommunityById);
+
+// get all threads of a community
 app.get('/api/get-threads-of-community/', authenticate, getThreadsOfCommunity);
 
-// TODO LIKELY UNNECESSARY
-// app.get('/api/get-comment/', authenticate, getComment);
-
-app.get('/api/get-event/', authenticate, getEvent);
+// get all events of a user
 app.get('/api/get-user-event/', authenticate, getUserEvents);
+
+// get all events of a user of a specific community
 app.get('/api/get-user-events-of-community/', authenticate, getUserEventsOfCommunity);
+
+// get result of the recommendation system
 app.get('/api/get-recommendation/', authenticate, getRecommendation);
+
+// get a user object by ID
 app.get('/api/get-user-object/', authenticate, getUserObject);
 app.get('/api/get-user-comments/', authenticate, getNumberComments),
 app.get('/api/get-user-threads/', authenticate, getNumberThreads)
+
+// TODO LIKELY UNNECESSARY
+// app.get('/api/get-all-users/', authenticate, getUser);
+// app.get('/api/get-comment/', authenticate, getComment);
+// app.get('/api/get-event/', authenticate, getEvent);
 
 /*
 * The following endpoints were introduced as a proxy in order to access external APIs that have

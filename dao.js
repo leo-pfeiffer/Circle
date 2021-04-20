@@ -59,25 +59,24 @@ let init = function () {
         })
 }
 
-/**
- * Returns all data stored in users_collection.
- * @param {Array<User>} users
- * @return {Promise}
- * */
-let getUser = function () {
-    return users_collection.find({}).toArray()
-        .then(users => users.map(user => User.fromJSON(user)));
-}
+// /**
+//  * TODO LIKELY OBSOLETE
+//  * Returns all data stored in users_collection.
+//  * @param {Array<User>} users
+//  * @return {Promise}
+//  * */
+// let getUser = function () {
+//     return users_collection.find({}).toArray()
+//         .then(users => users.map(user => User.fromJSON(user)));
+// }
 
 /**
  * Returns all data stored in communities_collection
- * @param {Array<Community>} communities
+ * @param {string} communityId
  * @return {Promise}
  * */
-let getCommunity = function () {
-    return communities_collection.find({}).toArray()
-        .then(communities => communities.map(community => Community.fromJSON(community)))
-        .catch(err=>console.log("Could not find",err.message));
+let getCommunityById = function (communityId) {
+    return communities_collection.find({"id": communityId})
 }
 
 /**
@@ -149,28 +148,29 @@ let getMostRecentComments = async function(userId, n) {
     return communities_collection.aggregate(pipeline)
 }
 
-/**
- * Returns all data stored in comments_collection
- * @param {Array<Comment>} comments
- * @return {Promise}
- * */
-let getComment = function () {
-    // todo this is likely unnecessary => if not, get from community collection
-    // return comments_collection.find({}).toArray()
-    //     .then(comments => comments.map(comment => Comment.fromJSON(comment)))
-    //     .catch(err=>console.log("Could not find",err.message));
-}
+// /**
+//  * // todo this is likely unnecessary => if not, get from community collection
+//  * Returns all data stored in comments_collection
+//  * @param {Array<Comment>} comments
+//  * @return {Promise}
+//  * */
+// let getComment = function () {
+//     return comments_collection.find({}).toArray()
+//         .then(comments => comments.map(comment => Comment.fromJSON(comment)))
+//         .catch(err=>console.log("Could not find",err.message));
+// }
 
-/**
- * Returns all data stored in events_collection
- * @param {Array<Event>} events
- * @return {Promise}
- * */
-let getEvent = function () {
-    return events_collection.find({}).toArray()
-        .then(events => events.map(event => Event.fromJSON(event)))
-        .catch(err=>console.log("Could not find",err.message));
-}
+// /**
+//  * TODO LIKELY OBSOLETE
+//  * Returns all data stored in events_collection
+//  * @param {Array<Event>} events
+//  * @return {Promise}
+//  * */
+// let getEvent = function () {
+//     return events_collection.find({}).toArray()
+//         .then(events => events.map(event => Event.fromJSON(event)))
+//         .catch(err=>console.log("Could not find",err.message));
+// }
 
 /**
  * Insert User object into DB.
@@ -246,14 +246,15 @@ let addComment = function (comment, threadId) {
 
 /**
  * Insert Event object into DB.
+ * @param {string} communityId
  * @param {Event} event
  * @return {Promise}
  * */
-let addEvent = function (event) {
-    return events_collection.insertOne(event)
-        .then(res => {
-            return res.insertedId
-        });
+let addEvent = function (communityId, event) {
+    return communities_collection.updateOne(
+        { id: communityId },
+        { $push: { events: event } }
+    )
 }
 
 /**
@@ -454,10 +455,10 @@ module.exports = {
     addComment: addComment,
     addEvent: addEvent,
     getUser: getUser,
-    getCommunity: getCommunity,
+    getCommunityById: getCommunityById,
     getThreadsOfCommunity: getThreadsOfCommunity,
-    getComment: getComment,
-    getEvent: getEvent,
+    // getComment: getComment,
+    // getEvent: getEvent,
     dropCollections: dropCollections,
     getPageRankCommunities: getPageRankCommunities,
     getUserEvents: getUserEvents,
