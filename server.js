@@ -289,13 +289,15 @@ let getCommunityById = async function (req, res, next) {
 
     let communityId = req.body.communityId
 
-    dao.getCommunityById(communityId)
-        .then(community => Community.fromJSON(community))
-        .then(community => res.status(200).json(community))
-        .catch(err => {
-            console.log(`Could not get community`, err);
-            res.status(400).json({ msg: `Could not get community` });
-        })
+    let cursor = dao.getCommunityById(communityId)
+    let communities = await cursor.toArray();
+
+    if (communities.length > 0) {
+        let community = Community.fromJSON(communities[0])
+        res.status(200).json(community)
+    } else {
+        res.status(400).json({msg: 'Could not get community'})
+    }
 }
 
 /**
@@ -353,6 +355,33 @@ let getMostRecentComments = function (req, res, next) {
         .catch(err => {
             console.log(`Could not get Thread`, err);
             res.status(400).json({ msg: `Could not get Thread` });
+        })
+}
+
+/**
+ * Handler function to GET most recent Communities
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+let getMostRecentCommunities = function (req, res, next) {
+
+    // how many of the most recent threads to get
+    let num = req.body.num;
+
+    dao.getMostRecentCommunities(req.userId, num)
+        .then(async function(cursor) {
+            let communities = [];
+            await cursor.forEach(com => {
+                let community = Community.fromJSON(com)
+                communities.push(community);
+            })
+            return communities
+        })
+        .then(communities => res.status(200).json(communities))
+        .catch(err => {
+            console.log(`Could not get Thread`, err);
+            res.status(400).json({ msg: `Could not get most recent communities` });
         })
 }
 
@@ -843,7 +872,7 @@ app.post('/api/create-comment/', authenticate, createComment);
 app.post('/api/create-event/', authenticate, createEvent);
 
 // get a community by its ID
-app.get('/api/get-community-by-id/', authenticate, getCommunityById);
+app.post('/api/community-by-id/', authenticate, getCommunityById);
 
 // get all threads of a community
 app.get('/api/get-threads-of-community/', authenticate, getThreadsOfCommunity);
@@ -856,6 +885,7 @@ app.get('/api/get-user-events-of-community/', authenticate, getUserEventsOfCommu
 
 // get most recent comments of a user
 app.post('/api/get-recent-comments/', authenticate, getMostRecentComments);
+app.post('/api/get-recent-communities/', authenticate, getMostRecentCommunities);
 
 // get result of the recommendation system
 app.get('/api/get-recommendation/', authenticate, getRecommendation);

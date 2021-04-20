@@ -230,7 +230,7 @@
                     <!-- Community header with name -->
                     <div id="community-header" v-show="state === 'community'">
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                            <h1 class="h3 mb-0 text-white"><i class="text-white" v-bind:class="symbol"></i> {{ name }} </h1>
+                            <h1 class="h3 mb-0 text-white"><i class="text-white" v-bind:class="communityData.symbol"></i> {{ communityData.communityName }} </h1>
                         </div>
                     </div>
                     <!-- End of Community header with name -->
@@ -238,7 +238,7 @@
                     <!-- Dashboard header -->
                     <div id="dashboard-header" v-show="state === 'dashboard'">
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                            <h1 class="h3 mb-0 text-white">Shortlisted communities</h1>
+                            <h1 class="h3 mb-0 text-white">Recently active communities</h1>
                         </div>
                     </div>
                     <!-- End of Community header with name -->
@@ -251,7 +251,7 @@
                                 <div class="card-body bg-secondary">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <div class="h5 mb-0 font-weight-bold text-white">{{ community.name }}</div>
+                                            <div class="h5 mb-0 font-weight-bold text-white">{{ community.communityName }}</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-users fa-2x text-gray-300"></i>
@@ -613,20 +613,20 @@
                                 <div class="card-body bg-secondary">
                                     <div class="text-white">
                                         <h2 class="h3 mb-0 text-white">
-                                            <i class="text-white" v-bind:class="symbol"></i>{{ name }}
+                                            <i class="text-white" v-bind:class="communityData.symbol"></i>{{ communityData.communityName }}
                                             <button class="btn btn-sm btn-primary float-right" v-on:click="join" v-show="!isMember">
                                                 Join <i class="text-white fas fa-sign-in-alt"></i>
                                             </button>
                                         </h2>
 
                                         <hr>
-                                        <p>{{ description }}</p>
+                                        <p>{{ communityData.description }}</p>
                                         <hr>
-                                        <p>Admin: {{ admin }}</p>
+                                        <p>Admin: {{ communityData.admin.userName }}</p>
                                         <hr>
                                         <div class="custom-tag-container">
                                             <!-- display existing tags -->
-                                            <span class="custom-tag" v-for="tag in tags" v-bind:class="[ isAdmin ? 'editable' : '']">
+                                            <span class="custom-tag" v-for="tag in communityData.tags" v-bind:class="[ isAdmin ? 'editable' : '']">
                                                 <button class="btn btn-info btn-circle btn-sm font-weight-bolder" v-on:click="removeTag(tag)" v-show="isAdmin">&times;</button> {{ tag }}
                                             </span>
                                             <!-- add tags -->
@@ -642,8 +642,8 @@
                                                 <span class="text-white">Users</span>
                                             </a>
                                             <div id="collapseUsers" class="collapse">
-                                                <span v-for="u in getMostFrequentContributors()">
-                                                    <img v-bind:src="u.picture" class="small-user-img is-link" v-bind:title="u.name" v-on:click="goToProfile(u.id)">
+                                                <span v-for="u in this.communityData.users">
+                                                    <img v-bind:src="u.picture" class="small-user-img is-link" v-bind:title="u.userName" v-on:click="goToProfile(u.id)">
                                                 </span>
                                             </div>
                                         </div>

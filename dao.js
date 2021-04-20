@@ -150,6 +150,24 @@ let getMostRecentComments = async function(userId, n) {
     return communities_collection.aggregate(pipeline)
 }
 
+/**
+ * Returns n most recently active communities
+ * @param {string} userId
+ * @param {Number} n
+ * @return {Promise}
+ * */
+let getMostRecentCommunities = async function(userId, n) {
+
+    const pipeline = [
+        {$match: {"users.id": userId}},
+        {$sort: {"threads.comments.datetime": -1}},
+        // only show n entries
+        {$limit: n}
+    ]
+
+    return communities_collection.aggregate(pipeline)
+}
+
 // /**
 //  * // todo this is likely unnecessary => if not, get from community collection
 //  * Returns all data stored in comments_collection
@@ -651,6 +669,7 @@ module.exports = {
     getUserEvents: getUserEvents,
     getUserObject: getUserObject,
     getMostRecentComments: getMostRecentComments,
+    getMostRecentCommunities: getMostRecentCommunities,
     getUserEventsOfCommunity: getUserEventsOfCommunity,
     getNumberComments: getNumberComments,
     getNumberCommentsOfCommunity: getNumberCommentsOfCommunity,
