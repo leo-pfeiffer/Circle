@@ -172,18 +172,15 @@ const makeCommunityInfoVue = function() {
                         })
                     }).then((res) => {
                         if (!res.ok) {
-                            throw new Error('Failed to create event')
+                            throw new Error('Failed to add tag')
                         } else {
                             return res.json()
                         }
                     }).then((jsn) => {
-                        console.log(jsn)
                         // trigger reload of the current community data
                         goToCommunity(this.communityData.id)
                         this.newTag = '';
-                    }).catch(err => {
-                        console.log(err)
-                    })
+                    }).catch(err => console.log(err))
                 }
                 else {
                     console.log("tag requires length 1 <= x <= 20.")
@@ -191,8 +188,29 @@ const makeCommunityInfoVue = function() {
                 }
             },
             removeTag: function(tag) {
-                // todo connect to API
-                this.tags.splice(this.tags.indexOf(tag), 1)
+                fetch('/api/remove-tag/', {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Basic " + client.userKey,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        communityId: this.communityData.id,
+                        tag: tag
+                    })
+                }).then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Failed to remove tag')
+                    } else {
+                        return res.json()
+                    }
+                }).then((jsn) => {
+                    console.log(jsn)
+                    // trigger reload of the current community data
+                    goToCommunity(this.communityData.id)
+                    this.newTag = '';
+                }).catch(err => console.log(err))
+
             },
             goToProfile: function(userId) {
                 goToProfile(userId)

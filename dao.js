@@ -226,7 +226,7 @@ let addEvent = function (communityId, event) {
 }
 
 /**
- * Insert Event object into DB.
+ * add tag to community.
  * @param {string} communityId
  * @param {string} tag
  * @return {Promise}
@@ -235,6 +235,19 @@ let addTag = function (communityId, tag) {
     return communities_collection.updateOne(
         { id: communityId },
         { $push: { tags: tag } }
+    )
+}
+
+/**
+ * remove tag from community.
+ * @param {string} communityId
+ * @param {string} tag
+ * @return {Promise}
+ * */
+let removeTag = function (communityId, tag) {
+    return communities_collection.updateOne(
+        { id: communityId },
+        { $pull: { tags: tag } }
     )
 }
 
@@ -676,5 +689,6 @@ module.exports = {
     getOwnedCommunities: getOwnedCommunities,
     getRecentlyActiveCommunities: getRecentlyActiveCommunities,
     addTag: addTag,
+    removeTag: removeTag,
     //updateUserInfo: updateUserInfo,
 };

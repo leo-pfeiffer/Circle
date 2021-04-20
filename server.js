@@ -279,6 +279,21 @@ let addTag = async (req, res, next) => {
         });
 }
 
+// handler function for removing tag from community
+let removeTag = async (req, res, next) => {
+    let body = req.body;
+    let tag = body.tag;
+    let communityId = body.communityId
+
+    //adding new tag to the database
+    dao.removeTag(communityId, tag)
+        .then(() => res.status(200).json({ msg: `Removed tag '${tag}' from community ${communityId}` }))
+        .catch(err => {
+            console.log(`Could not remove tag`, err);
+            res.status(400).json({ msg: `Could not remove tag` });
+        });
+}
+
 /**
  * Handler function to GET Community object by id
  * @param {Request} req
@@ -810,6 +825,7 @@ app.post('/api/create-comment/', authenticate, createComment);
 // Create a new event in a community
 app.post('/api/create-event/', authenticate, createEvent);
 app.post('/api/add-tag/', authenticate, addTag);
+app.post('/api/remove-tag/', authenticate, removeTag);
 
 // get a community by its ID
 app.post('/api/community-by-id/', authenticate, getCommunityById);
