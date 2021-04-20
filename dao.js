@@ -369,6 +369,55 @@ const getUserEventsOfCommunity = async function(userId, communityId) {
 };
 
 /**
+ * Returns total number of comments posted by a user.
+ * @param {string} userId
+ * @return {Promise}
+ * */
+ let getNumberComments = async function(userId) {
+    const pipeline = [
+        {
+            $match: {"users.id": userId}
+        },
+        {
+            $unwind: {path: '$threads'}
+        },
+        {
+            $unwind: {path: '$threads.comments'}
+        },
+        {
+            $group: {_id: "$threads.comments", communityId: {$first: "$id"}, communityName: {$first: "$communityName"}}
+        },
+        {
+            $count: "commentCount"
+        }
+    ]
+    return communities_collection.aggregate(pipeline);
+}
+
+/**
+ * Returns total number of threads opened by a user.
+ * @param {string} userId
+ * @return {Promise}
+ * */
+ let getNumberThreads = async function(userId) {
+    const pipeline = [
+        {
+            $match: {"users.id": userId}
+        },
+        {
+            $unwind: {path: '$threads'}
+        },
+        {
+            $group: {_id: "$threads", communityId: {$first: "$id"}, communityName: {$first: "$communityName"}}
+        },
+        {
+            $count: "threadCount"
+        }
+    ]
+    return communities_collection.aggregate(pipeline);
+}
+
+/**
  * Drop all data collections.
  * WARNING: This cannot be undone!
  * */
@@ -414,6 +463,8 @@ module.exports = {
     getUserEvents: getUserEvents,
     getUserObject: getUserObject,
     getMostRecentComments: getMostRecentComments,
-    getUserEventsOfCommunity: getUserEventsOfCommunity
+    getUserEventsOfCommunity: getUserEventsOfCommunity,
+    getNumberComments: getNumberComments,
+    getNumberThreads: getNumberThreads,
 
 };

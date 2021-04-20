@@ -126,6 +126,10 @@ dao.init()
     // .then(() => dao.getUserEvents(demoData.adrian.id))
 
     // .then(() => dao.getUserObject(demoData.adrian.id))
+    // .then(() => dao.getNumberThreads(demoData.adrian.id))
+    // .then(async function(cursor) {
+    //     await cursor.forEach(el => console.log(el))
+    // })
 
     .then((res) => {
         console.log(res)

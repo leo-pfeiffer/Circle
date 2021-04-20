@@ -447,8 +447,77 @@ let getUserEventsOfCommunity = function (req, res, next) {
         })
 }
 
+/**
+ * Handler function to GET a user object
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+ let getUserObject = function (req, res, next) {
+    
+    const userId = req.body.userId
 
+    dao.getUserObject(userId)
+        .then(docs => {
+                if ( docs != null ) res.status(200).json(docs);
+                else res.status(400).send("No such user");
+            })
+        .catch(err => {
+            console.log(`Could not get user`, err);
+            res.status(400).json({ msg: `Could not get user` });
+            
+        })
+};
 
+/**
+ * Handler function to GET the total number of comments a user has made. 
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+ let getNumberComments = function (req, res, next) {
+    
+    const userId = req.body.userId
+
+    dao.getNumberComments(userId)
+        .then(async function(cursor) {
+            const numComments = [];
+            await cursor.forEach(el => {
+                numComments.push(el);
+            })
+            return numComments
+        })
+        .then(numComments => res.status(200).json(numComments))
+        .catch(err => {
+            console.log(`Could not get number of comments`, err);
+            res.status(400).json({ msg: `Could not get number of comments` });
+        })
+};
+
+/**
+ * Handler function to GET the total number of threads a user has opened. 
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+ let getNumberThreads = function (req, res, next) {
+    
+    const userId = req.body.userId
+
+    dao.getNumberThreads(userId)
+    .then(async function(cursor) {
+        const numThreads = [];
+        await cursor.forEach(el => {
+            numThreads.push(el);
+        })
+        return numThreads
+    })
+    .then(numThreads => res.status(200).json(numThreads))
+    .catch(err => {
+        console.log(`Could not get number of comments`, err);
+        res.status(400).json({ msg: `Could not get number of comments` });
+    })
+};
 
 /**
  * Handler function to get community recommendations
@@ -482,29 +551,6 @@ let getRecommendation = function (req, res, next) {
             res.status(500).json({ msg: `Could not get PageRank recommendation` });
         })
 }
-
-/**
- * Handler function to GET a user object
- * @param {Request} req
- * @param {Response} res
- * @param {NextFunction} next
- * */
-let getUserObject = function (req, res, next) {
-    
-    const userId = req.body.userId
-
-    dao.getUserObject(userId)
-        .then(docs => {
-                if ( docs != null ) res.status(200).json(docs);
-                else res.status(400).send("No such user");
-            })
-        .catch(err => {
-            console.log(`Could not get user`, err);
-            res.status(400).json({ msg: `Could not get user` });
-            
-        })
-};
-
 
 /**
  * Proxy request handler that gets a random joke from an external API
@@ -544,6 +590,8 @@ app.get('/api/get-user-event/', authenticate, getUserEvents);
 app.get('/api/get-user-events-of-community/', authenticate, getUserEventsOfCommunity);
 app.get('/api/get-recommendation/', authenticate, getRecommendation);
 app.get('/api/get-user-object/', authenticate, getUserObject);
+app.get('/api/get-user-comments/', authenticate, getNumberComments),
+app.get('/api/get-user-threads/', authenticate, getNumberThreads)
 
 /*
 * The following endpoints were introduced as a proxy in order to access external APIs that have
