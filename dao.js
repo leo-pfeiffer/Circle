@@ -59,25 +59,24 @@ let init = function () {
         })
 }
 
-/**
- * Returns all data stored in users_collection.
- * @param {Array<User>} users
- * @return {Promise}
- * */
-let getUser = function () {
-    return users_collection.find({}).toArray()
-        .then(users => users.map(user => User.fromJSON(user)));
-}
+// /**
+//  * TODO LIKELY OBSOLETE
+//  * Returns all data stored in users_collection.
+//  * @param {Array<User>} users
+//  * @return {Promise}
+//  * */
+// let getUser = function () {
+//     return users_collection.find({}).toArray()
+//         .then(users => users.map(user => User.fromJSON(user)));
+// }
 
 /**
  * Returns all data stored in communities_collection
- * @param {Array<Community>} communities
+ * @param {string} communityId
  * @return {Promise}
  * */
-let getCommunity = function () {
-    return communities_collection.find({}).toArray()
-        .then(communities => communities.map(community => Community.fromJSON(community)))
-        .catch(err=>console.log("Could not find",err.message));
+let getCommunityById = function (communityId) {
+    return communities_collection.find({"id": communityId})
 }
 
 /**
@@ -407,7 +406,7 @@ module.exports = {
     addComment: addComment,
     addEvent: addEvent,
     getUser: getUser,
-    getCommunity: getCommunity,
+    getCommunityById: getCommunityById,
     getThreadsOfCommunity: getThreadsOfCommunity,
     // getComment: getComment,
     // getEvent: getEvent,

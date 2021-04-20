@@ -257,36 +257,37 @@ let createEvent = async (req, res, next) => {
         });
 }
 
-/**
- * Handler function to GET User objects
- * @param {Request} req
- * @param {Response} res
- * @param {NextFunction} next
- * */
-let getUser = function (req, res, next) {
-    //retrieving data from DB (from users_collection)
-    dao.getUser()
-        .then(docs => {
-            res.status(200).json(docs);
-        })
-        .catch(err => {
-            console.log(`Could not get users`, err);
-            res.status(400).json({ msg: `Could not get users` });
-        })
-}
+// /**  TODO: LIKELY OBSOLETE
+//  * Handler function to GET User objects
+//  * @param {Request} req
+//  * @param {Response} res
+//  * @param {NextFunction} next
+//  * */
+// let getUser = function (req, res, next) {
+//     //retrieving data from DB (from users_collection)
+//     dao.getUser()
+//         .then(docs => {
+//             res.status(200).json(docs);
+//         })
+//         .catch(err => {
+//             console.log(`Could not get users`, err);
+//             res.status(400).json({ msg: `Could not get users` });
+//         })
+// }
 
 /**
- * Handler function to GET Community objects 
+ * Handler function to GET Community object by id
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
  * */
-let getCommunity = function (req, res, next) {
-    //retrieving data from DB (from communities_collection)
-    dao.getCommunity()
-        .then(docs => {
-            res.status(200).json(docs);
-        })
+let getCommunityById = async function (req, res, next) {
+
+    let communityId = req.body.communityId
+
+    dao.getCommunityById(communityId)
+        .then(community => Community.fromJSON(community))
+        .then(community => res.status(200).json(community))
         .catch(err => {
             console.log(`Could not get community`, err);
             res.status(400).json({ msg: `Could not get community` });
@@ -544,18 +545,28 @@ app.post('/api/create-comment/', authenticate, createComment);
 // Create a new event in a community
 app.post('/api/create-event/', authenticate, createEvent);
 
-app.get('/api/get-all-users/', authenticate, getUser);
-app.get('/api/get-community/', authenticate, getCommunity);
+// get a community by its ID
+app.get('/api/get-community-by-id/', authenticate, getCommunityById);
+
+// get all threads of a community
 app.get('/api/get-threads-of-community/', authenticate, getThreadsOfCommunity);
 
+// get all events of a user
+app.get('/api/get-user-event/', authenticate, getUserEvents);
+
+// get all events of a user of a specific community
+app.get('/api/get-user-events-of-community/', authenticate, getUserEventsOfCommunity);
+
+// get result of the recommendation system
+app.get('/api/get-recommendation/', authenticate, getRecommendation);
+
+// get a user object by ID
+app.get('/api/get-user-object/', authenticate, getUserObject);
+
 // TODO LIKELY UNNECESSARY
+// app.get('/api/get-all-users/', authenticate, getUser);
 // app.get('/api/get-comment/', authenticate, getComment);
 // app.get('/api/get-event/', authenticate, getEvent);
-
-app.get('/api/get-user-event/', authenticate, getUserEvents);
-app.get('/api/get-user-events-of-community/', authenticate, getUserEventsOfCommunity);
-app.get('/api/get-recommendation/', authenticate, getRecommendation);
-app.get('/api/get-user-object/', authenticate, getUserObject);
 
 /*
 * The following endpoints were introduced as a proxy in order to access external APIs that have
