@@ -124,18 +124,12 @@ export const updateCalendar = Vue.observable({
  * Get the events to display on the dashboard calendar.
  * */
 const getUpdateCalendar = function () {
-    fetch('/api/get-user-events-of-community/', {
-        method: "POST",
+    fetch('/api/get-user-event/', {
+        method: "GET",
         headers: {
             "Authorization": "Basic " + client.userKey,
             "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            // current user's ID
-            userId: client.userId,
-            //TODO how to get events of all communities a user is a part of 
-            communityId: "85958011-170d-442b-ad20-0e871fc3e021"
-        })
+        }
 
     }).then((res) => {
         if (!res.ok) {
@@ -150,17 +144,17 @@ const getUpdateCalendar = function () {
 
         jsn.forEach(element => {
             let obj = {}
-            obj.title = element.event.title
-            obj.description = element.event.description
-            obj.community = {
-                name: element.community.name,
-                id: element.community.id
-            }
+            obj.title = element.title
+            obj.description = element.description
+            // obj.community = {
+            //     name: element.community.name,
+            //     id: element.community.id
+            // }
             obj.organiser = {
-                username: element.event.organiser.userName,
-                id: element.event.organiser.id
+                username: element.organiser.userName,
+                id: element.organiser.id
             }
-            obj.datetime = new Date(element.event.datetime)
+            obj.datetime = new Date(element.datetime)
 
             updateCalendar.events.push(obj)
             console.log(updateCalendar.events)

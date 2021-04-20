@@ -854,7 +854,7 @@ app.post('/api/community-by-id/', authenticate, getCommunityById);
 app.get('/api/get-threads-of-community/', authenticate, getThreadsOfCommunity);
 
 // get all events of a user
-app.post('/api/get-user-event/', authenticate, getUserEvents);
+app.get('/api/get-user-event/', authenticate, getUserEvents);
 
 // get all events of a user of a specific community
 app.post('/api/get-user-events-of-community/', authenticate, getUserEventsOfCommunity);
