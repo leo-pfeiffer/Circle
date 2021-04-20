@@ -530,10 +530,10 @@
                                             </div>
                                         </div>
 
-                                        <hr class="sidebar-divider" v-show="threads.length > 0">
+                                        <hr class="sidebar-divider" v-show="communityData.threads.length > 0">
 
                                         <!-- Threads -->
-                                        <div class="card shadow mb-4" v-for="(thread, index) in threads">
+                                        <div class="card shadow mb-4" v-for="(thread, index) in communityData.threads">
                                             <a v-bind:href="`#thread${thread.id}`" class="d-block card-header py-3" data-toggle="collapse" role="button">
                                                 <h6 class="m-0 font-weight-bold text-primary">{{ thread.title }}</h6>
                                             </a>
@@ -547,7 +547,7 @@
                                                         <div class="card-body">
                                                             <div class="row no-gutters align-items-center">
                                                                 <div class="col mr-2">
-                                                                    <div class="text-xs text-warning mb-1">{{ thread.author }} <span class="text-gray-700">{{ thread.time }}</span></div>
+                                                                    <div class="text-xs text-warning mb-1">{{ thread.author.userName }} <span class="text-gray-700">{{ thread.time }}</span></div>
                                                                     <div>{{ thread.text }}</div>
                                                                 </div>
                                                             </div>
@@ -562,7 +562,7 @@
                                                             <div class="card-body">
                                                                 <div class="row no-gutters align-items-center">
                                                                     <div class="col mr-2">
-                                                                        <div class="text-xs text-primary mb-1">{{ comment.author}} <span class="text-gray-700">{{ comment.time }}</span></div>
+                                                                        <div class="text-xs text-primary mb-1">{{ comment.author.userName}} <span class="text-gray-700">{{ comment.time }}</span></div>
                                                                         <div>{{ comment.text }}</div>
                                                                     </div>
                                                                 </div>

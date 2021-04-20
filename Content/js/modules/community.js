@@ -243,6 +243,9 @@ const makeCommunityFeedVue = function() {
             state() {
                 return client.state;
             },
+            communityData() {
+                return client.communityData
+            }
         },
         methods: {
             saveThreadPicture: function(event) {
