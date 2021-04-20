@@ -9,12 +9,15 @@
      const profileInfoVue = new Vue({
         el: '#profileInfo',
         computed: {
-             state() {
+            state() {
                  return client.state;
-             },
+            },
             isOwnProfile() {
                  // todo proabbly change this to ID instead of username but for that we need to add API connection first
                  return this.name === client.userData.username
+            },
+            userData() {
+                return client.userData
             }
         },
         data: {    

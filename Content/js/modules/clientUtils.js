@@ -246,7 +246,6 @@ const getMostRecentlyActiveCommunities = function() {
     }).catch(err => console.log(err))
 }
 
-
 /**
  * Get a community with all its data and save it to the client observable.
  * */
@@ -319,12 +318,40 @@ export const goToCommunity = function(communityId) {
     joinRoom(communityId)
 }
 
+ /**
+ * Get a user with all its data and save it to the client observable.
+ * */
+const getUser = function (userId) {
+
+    fetch('/api/get-user-object/', {
+        method: "POST",
+        headers: {
+            "Authorization": "Basic " + client.userKey,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userId: userId
+        })
+    }).then((res) => {
+        if (!res.ok) {
+            throw new Error('Failed to get user object')
+        } else {
+            return res.json();
+        }
+    }).then((jsn) => {
+        client.userData = jsn;
+        console.log('getUser', jsn.id)
+    }).catch(err => console.log(err))
+}
+
 /**
  * Go to the profile with ID `userId`
  * @param {string} userId
  * */
 export const goToProfile = function (userId) {
-    // todo call API
+    console.log('Now going to user profile', userId)
+    getUser(userId)
+    //todo: getUserStats()
     // go to profile with of `userId`
     client.userData.id = userId
     setState('profile')
