@@ -471,16 +471,21 @@ let getRecommendation = function (req, res, next) {
  * @param {NextFunction} next
  * */
 let getUserObject = function (req, res, next) {
-
+    
     const userId = req.body.userId
 
     dao.getUserObject(userId)
-        .then(docs => res.status(200).json(docs))
+        .then(docs => {
+                if ( docs != null ) res.status(200).json(docs);
+                else res.status(400).send("No such user");
+            })
         .catch(err => {
             console.log(`Could not get user`, err);
             res.status(400).json({ msg: `Could not get user` });
+            
         })
-}
+};
+
 
 /**
  * Proxy request handler that gets a random joke from an external API

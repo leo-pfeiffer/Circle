@@ -360,16 +360,8 @@ const getUserEventsOfCommunity = async function(userId, communityId) {
  * @param {string} userId
  * @return {Promise}
  * */
- let getUserObject = function () {
-    return users_collection.findOne({ "users.id" :  userId}).toArray()
-        .then(user => {
-            if ( user != null ) res.status(200).json(user);
-            else res.status(400).send("No such user");
-        })
-        .catch(err => {
-            console.log("Could not get user", err.message);
-            res.status(400).send("Could not get user");
-        })
+ let getUserObject = function (userId) {
+    return users_collection.findOne({ "users.id" :  userId})
 };
 
 /**
