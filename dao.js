@@ -543,6 +543,56 @@ let getNumberCommentsOfCommunity = async function(communityId) {
     return communities_collection.find({"users.id": userId}, {'communityId': 1, _id: 0}).toArray();
 }
 
+/**
+ * Get all communities the user is the owner of.
+ * @param {string} userId
+ * @return {Promise}
+ * */
+const getOwnedCommunities = async function(userId) {
+    return communities_collection.find({"admin.id": userId}, {'communityId': 1, _id: 0}).toArray();
+}
+
+/**
+ * Returns n communities the user was recently active in.
+ * @param {string} userId
+ * @param {Number} n
+ * @return {Promise}
+ * */
+ let getRecentlyActiveCommunities = async function(userId, n) {
+
+    const pipeline = [
+        {
+            $match: {"users.id": userId}
+        },
+        {
+            $unwind: {path: "$communities"}
+        },
+        {
+            $unwind: {path: "$threads.comments"}
+        },
+        {
+            $group: {_id: "$threads", communityId: {$first: "$id"}, communityName: {$first: "$communityName"}}
+        },
+         // sort in descending order
+         {
+            $sort: {"_id.comments.datetime": -1}
+        },
+        // keep only communityName and communityId
+        {
+            $project: {
+                "communityName": 1,
+                "communityId": 1,
+            }
+        },
+        // only show n entries
+        {
+            $limit: n
+        }
+    ]
+
+    return communities_collection.aggregate(pipeline)
+}
+
 /**  Get an entire user object by name.
  * @param {string} userName
  * @return {Promise}
@@ -630,4 +680,6 @@ module.exports = {
     registerNewUserPassword: registerNewUserPassword,
     authenticateUser: authenticateUser,
     getMemberCommunities: getMemberCommunities,
+    getOwnedCommunities: getOwnedCommunities,
+    getRecentlyActiveCommunities: getRecentlyActiveCommunities,
 };
