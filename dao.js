@@ -44,17 +44,6 @@ let init = function () {
         })
 }
 
-// /**
-//  * TODO LIKELY OBSOLETE
-//  * Returns all data stored in users_collection.
-//  * @param {Array<User>} users
-//  * @return {Promise}
-//  * */
-// let getUser = function () {
-//     return users_collection.find({}).toArray()
-//         .then(users => users.map(user => User.fromJSON(user)));
-// }
-
 /**
  * Returns all data stored in communities_collection
  * @param {string} communityId
@@ -151,30 +140,6 @@ let getMostRecentCommunities = async function(userId, n) {
     return communities_collection.aggregate(pipeline)
 }
 
-// /**
-//  * // todo this is likely unnecessary => if not, get from community collection
-//  * Returns all data stored in comments_collection
-//  * @param {Array<Comment>} comments
-//  * @return {Promise}
-//  * */
-// let getComment = function () {
-//     return comments_collection.find({}).toArray()
-//         .then(comments => comments.map(comment => Comment.fromJSON(comment)))
-//         .catch(err=>console.log("Could not find",err.message));
-// }
-
-// /**
-//  * TODO LIKELY OBSOLETE
-//  * Returns all data stored in events_collection
-//  * @param {Array<Event>} events
-//  * @return {Promise}
-//  * */
-// let getEvent = function () {
-//     return events_collection.find({}).toArray()
-//         .then(events => events.map(event => Event.fromJSON(event)))
-//         .catch(err=>console.log("Could not find",err.message));
-// }
-
 /**
  * Insert User object into DB.
  * @param {User} user
@@ -257,6 +222,32 @@ let addEvent = function (communityId, event) {
     return communities_collection.updateOne(
         { id: communityId },
         { $push: { events: event } }
+    )
+}
+
+/**
+ * add tag to community.
+ * @param {string} communityId
+ * @param {string} tag
+ * @return {Promise}
+ * */
+let addTag = function (communityId, tag) {
+    return communities_collection.updateOne(
+        { id: communityId },
+        { $push: { tags: tag } }
+    )
+}
+
+/**
+ * remove tag from community.
+ * @param {string} communityId
+ * @param {string} tag
+ * @return {Promise}
+ * */
+let removeTag = function (communityId, tag) {
+    return communities_collection.updateOne(
+        { id: communityId },
+        { $pull: { tags: tag } }
     )
 }
 
@@ -697,5 +688,7 @@ module.exports = {
     getMemberCommunities: getMemberCommunities,
     getOwnedCommunities: getOwnedCommunities,
     getRecentlyActiveCommunities: getRecentlyActiveCommunities,
+    addTag: addTag,
+    removeTag: removeTag,
     //updateUserInfo: updateUserInfo,
 };

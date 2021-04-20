@@ -138,9 +138,7 @@ const getUpdateCalendar = function () {
             return res.json();
         }
     }).then(jsn => {
-        console.log(jsn)
         updateCalendar.events = [];
-        // {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 1, 10, 0)},
 
         jsn.forEach(element => {
             let obj = {}
@@ -268,7 +266,6 @@ const getCommunity = function (communityId) {
         }
     }).then((jsn) => {
         client.communityData = jsn;
-        console.log('getCommunity', jsn.id)
     }).catch(err => console.log(err))
 }
 
@@ -309,7 +306,6 @@ const getCommunityStats = function (communityId) {
  * @param {string} communityId
  * */
 export const goToCommunity = function(communityId) {
-    console.log('supposed to got to community', communityId)
     client.communityData.id = communityId;
     getCommunity(communityId)
     getCommunityStats(communityId)
@@ -413,7 +409,6 @@ let communityStats = {
  * Create a chart 
  * */
 export const createChart = function (chartId, chartData) {
-    console.log(chartId, chartData.data)
     const ctx = document.getElementById(chartId);
     return new Chart(ctx, {
         type: chartData.type,
