@@ -33,11 +33,11 @@ let init = function () {
             //if the collection does not exist it will automatically be created
             users_collection = client.db().collection(users_data);
             communities_collection = client.db().collection(communities_data);
-            threads_collection = client.db().collection(threads_data);
-            comments_collection = client.db().collection(comments_data);
 
             // todo obsolete
             // events_collection = client.db().collection(events_data);
+            // comments_collection = client.db().collection(comments_data);
+            // threads_collection = client.db().collection(threads_data);
 
             //for testing
             collection = client.db().collection('test_collection');
@@ -155,9 +155,10 @@ let getMostRecentComments = async function(userId, n) {
  * @return {Promise}
  * */
 let getComment = function () {
-    return comments_collection.find({}).toArray()
-        .then(comments => comments.map(comment => Comment.fromJSON(comment)))
-        .catch(err=>console.log("Could not find",err.message));
+    // todo this is likely unnecessary => if not, get from community collection
+    // return comments_collection.find({}).toArray()
+    //     .then(comments => comments.map(comment => Comment.fromJSON(comment)))
+    //     .catch(err=>console.log("Could not find",err.message));
 }
 
 /**
@@ -231,15 +232,16 @@ let addThreadToCommunity = function (communityId, thread) {
 }
 
 /**
- * Insert Comment object into DB.
+ * add comment to a thread.
  * @param {Comment} comment
+ * @param {string} threadId
  * @return {Promise}
  * */
-let addComment = function (comment) {
-    return comments_collection.insertOne(comment)
-        .then(res => {
-            return res.insertedId
-        });
+let addComment = function (comment, threadId) {
+    return communities_collection.updateOne(
+        { "threads.id": threadId },
+        { $push: { "threads.$.comments": comment } }
+    )
 }
 
 /**

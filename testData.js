@@ -137,6 +137,7 @@ const makeGeneralTestData = function() {
 
     const thread1 = new Thread('some text', 'some title1', adrian)
     const thread2 = new Thread('some text', 'some title2', jon)
+    thread1.id = "2eec1791-d327-43b0-b7bf-1e6cfad7a498"
 
     addCommentsToThread(thread1, [comment1, comment2, comment3])
     addCommentsToThread(thread2, [comment4, comment5])

@@ -193,20 +193,31 @@ let createThread = async (req, res, next) => {
  * @param {Response} res
  * @param {NextFunction} next
  * */
-let createComment = (req, res, next) => {
+let createComment = async (req, res, next) => {
     let body = req.body;
     let text = body.text;
     let userName = body.user.userName
-    let userEmail = body.user.userEmail
 
-    //creating new User and Comment instances
-    let author = new User(userName, userEmail)
+    let threadId = body.threadId
+
+    // creating new User and Comment instances
+    // todo get from authenticate
+    let userId = req.userId
+
+    let author = await dao.getUserObject(userId)
+        .then((res) => {
+            return User.fromJSON(res)
+        }).catch(err => {
+            console.log(`Could not find user`, err);
+            res.status(404).json({ msg: `Could not find user` });
+        });
+
     let comment = new Comment(text, author)
 
     //adding new Comment to database
-    dao.addComment(comment)
+    dao.addComment(comment, threadId)
         .then((id) => {
-            res.status(200).json({ msg: `Added new comment '${comment}' with userName ${userName}` });
+            res.status(200).json({ msg: `Added new comment '${comment.id}' to thread ${threadId}` });
         })
         .catch(err => {
             console.log(`Could not add comment`, err);
@@ -337,6 +348,9 @@ let getMostRecentComments = function (req, res, next) {
 }
 
 /**
+ *
+ * TODO THIS IS LIKELY UNNECESSARY
+ *
  * Handler function to GET Comment objects
  * @param {Request} req
  * @param {Response} res
@@ -521,7 +535,10 @@ app.post('/api/create-event/', authenticate, createEvent);
 app.get('/api/get-all-users/', authenticate, getUser);
 app.get('/api/get-community/', authenticate, getCommunity);
 app.get('/api/get-threads-of-community/', authenticate, getThreadsOfCommunity);
-app.get('/api/get-comment/', authenticate, getComment);
+
+// TODO LIKELY UNNECESSARY
+// app.get('/api/get-comment/', authenticate, getComment);
+
 app.get('/api/get-event/', authenticate, getEvent);
 app.get('/api/get-user-event/', authenticate, getUserEvents);
 app.get('/api/get-user-events-of-community/', authenticate, getUserEventsOfCommunity);

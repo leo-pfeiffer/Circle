@@ -103,6 +103,24 @@ dao.init()
     //     return dao.addThreadToCommunity(communityId, thread)
     // })
 
+    .then(async function() {
+        let threadId = "2eec1791-d327-43b0-b7bf-1e6cfad7a498";
+        let text = "this is a comment"
+
+        let author = await dao.getUserObject(userId)
+            .then((res) => {
+                return User.fromJSON(res)
+            }).catch(err => {
+                console.log(`Could not find user`, err);
+                res.status(404).json({ msg: `Could not find user` });
+            });
+
+        let comment = new Comment(text, author)
+
+        //adding new Comment to database
+        return dao.addComment(comment, threadId)
+    })
+
     // .then(() => dao.getPageRankCommunities(pageRankDemoData.peter.id))
 
     // .then(() => dao.getUserEvents(demoData.adrian.id))
