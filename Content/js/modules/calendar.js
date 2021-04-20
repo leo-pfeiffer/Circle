@@ -1,4 +1,4 @@
-import { client, goToCommunity, isDateMatch, timeOfDayFormatter } from "./clientUtils.js";
+import { client, goToCommunity, isDateMatch, timeOfDayFormatter,updateCalendar } from "./clientUtils.js";
 
 /**
  * This file contains the vue components of the calendar.
@@ -9,14 +9,14 @@ const makeMainCalendarVue = function () {
         el: '#main-calendar',
         data: {
             selectedDate: null,
-            events: [
-                // {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 1, 10, 0)},
-                // {title: 'Lunch', desciption: 'Just lunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 10, 13, 0)},
-                // {title: 'Breakfast', desciption: 'Just breakhast.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 10, 9, 0)},
-                // {title: 'Tea', desciption: 'Just tea.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 22, 17, 0)},
-                // {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 6, 10, 0)},
-                // {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 16, 11, 0)},
-            ],
+            // events: [
+            //     // {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 1, 10, 0)},
+            //     // {title: 'Lunch', desciption: 'Just lunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 10, 13, 0)},
+            //     // {title: 'Breakfast', desciption: 'Just breakhast.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 10, 9, 0)},
+            //     // {title: 'Tea', desciption: 'Just tea.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 22, 17, 0)},
+            //     // {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 6, 10, 0)},
+            //     // {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 16, 11, 0)},
+            // ],
         },
         computed: {
             state() {
@@ -28,6 +28,9 @@ const makeMainCalendarVue = function () {
                     dates: this.events.map(el => el.datetime),
                 }]
             },
+            events() {
+                return updateCalendar.events
+            },
             /**
              * Return all events of the currently selected day sorted by time of event.
              * */
@@ -35,7 +38,7 @@ const makeMainCalendarVue = function () {
                 if (this.selectedDate === null) {
                     return [];
                 }
-                return this.events.filter(el => isDateMatch(el.datetime, this.selectedDate))
+                return this.events.filter(el => isDateMatch(new Date(el.datetime), this.selectedDate))
                     .sort((a, b) => a.datetime - b.datetime)
             }
         },
