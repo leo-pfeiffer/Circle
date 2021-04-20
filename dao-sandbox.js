@@ -18,8 +18,8 @@ dao.init()
     .then(dao.dropCollections)
 
     // some users
-    .then(() => dao.registerNewUserPassword('ljp9', 'password'))
     .then(() => dao.registerNewUserPassword('akl8', 'password'))
+    .then(() => dao.registerNewUserPassword('adrian', 'password'))
     .then(() => dao.registerNewUserPassword('am557', 'password'))
     .then(() => dao.registerNewUserPassword('gasj1', 'password'))
     .then(() => dao.registerNewUserPassword('jl341', 'password'))

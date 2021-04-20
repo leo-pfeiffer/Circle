@@ -45,23 +45,32 @@ const makeLoginVue = function() {
                 // set the user key
                 client.userKey = btoa(this.username + ':' + this.password)
 
-                // todo get login response from API
-                let status = this.username === 'fail' ? 'fail' : 'success';
-                let loginResponse = {status: status, username: this.username}
+                fetch('/api/login',{
+                    headers: {
+                        "Authorization": "Basic " + client.userKey,
+                        "Content-Type": "application/json"
+                    },
+                }).then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Login failed.')
+                    } else {
+                        return res.json()
+                    }
+                }).then((jsn) => {
+                    console.log(jsn)
 
-                if (loginResponse.status === 'success') {
-                    // todo process other elements in loginResponse
-                    client.userData.username = loginResponse.username
-
+                    // todo save entire User object to client.userData for convenience
+                    client.userData.username = jsn.user.userName;
+                    client.userData.id = jsn.user.id
                     makeSocket();
                     console.log('Login successful')
 
                     // direct user to dashboard
                     setState('dashboard');
-                } else {
+                }).catch(err => {
                     console.log('Login failed.')
                     this.message = "Wrong username or password."
-                }
+                })
             },
             register: function() {
 
@@ -88,6 +97,7 @@ const makeLoginVue = function() {
                             throw new Error('Registration failed.')
                         } else if (!res.ok) {
                             this.message = "Registration failed. Try again.";
+                            throw new Error('Registration failed.')
                         }
                         else {
                             return res.json()

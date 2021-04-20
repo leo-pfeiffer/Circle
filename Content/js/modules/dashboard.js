@@ -2,7 +2,7 @@
  * This file contains the vue components of the dashboard.
  * */
 
-import {client, goToCommunity, isDateMatch, timeOfDayFormatter} from './clientUtils.js'
+import {client, goToCommunity, isDateMatch, mostRecentActivities, timeOfDayFormatter} from './clientUtils.js'
 
 const makeDashboardHeaderVue = function() {
     const dashboardHeaderVue = new Vue({
@@ -44,54 +44,14 @@ const makeShortlistVue = function() {
 const makeFeedVue = function() {
     const feedVue = new Vue({
         el: '#feed',
-        data: {
-            mostRecentActivities: [
-                {
-                    community: {name: 'gardening', id: '1'},
-                    thread: {name: 'Spaceships', id: 1},
-                    comment: {author: 'realdonaldtrump', time: '06/12/2015, 22:12', text: 'Despite the constant negative press covfefe',}
-                },
-                {
-                    community: {name: 'gardening', id: '1'},
-                    thread: {name: 'Gigafactory', id: 2},
-                    comment: {author: 'whitequeen', time: '30/07/2016, 23:12', text: 'Beware the Jubjub bird, and shun the frumious Bandersnatch',}
-                },
-                {
-                    community: {name: 'gardening', id: '1'},
-                    thread: {name: 'Gigafactory', id: 2},
-                    comment: {author: 'whitequeen', time: '30/07/2016, 23:12', text: 'Beware the Jubjub bird, and shun the frumious Bandersnatch',}
-                },
-                {
-                    community: {name: 'gardening', id: '1'},
-                    thread: {name: 'Gigafactory', id: 2},
-                    comment: {author: 'whitequeen', time: '30/07/2016, 23:12', text: 'Beware the Jubjub bird, and shun the frumious Bandersnatch',}
-                },
-                {
-                    community: {name: 'gardening', id: '1'},
-                    thread: {name: 'Gigafactory', id: 2},
-                    comment: {author: 'whitequeen', time: '30/07/2016, 23:12', text: 'Beware the Jubjub bird, and shun the frumious Bandersnatch',}
-                },
-                {
-                    community: {name: 'gardening', id: '1'},
-                    thread: {name: 'Gigafactory', id: 2},
-                    comment: {author: 'whitequeen', time: '30/07/2016, 23:12', text: 'Beware the Jubjub bird, and shun the frumious Bandersnatch',}
-                },
-                {
-                    community: {name: 'gardening', id: '1'},
-                    thread: {name: 'Gigafactory', id: 2},
-                    comment: {author: 'whitequeen', time: '30/07/2016, 23:12', text: 'Beware the Jubjub bird, and shun the frumious Bandersnatch',}
-                },
-                {
-                    community: {name: 'gardening', id: '1'},
-                    thread: {name: 'Gigafactory', id: 2},
-                    comment: {author: 'whitequeen', time: '30/07/2016, 23:12', text: 'Beware the Jubjub bird, and shun the frumious Bandersnatch',}
-                },
-            ],
-        },
+        data: {},
         computed: {
             state() {
                 return client.state;
             },
+            mostRecentActivities() {
+                return mostRecentActivities.activities;
+            }
         },
         methods: {
             goToCommunity: function(communityId) {

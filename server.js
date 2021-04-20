@@ -205,7 +205,6 @@ let createComment = async (req, res, next) => {
     let threadId = body.threadId
 
     // creating new User and Comment instances
-    // todo get from authenticate
     let userId = req.userId
 
     let author = await dao.getUserObject(userId)
@@ -344,9 +343,7 @@ let getMostRecentComments = function (req, res, next) {
                 let obj = {}
                 obj.community = {id: arr.communityId, name: arr.communityName}
                 obj.thread = {id: arr._id.id, title: arr._id.title}
-                console.log(arr._id.comments.id)
                 obj.comment = new Comment(arr._id.comments)
-                console.log(obj.comment.id)
                 comments.push(obj);
             })
             return comments
@@ -589,9 +586,8 @@ let getRecommendation = function (req, res, next) {
  * Proxy request handler that gets a random joke from an external API
  * @param {Request} req
  * @param {Response} res
- * @param {NextFunction} next
  * */
-const getJoke = function (req, res, next) {
+const getJoke = function (req, res) {
     const options = {
         headers: {
             'Accept': 'application/json'
@@ -642,7 +638,18 @@ const register = async (req, res) => {
  * @param {Response} res
  * */
 const login = async function(req, res) {
-    res.status(200).json({'msg': 'success'});
+
+    const username = req.username
+
+    let existingUser = await dao.getUserObjectByName(username)
+
+    if (existingUser.length > 0) {
+        let user = User.fromJSON(existingUser[0])
+        res.status(200).json({msg: 'added', user: user})
+    }
+    else {
+        res.status(401).json({msg: 'login failed'})
+    }
 }
 
 /**
@@ -653,7 +660,7 @@ const login = async function(req, res) {
 app.post('/api/register', register)
 
 // Login an existing user
-app.post('/api/register', authenticate, login)
+app.get('/api/login', authenticate, login)
 
 
 // Create a new user
@@ -683,6 +690,9 @@ app.get('/api/get-user-event/', authenticate, getUserEvents);
 // get all events of a user of a specific community
 app.get('/api/get-user-events-of-community/', authenticate, getUserEventsOfCommunity);
 
+// get most recent comments of a user
+app.post('/api/get-recent-comments/', authenticate, getMostRecentComments);
+
 // get result of the recommendation system
 app.get('/api/get-recommendation/', authenticate, getRecommendation);
 
@@ -706,7 +716,7 @@ app.get('/api/get-all-community-tags', authenticate, getAllCommunityTags);
 * to the client. This also gives us more control over what the client receives, i.e. we could filter
 * or enrich the response ourselves.
  */
-app.get('/api/proxy/joke', authenticate, getJoke);
+app.get('/api/proxy/joke', getJoke);
 
 // Set the static folder
 app.use(express.static('content'));

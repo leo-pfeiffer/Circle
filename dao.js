@@ -443,19 +443,26 @@ const getUserEventsOfCommunity = async function(userId, communityId) {
 
     return communities_collection.aggregate(pipeline);
 }
+
 /**  Get an entire user object by name.
  * @param {string} userName
  * @return {Promise}
  */
-
 let getUserObjectByName = function (userName) {
-    return user_passwords_collection.find({ "userName" :  userName}).toArray()
+    return users_collection.find({ "userName" :  userName}).toArray()
 };
 
+/** Register a new user
+* @param {string} userName
+* @return {Promise}
+*/
 let registerNewUserPassword = function(username, password) {
     return user_passwords_collection.insertOne({userName: username, password: password})
 }
 
+/**
+ * Authenticate a new user.
+ * */
 let authenticateUser = async function(username, password) {
     let results = await user_passwords_collection.find({userName: username, password: password}).toArray()
     let length = results.length

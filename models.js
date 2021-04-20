@@ -35,6 +35,7 @@ User = class {
 
         // Create the new User instance and fill in the attributes
         let user = new User(userName, userEmail)
+        user.id = id;
         user.location = jsn.location || null;
         user.interests = jsn.interests || [];
         user.gender = jsn.gender || null;

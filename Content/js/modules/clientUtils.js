@@ -82,6 +82,7 @@ export const setState = function(newState) {
     }
 
     else if (newState === "dashboard") {
+        getMostRecentActivities();
         leaveRoom(client.communityData.id);
         resetCommunityData();
         resetProfileData();
@@ -117,6 +118,52 @@ export const setState = function(newState) {
 
     // finally, set the new State
     client.state = newState;
+}
+
+/**
+ * Vue observable for the most recent activities.
+ * */
+export const mostRecentActivities = Vue.observable({
+    activities: [],
+})
+
+/**
+ * Get the most recent activities to display on the dashboard.
+ * */
+const getMostRecentActivities = function() {
+
+    fetch('/api/get-recent-comments/', {
+        method: "POST",
+        headers: {
+            "Authorization": "Basic " + client.userKey,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            // number of activities to get
+            num: 10
+        })
+    }).then((res) => {
+        if (!res.ok) {
+            throw new Error('Failed to get most recent activities')
+        } else {
+            return res.json();
+        }
+    }).then((jsn) => {
+        mostRecentActivities.activities = [];
+
+        jsn.forEach(activity => {
+            let obj = {}
+            obj.community = {id: activity.community.id, name: activity.community.name};
+            obj.thread = {id: activity.thread.id, name: activity.thread.title}
+            obj.comment = {
+                author: activity.comment.text.author.userName,
+                time: formatDateTime(new Date(activity.comment.text.datetime)),
+                text: activity.comment.text.text
+            }
+            mostRecentActivities.activities.push(obj)
+        })
+        // this.mostRecentActivities = jsn;
+    }).catch(err => console.log(err))
 }
 
 /**
