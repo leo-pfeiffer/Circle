@@ -253,7 +253,7 @@ let createEvent = async (req, res, next) => {
 
     let event = new Event(title, description, author, datetime)
     event.link = link;
-    event.location = link;
+    event.location = location;
 
     //adding new Event instance to the database
     dao.addEvent(communityId, event)
@@ -263,24 +263,6 @@ let createEvent = async (req, res, next) => {
             res.status(400).json({ msg: `Could not add event` });
         });
 }
-
-// /**  TODO: LIKELY OBSOLETE
-//  * Handler function to GET User objects
-//  * @param {Request} req
-//  * @param {Response} res
-//  * @param {NextFunction} next
-//  * */
-// let getUser = function (req, res, next) {
-//     //retrieving data from DB (from users_collection)
-//     dao.getUser()
-//         .then(docs => {
-//             res.status(200).json(docs);
-//         })
-//         .catch(err => {
-//             console.log(`Could not get users`, err);
-//             res.status(400).json({ msg: `Could not get users` });
-//         })
-// }
 
 /**
  * Handler function to GET Community object by id

@@ -36,28 +36,11 @@ let init = function () {
             communities_collection = client.db().collection(communities_data);
             user_passwords_collection = client.db().collection(user_passwords_data);
 
-            // todo obsolete
-            // events_collection = client.db().collection(events_data);
-            // comments_collection = client.db().collection(comments_data);
-            // threads_collection = client.db().collection(threads_data);
-
-            //for testing
-            collection = client.db().collection('test_collection');
             console.log("Connected!", sanitisedUrl, 'collection name:', users_data);
         })
         .catch(err => {
             console.log(`Could not connect to ${sanitisedUrl}`, err);
             throw err;
-        })
-        .then(() => collection.insertMany(test_data))
-        .then(res => console.log("Data inserted with two users", res.insertedIds))
-        .catch(err => {
-            console.log("Could not add data ", err.message);
-            //For now, ingore duplicate entry errors, otherwise re-throw the error for the next catch
-            if (err.name != 'BulkWriteError' || err.code != 11000) {
-                client.close();
-                throw err;
-            }
         })
 }
 
