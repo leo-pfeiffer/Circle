@@ -352,7 +352,18 @@ const getPageRankCommunities = async function(userId) {
  * @return {Promise}
  * */
 const getUserEvents = async function(userId) {
-    return communities_collection.find({"users.id": userId}, {'events': 1, _id: 0});
+    const pipeline = [
+        {
+            $match: {"users.id": "e0cc6987-121e-4181-bc9f-0a4c0cff2bda"}
+        },
+        {
+            $unwind: {path: "$events"}
+        },
+        {
+            $group: {_id: "$events", communityId: {$first: "$id"}, communityName: {$first: "$communityName"}}
+        },
+    ]
+    return communities_collection.aggregate(pipeline);
 }
 
 /**

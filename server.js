@@ -388,41 +388,6 @@ let getMostRecentCommunities = function (req, res, next) {
         })
 }
 
-// /**
-//  * TODO LIKELY OBSOLETE
-//  *
-//  * Handler function to GET Comment objects
-//  * @param {Request} req
-//  * @param {Response} res
-//  * @param {NextFunction} next
-//  * */
-// let getComment = function (req, res, next) {
-//     //retrieving data from DB (from comments_collection)
-//     dao.getComment()
-//         .then(docs => res.status(200).json(docs))
-//         .catch(err => {
-//             console.log(`Could not get Comment`, err);
-//             res.status(400).json({ msg: `Could not get Comment` });
-//         })
-// }
-
-// /**
-//  * TODO OBSOLETE
-//  * Handler function to GET Event objects
-//  * @param {Request} req
-//  * @param {Response} res
-//  * @param {NextFunction} next
-//  * */
-// let getEvent = function (req, res, next) {
-//     //retrieving data from DB (from events_collection)
-//     dao.getEvent()
-//         .then(docs => res.status(200).json(docs))
-//         .catch(err => {
-//             console.log(`Could not get event`, err);
-//             res.status(400).json({ msg: `Could not get event` });
-//         })
-// }
-
 /**
  * Handler function to GET all Events of the communities the user is a member of.
  * @param {Request} req
@@ -434,22 +399,20 @@ let getUserEvents = function (req, res, next) {
     const userId = req.userId
 
     dao.getUserEvents(userId)
-        .then(async function(eventsRaw) {
+        .then(async function(cursor) {
             const events = [];
-            await eventsRaw.forEach(arr => {
-                arr.events.forEach((event) => {
-                    let newEvent = Event.fromJSON(event)
-                    if (!events.map(el => el.id).includes(newEvent.id))
-                        events.push(newEvent);
-                })
+            await cursor.forEach(arr => {
+                let obj = {}
+                obj.community = {communityId: arr.communityId, communityName: arr.communityName}
+                obj.event = Event.fromJSON(arr._id)
+                events.push(obj)
             })
-
             return events;
         })
-        .then(docs => res.status(200).json(docs))
+        .then(events => res.status(200).json(events))
         .catch(err => {
-            console.log(`Could not get event`, err);
-            res.status(400).json({ msg: `Could not get event` });
+            console.log(`Could not get events`, err);
+            res.status(400).json({ msg: `Could not get events` });
         })
 }
 
@@ -857,7 +820,7 @@ app.post('/api/community-by-id/', authenticate, getCommunityById);
 app.get('/api/get-threads-of-community/', authenticate, getThreadsOfCommunity);
 
 // get all events of a user
-app.post('/api/get-user-event/', authenticate, getUserEvents);
+app.get('/api/get-user-events/', authenticate, getUserEvents);
 
 // get all events of a user of a specific community
 app.post('/api/get-user-events-of-community/', authenticate, getUserEventsOfCommunity);
