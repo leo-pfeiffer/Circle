@@ -526,11 +526,18 @@ const getJoke = function (req, res, next) {
         .catch(error => console.log(error));
 }
 
+/**
+ * Handler function to allow registration.
+ * @param {Request} req
+ * @param {Response} res
+ * */
 const register = async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
 
     const email = req.body.email;
+
+    // todo add other data
 
     let existingUser = await dao.getUserObjectByName(username)
     if (existingUser.length > 0) {
@@ -547,14 +554,27 @@ const register = async (req, res) => {
     }
 }
 
+
+/**
+ * Login a user. Send only a response as the point is to go through authentication once to
+ * verify the user. If that fails, we don't even get to this point.
+ * @param {Request} req
+ * @param {Response} res
+ * */
+const login = async function(req, res) {
+    res.status(200).json({'msg': 'success'});
+}
+
 /**
  * The following API endpoints allow the client to interact with the server.
  * */
-å
+
 // Register
 app.post('/api/register', register)
 
 // Login an existing user
+app.post('/api/register', authenticate, login)
+
 
 // Create a new user
 app.post('/api/create-user/', authenticate, createUser);
