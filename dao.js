@@ -444,6 +444,15 @@ const getUserEventsOfCommunity = async function(userId, communityId) {
     return communities_collection.aggregate(pipeline);
 }
 
+/**
+ * Get all communities the user is a member of.
+ * @param {string} userId
+ * @return {Promise}
+ * */
+ const getMemberCommunities = async function(userId) {
+    return communities_collection.find({"users.id": userId}, {'communityId': 1, _id: 0}).toArray();
+}
+
 /**  Get an entire user object by name.
  * @param {string} userName
  * @return {Promise}
@@ -525,5 +534,6 @@ module.exports = {
     getNumberThreads: getNumberThreads,
     getAllCommunityTags: getAllCommunityTags,
     registerNewUserPassword: registerNewUserPassword,
-    authenticateUser: authenticateUser
+    authenticateUser: authenticateUser,
+    getMemberCommunities: getMemberCommunities,
 };
