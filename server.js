@@ -526,9 +526,35 @@ const getJoke = function (req, res, next) {
         .catch(error => console.log(error));
 }
 
+const register = async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const email = req.body.email;
+
+    let existingUser = await dao.getUserObjectByName(username)
+    if (existingUser.length > 0) {
+        res.status(409).json({'msg': `Username ${username} is already taken.`})
+    } else {
+        dao.registerNewUserPassword(username, password).then((res) => {
+            console.log(res)
+            return new User(username, email)
+        }).then(async (user) => {
+            let addedUserIds = await dao.addUser(user)
+            console.log(addedUserIds)
+            res.status(200).json({msg: 'added', user: user})
+        }).catch(err => res.status(400).json({msg: 'registration failed'}))
+    }
+}
+
 /**
  * The following API endpoints allow the client to interact with the server.
  * */
+å
+// Register
+app.post('/api/register', register)
+
+// Login an existing user
 
 // Create a new user
 app.post('/api/create-user/', authenticate, createUser);
