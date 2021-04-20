@@ -57,18 +57,16 @@ const makeLoginVue = function() {
                         return res.json()
                     }
                 }).then((jsn) => {
-                    console.log(jsn)
 
                     // todo save entire User object to client.userData for convenience
                     client.userData.name = jsn.user.userName;
                     client.userData.id = jsn.user.id
                     makeSocket();
-                    console.log('Login successful')
 
                     // direct user to dashboard
                     setState('dashboard');
                 }).catch(err => {
-                    console.log('Login failed.',err)
+                    console.log('Login failed.', err)
                     this.message = "Wrong username or password."
                 })
             },

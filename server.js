@@ -164,15 +164,13 @@ let createCommunity = (req, res, next) => {
  * */
 let createThread = async (req, res, next) => {
     let body = req.body;
-    let text = body.text;
-    let title = body.title;
+    let text = body.thread.text;
+    let title = body.thread.title;
     let communityId = body.communityId
 
     //creating new instances of class User, Community and Thread
     let userId = req.userId
-    // todo get from authenticate
 
-    // todo get from authenticate
     let author = await dao.getUserObject(userId)
         .then((res) => {
             return User.fromJSON(res)
@@ -184,7 +182,7 @@ let createThread = async (req, res, next) => {
     let thread = new Thread(text, title, author)
 
     //adding new Thread to the database
-    dao.addThreadToCommunity(communityId, thread).then((res) => {
+    dao.addThreadToCommunity(communityId, thread).then(() => {
         res.status(200).json({ msg: `Added new thread '${thread.id}' to community ${communityId}` });
     }).catch(err => {
         console.log(`Could not add thread`, err);
@@ -792,7 +790,7 @@ const login = async function(req, res) {
 
     if (existingUser.length > 0) {
         let user = User.fromJSON(existingUser[0])
-        res.status(200).json({msg: 'added', user: user})
+        res.status(200).json({msg: 'logged in', user: user})
     }
     else {
         res.status(401).json({msg: 'login failed'})

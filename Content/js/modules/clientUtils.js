@@ -155,8 +155,6 @@ const getUpdateCalendar = function () {
             obj.datetime = new Date(element.event.datetime)
 
             updateCalendar.events.push(obj)
-            console.log(updateCalendar.events)
-
         })
     }).catch(err => console.log(err))
 }

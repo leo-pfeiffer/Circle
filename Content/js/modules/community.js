@@ -205,7 +205,6 @@ const makeCommunityInfoVue = function() {
                         return res.json()
                     }
                 }).then((jsn) => {
-                    console.log(jsn)
                     // trigger reload of the current community data
                     goToCommunity(this.communityData.id)
                     this.newTag = '';
@@ -276,15 +275,30 @@ const makeCommunityFeedVue = function() {
                     let thread = {
                         text: this.newThread.text,
                         title: this.newThread.title,
-                        time: formatDateTime(new Date()),
-                        author: client.userData.name,
-                        community: client.communityData.name,
-                        comments: []
                     }
 
-                    this.threads.push(thread);
-
-                    console.log("New thread: ", thread.title)
+                    fetch('/api/create-thread/', {
+                        method: "POST",
+                        headers: {
+                            "Authorization": "Basic " + client.userKey,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            communityId: this.communityData.id,
+                            thread: thread,
+                        })
+                    }).then((res) => {
+                        if (!res.ok) {
+                            throw new Error('Failed to add thread')
+                        } else {
+                            return res.json()
+                        }
+                    }).then((jsn) => {
+                        // trigger reload of the current community data
+                        console.log(jsn)
+                        goToCommunity(this.communityData.id)
+                        this.newTag = '';
+                    }).catch(err => console.log(err))
 
                     this.newThread = {title: '', text: ''}
 
