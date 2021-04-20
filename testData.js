@@ -161,6 +161,8 @@ const makeGeneralTestData = function() {
     addTagsToCommunity(comI, ['hobby1', 'hobby2', 'hobby3'])
     addEventsToCommunity(comI, [dinner])
     addThreadsToCommunity(comI, [thread1, thread2])
+    // fix ID for testing purposes
+    comI.id = "85958011-170d-442b-ad20-0e871fc3e021"
 
     const comJ = new Community('J', jon)
     addUsersToCommunity(comJ, [betty])

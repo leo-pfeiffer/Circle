@@ -82,13 +82,26 @@ let getCommunity = function () {
 
 /**
  * Returns all data stored in threads_collection
- * @param {Array<Thread>} threads
+ * @param {string} communityId
  * @return {Promise}
  * */
-let getThread = function () {
-    return threads_collection.find({}).toArray()
-        .then(threads => threads.map(thread => Thread.fromJSON(thread)))
-        .catch(err=>console.log("Could not find",err.message));
+let getThreadsOfCommunity = function (communityId) {
+
+    const pipeline = [
+        {
+            $match: {"id": communityId}
+        },
+        // unwind the threads
+        {
+            $unwind: {path: "$threads"}
+        },
+        // group, but keep some community info
+        {
+            $group: {_id: "$threads", communityId: {$first: "$id"}, communityName: {$first: "$communityName"}}
+        },
+    ]
+
+    return communities_collection.aggregate(pipeline);
 }
 
 /**
@@ -327,16 +340,11 @@ const getUserEventsOfCommunity = async function(userId, communityId) {
 
     const pipeline = [
         {
-            $match: {
-                "users.id": userId,
-                "id": communityId
-            }
+            $match: {"users.id": userId, "id": communityId}
         },
         // unwind the events
         {
-            $unwind: {
-                path: "$events"
-            }
+            $unwind: {path: "$events"}
         },
         // group, but keep some community info
         {
@@ -402,7 +410,7 @@ module.exports = {
     addEvent: addEvent,
     getUser: getUser,
     getCommunity: getCommunity,
-    getThread: getThread,
+    getThreadsOfCommunity: getThreadsOfCommunity,
     getComment: getComment,
     getEvent: getEvent,
     dropCollections: dropCollections,

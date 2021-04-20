@@ -272,17 +272,27 @@ let getCommunity = function (req, res, next) {
 }
 
 /**
- * Handler function to GET Thread objects
+ * Handler function to GET Thread objects of a community
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
  * */
-let getThread = function (req, res, next) {
-    //retrieving data from DB (from threads_collection)
-    dao.getThread()
-        .then(docs => {
-            res.status(200).json(docs);
+let getThreadsOfCommunity = function (req, res, next) {
+
+    let communityId = req.body.communityId
+
+    dao.getThreadsOfCommunity(communityId)
+        .then(async function(cursor) {
+            const threads = [];
+            await cursor.forEach(arr => {
+                let obj = {}
+                obj.community = {id: arr.communityId, name: arr.communityName}
+                obj.thread = new Thread(arr._id)
+                threads.push(obj);
+            })
+            return threads
         })
+        .then(threads => res.status(200).json(threads))
         .catch(err => {
             console.log(`Could not get Thread`, err);
             res.status(400).json({ msg: `Could not get Thread` });
@@ -406,7 +416,7 @@ let getUserEventsOfCommunity = function (req, res, next) {
             await cursor.forEach(arr => {
                 let obj = {}
                 obj.community = {id: arr.communityId, name: arr.communityName}
-                obj.event = new Event(arr._id)
+                obj.event = Event.fromJSON(arr._id)
                 events.push(obj);
             })
             return events
@@ -500,7 +510,7 @@ app.post('/api/create-comment/', authenticate, createComment);
 app.post('/api/create-event/', authenticate, createEvent);
 app.get('/api/get-all-users/', authenticate, getUser);
 app.get('/api/get-community/', authenticate, getCommunity);
-app.get('/api/get-thread/', authenticate, getThread);
+app.get('/api/get-threads-of-community/', authenticate, getThreadsOfCommunity);
 app.get('/api/get-comment/', authenticate, getComment);
 app.get('/api/get-event/', authenticate, getEvent);
 app.get('/api/get-user-event/', authenticate, getUserEvents);

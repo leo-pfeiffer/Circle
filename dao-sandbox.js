@@ -51,19 +51,34 @@ dao.init()
     //     return events;
     // })
 
+    // .then(() => {
+    //     let communityId = "c50fc1fb-55c3-4f09-8774-59150286bfb4"
+    //     return dao.getUserEventsOfCommunity(userId, communityId)
+    // })
+    // .then(async function(cursor) {
+    //     const events = [];
+    //     await cursor.forEach(arr => {
+    //         let obj = {}
+    //         obj.community = {id: arr.communityId, name: arr.communityName}
+    //         obj.event = Event.fromJSON(arr._id)
+    //         events.push(obj);
+    //     })
+    //     return events
+    // })
+
     .then(() => {
-        let communityId = "c50fc1fb-55c3-4f09-8774-59150286bfb4"
-        return dao.getUserEventsOfCommunity(userId, communityId)
+        let communityId = "85958011-170d-442b-ad20-0e871fc3e021";
+        return dao.getThreadsOfCommunity(communityId)
     })
     .then(async function(cursor) {
-        const events = [];
+        const threads = [];
         await cursor.forEach(arr => {
             let obj = {}
             obj.community = {id: arr.communityId, name: arr.communityName}
-            obj.event = new Event(arr._id)
-            events.push(obj);
+            obj.thread = Thread.fromJSON(arr._id)
+            threads.push(obj);
         })
-        return events
+        return threads
     })
 
     // .then(() => dao.getPageRankCommunities(pageRankDemoData.peter.id))
