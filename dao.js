@@ -357,7 +357,7 @@ const getPageRankCommunities = async function(userId) {
 const getUserEvents = async function(userId) {
     const pipeline = [
         {
-            $match: {"users.id": "e0cc6987-121e-4181-bc9f-0a4c0cff2bda"}
+            $match: {"users.id": userId}
         },
         {
             $unwind: {path: "$events"}
