@@ -160,7 +160,7 @@ const getUpdateCalendar = function () {
                 username: element.event.organiser.userName,
                 id: element.event.organiser.id
             }
-            obj.datetime = formatDateTime(new Date(element.event.datetime))
+            obj.datetime = new Date(element.event.datetime)
 
             updateCalendar.events.push(obj)
             console.log(updateCalendar.events)
@@ -279,16 +279,49 @@ const getCommunity = function (communityId) {
     }).catch(err => console.log(err))
 }
 
+
+/**
+ * Get the stats for a specific community
+ * */
+const getCommunityStats = function (communityId) {
+
+    fetch('/api/get-community-stats/', {
+        method: "POST",
+        headers: {
+            "Authorization": "Basic " + client.userKey,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            communityId: communityId
+        })
+    }).then((res) => {
+        if (!res.ok) {
+            throw new Error('Failed to get most recent activities')
+        } else {
+            return res.json();
+        }
+    }).then((jsn) => {
+        communityStats.Comments = jsn.numComments ? jsn.numComments.commentCount : 0;
+        communityStats.Events = jsn.numEvents ? jsn.numEvents.eventCount : 0;
+        communityStats.Threads = jsn.numThreads ? jsn.numThreads.threadCount : 0;
+        return communityStats
+    }).then(() => {
+        communityChart = makeCommunityChart();
+    }).catch(err => console.log(err))
+}
+
+
 /**
  * Go to the community with ID `communityId`
  * @param {string} communityId
  * */
 export const goToCommunity = function(communityId) {
     console.log('supposed to got to community', communityId)
+    client.communityData.id = communityId;
     getCommunity(communityId)
+    getCommunityStats(communityId)
     // go to community with id `communityId`
     setState('community')
-    client.communityData.id = communityId;
     joinRoom(communityId)
 }
 
@@ -343,18 +376,75 @@ export const formatDateTime = function (dateTime) {
     return str
 }
 
+// ===== Chart stuff ======
+
+/**
+ * Community Stats for graph
+ * @type{Object}
+ * */
+let communityStats = {
+    Comments: 0,
+    Threads: 0,
+    Events: 0,
+};
+
 /**
  * Create a chart 
  * */
 export const createChart = function (chartId, chartData) {
+    console.log(chartId, chartData.data)
     const ctx = document.getElementById(chartId);
-    const myChart = new Chart(ctx, {
+    return new Chart(ctx, {
         type: chartData.type,
         data: chartData.data,
         options: chartData.options,
     });
 }
 
+const makeCommunityChart = function() {
+    let data = {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(communityStats),
+            datasets:[
+                {
+                    data: Object.values(communityStats),
+                    backgroundColor:[
+                        '#e74a3b',
+                        '#4e73df',
+                        '#1cc88a'
+                    ],
+                    borderColor: 'rgb(165,165,165)',
+                }
+            ],
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Total community activity',
+                    fontSize: 20,
+                    color: 'rgb(255, 255, 255)'
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        color: 'rgb(255, 255, 255)'
+                    }
+                }
+            },
+        }
+    }
+
+    if (communityChart) {
+        communityChart.destroy()
+    }
+
+    return createChart('activityDoughnutChart', data)
+}
+
+// initialise the community chart
+let communityChart;
 
 // Socket.io related utility functions ======
 /**
