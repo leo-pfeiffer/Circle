@@ -19,6 +19,7 @@ User = class {
         this.gender = null;
         this.age = null;
         this.picture = '';
+        this.status = null;
     }
 
     /**

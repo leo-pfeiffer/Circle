@@ -254,10 +254,10 @@ let createEvent = async (req, res, next) => {
 
     //adding new Event instance to the database
     dao.addEvent(communityId, event)
-        .then(() => res.status(200).json({ msg: `Added new comment '${event.id}' to community ${communityId}` }))
+        .then(() => res.status(200).json({ msg: `Added new event '${event.id}' to community ${communityId}` }))
         .catch(err => {
-            console.log(`Could not add comment`, err);
-            res.status(400).json({ msg: `Could not add comment` });
+            console.log(`Could not add event`, err);
+            res.status(400).json({ msg: `Could not add event` });
         });
 }
 

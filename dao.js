@@ -601,6 +601,27 @@ let getUserObjectByName = function (userName) {
     return users_collection.find({ "userName" :  userName}).toArray()
 };
 
+// Commented out because server side is missing
+// /**
+//  * Update user information from profile view. 
+//  * @param {string} userName
+//  * @return {Promise}
+//  * */
+//  let updateUserInfo = function (userId) {
+//     return users_collection.update(
+//         { "user.id": userId },
+//         { $set: 
+//             { 
+//                 "users.$.userEmail": newEmail,
+//                 "users.$.age": newAge,
+//                 "users.$.location": newLocation, 
+//                 "users.$.status": newStatus,
+//                 "users.$.picture": newPicture,
+//             }
+//         }
+//     )
+// };
+
 /** Register a new user
 * @param {string} userName
 * @return {Promise}
@@ -682,4 +703,5 @@ module.exports = {
     getMemberCommunities: getMemberCommunities,
     getOwnedCommunities: getOwnedCommunities,
     getRecentlyActiveCommunities: getRecentlyActiveCommunities,
+    updateUserInfo: updateUserInfo,
 };
