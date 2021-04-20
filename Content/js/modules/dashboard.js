@@ -2,7 +2,7 @@
  * This file contains the vue components of the dashboard.
  * */
 
-import {client, goToCommunity, isDateMatch, mostRecentActivities, timeOfDayFormatter} from './clientUtils.js'
+import {client, goToCommunity, isDateMatch, mostRecentActivities, timeOfDayFormatter, updateCalendar} from './clientUtils.js'
 
 const makeDashboardHeaderVue = function() {
     const dashboardHeaderVue = new Vue({
@@ -67,12 +67,12 @@ const makeFeedVue = function() {
          data: {
              selectedDate: null,
              events: [
-                 {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 1, 10, 0)},
-                 {title: 'Lunch', desciption: 'Just lunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 10, 13, 0)},
-                 {title: 'Breakfast', desciption: 'Just breakhast.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 10, 9, 0)},
-                 {title: 'Tea', desciption: 'Just tea.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 22, 17, 0)},
-                 {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 6, 10, 0)},
-                 {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 16, 11, 0)},
+                //  {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 1, 10, 0)},
+                //  {title: 'Lunch', desciption: 'Just lunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 10, 13, 0)},
+                //  {title: 'Breakfast', desciption: 'Just breakhast.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 10, 9, 0)},
+                //  {title: 'Tea', desciption: 'Just tea.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 22, 17, 0)},
+                //  {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 6, 10, 0)},
+                //  {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 16, 11, 0)},
              ],
          },
          computed: {
@@ -85,6 +85,7 @@ const makeFeedVue = function() {
                      dates: this.events.map(el => el.datetime),
                  }]
              },
+             
              /**
               * Return all events of the currently selected day sorted by time of event.
               * */
@@ -106,7 +107,13 @@ const makeFeedVue = function() {
               * */
              timeOfDayFormatter: function(datetime) {
                  return timeOfDayFormatter(datetime)
-             }
+             },
+             updateCalendar() {
+                console.log(updateCalendar.events)
+                this.events = updateCalendar.events;
+                return this.events
+            }
+            
          }
      })
  }

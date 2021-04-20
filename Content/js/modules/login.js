@@ -68,7 +68,7 @@ const makeLoginVue = function() {
                     // direct user to dashboard
                     setState('dashboard');
                 }).catch(err => {
-                    console.log('Login failed.')
+                    console.log('Login failed.',err)
                     this.message = "Wrong username or password."
                 })
             },

@@ -27,12 +27,12 @@ export const client = Vue.observable({
 /**
  * Vue observable to pass the search term between components
  * */
-export const search = Vue.observable({term: '', type: ''})
+export const search = Vue.observable({ term: '', type: '' })
 
 /**
  * Reset the userData of the client Vue observable to its default values
  * */
-const resetClientData = function() {
+const resetClientData = function () {
     client.userData.id = '';
     client.userData.name = '';
     client.userData.picture = '';
@@ -41,7 +41,7 @@ const resetClientData = function() {
 /**
  * Reset the communityData of the client Vue observable to its default values
  * */
-const resetCommunityData = function() {
+const resetCommunityData = function () {
     client.communityData = {
         id: '',
         name: '',
@@ -51,7 +51,7 @@ const resetCommunityData = function() {
 /**
  * Reset the profileData of the client Vue observable to its default values
  * */
-const resetProfileData = function() {
+const resetProfileData = function () {
     client.profileData = {
         id: '',
         name: '',
@@ -69,7 +69,7 @@ const ALLOWED_STATES = ['login', 'dashboard', 'community', 'profile', 'logout', 
  * Function to control state transitions.
  * @param {string} newState
  * */
-export const setState = function(newState) {
+export const setState = function (newState) {
     if (!(ALLOWED_STATES.includes(newState))) {
         throw new Error(`Invalid state: ${newState}. Must be one of ${ALLOWED_STATES}`)
     }
@@ -86,6 +86,7 @@ export const setState = function(newState) {
         leaveRoom(client.communityData.id);
         resetCommunityData();
         resetProfileData();
+        getUpdateCalendar();
     }
 
     else if (newState === "community") {
@@ -121,6 +122,62 @@ export const setState = function(newState) {
 }
 
 /**
+ * Vue observable for calendar updates.
+ * */
+export const updateCalendar = Vue.observable({
+    events: []
+})
+
+/**
+ * Get the events to display on the dashboard calendar.
+ * */
+const getUpdateCalendar = function () {
+    fetch('/api/get-user-events-of-community/', {
+        method: "POST",
+        headers: {
+            "Authorization": "Basic " + client.userKey,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            // current user's ID
+            userId: client.userId,
+            //TODO how to get events of all communities a user is a part of 
+            communityId: "85958011-170d-442b-ad20-0e871fc3e021"
+        })
+
+    }).then((res) => {
+        if (!res.ok) {
+            throw new Error('Failed to get user events')
+        } else {
+            return res.json();
+        }
+    }).then(jsn => {
+        console.log(jsn)
+        updateCalendar.events = [];
+        // {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 1, 10, 0)},
+
+        jsn.forEach(element => {
+            let obj = {}
+            obj.title = element.event.title
+            obj.description = element.event.description
+            obj.community = {
+                name: element.community.name,
+                id: element.community.id
+            }
+            obj.organiser = {
+                username: element.event.organiser.userName,
+                id: element.event.organiser.id
+            }
+            obj.datetime = formatDateTime(new Date(element.event.datetime))
+
+            updateCalendar.events.push(obj)
+            console.log(updateCalendar.events)
+
+        })
+    }).catch(err => console.log(err))
+}
+
+/**
  * Vue observable for the most recent activities.
  * */
 export const mostRecentActivities = Vue.observable({
@@ -130,7 +187,7 @@ export const mostRecentActivities = Vue.observable({
 /**
  * Get the most recent activities to display on the dashboard.
  * */
-const getMostRecentActivities = function() {
+const getMostRecentActivities = function () {
 
     fetch('/api/get-recent-comments/', {
         method: "POST",
@@ -153,8 +210,8 @@ const getMostRecentActivities = function() {
 
         jsn.forEach(activity => {
             let obj = {}
-            obj.community = {id: activity.community.id, name: activity.community.name};
-            obj.thread = {id: activity.thread.id, name: activity.thread.title}
+            obj.community = { id: activity.community.id, name: activity.community.name };
+            obj.thread = { id: activity.thread.id, name: activity.thread.title }
             obj.comment = {
                 author: activity.comment.text.author.userName,
                 time: formatDateTime(new Date(activity.comment.text.datetime)),
@@ -170,7 +227,7 @@ const getMostRecentActivities = function() {
  * Go to the community with ID `communityId`
  * @param {string} communityId
  * */
-export const goToCommunity = function(communityId) {
+export const goToCommunity = function (communityId) {
     // todo call API
     // go to community with id `communityId`
     setState('community')
@@ -182,7 +239,7 @@ export const goToCommunity = function(communityId) {
  * Go to the profile with ID `userId`
  * @param {string} userId
  * */
-export const goToProfile = function(userId) {
+export const goToProfile = function (userId) {
     // todo call API
     // go to profile with of `userId`
     client.userData.id = userId
@@ -195,7 +252,7 @@ export const goToProfile = function(userId) {
  * @param {Date} date2
  * @return {boolean}
  * */
-export const isDateMatch = function(date1, date2) {
+export const isDateMatch = function (date1, date2) {
     return (
         date1.getFullYear() === date2.getFullYear() &&
         date1.getDate() === date2.getDate() &&
@@ -207,7 +264,7 @@ export const isDateMatch = function(date1, date2) {
  * Return hour and minute in a nicer format
  * @param {Date} datetime
  * */
-export const timeOfDayFormatter = function(datetime) {
+export const timeOfDayFormatter = function (datetime) {
     let hour = `${datetime.getHours()}`
     let minute = `${datetime.getMinutes()}`
     hour = hour.length === 2 ? hour : `0${hour}`
@@ -219,7 +276,7 @@ export const timeOfDayFormatter = function(datetime) {
  * Format a Date object as string.
  * @param {Date} dateTime
  * */
-export const formatDateTime = function(dateTime) {
+export const formatDateTime = function (dateTime) {
     let str = ''
     str += dateTime.getDate() + '/'
     str += (dateTime.getMonth() + 1) + '/'
@@ -232,7 +289,7 @@ export const formatDateTime = function(dateTime) {
 /**
  * Create a chart 
  * */
-export const createChart = function(chartId, chartData) {
+export const createChart = function (chartId, chartData) {
     const ctx = document.getElementById(chartId);
     const myChart = new Chart(ctx, {
         type: chartData.type,
@@ -251,7 +308,7 @@ let socket = null;
 /**
  * Add authentication to socket.
  * */
-export const addAuthToSocket = function() {
+export const addAuthToSocket = function () {
     let username = client.userData.name
     let password = client.userData.password
     socket.auth = { username: username, password: password };
@@ -261,7 +318,7 @@ export const addAuthToSocket = function() {
  * Make the actual socket, i.e. instantiate and connect it.
  * Also define action handlers of socket.io
  * */
-export const makeSocket = function() {
+export const makeSocket = function () {
     if (client.userData.name !== '' || client.userData.name !== null) {
         socket = io();
 
@@ -280,7 +337,7 @@ export const makeSocket = function() {
 /**
  * Destroy the socket and reset it to it's initial state.
  * */
-export const destroySocket = function() {
+export const destroySocket = function () {
     if (socket.connected) socket.disconnect();
     socket = null;
     console.log('disconnected from socket')
@@ -291,7 +348,7 @@ export const destroySocket = function() {
  * @param {string} room
  * @param {Object} params - additional parameters
  * */
-export const joinRoom = function(room, params={}) {
+export const joinRoom = function (room, params = {}) {
     params.room = room
     socket.emit('join', params);
 }
@@ -301,7 +358,7 @@ export const joinRoom = function(room, params={}) {
  * @param {string} room
  * @param {Object} params - additional parameters
  * */
-export const leaveRoom = function(room, params={}) {
+export const leaveRoom = function (room, params = {}) {
     params.room = room
     socket.emit('leave', params);
 }
