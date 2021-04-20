@@ -384,6 +384,14 @@ let registerNewUserPassword = function(username, password) {
     return user_passwords_collection.insertOne({userName: username, password: password})
 }
 
+let authenticateUser = async function(username, password) {
+    let results = await user_passwords_collection.find({userName: username, password: password}).toArray()
+    let length = results.length
+    return length === 1;
+}
+
+
+
 /**
  * Drop all data collections.
  * WARNING: This cannot be undone!
@@ -434,5 +442,6 @@ module.exports = {
     getUserObject: getUserObject,
     getMostRecentComments: getMostRecentComments,
     getUserEventsOfCommunity: getUserEventsOfCommunity,
-    registerNewUserPassword: registerNewUserPassword
+    registerNewUserPassword: registerNewUserPassword,
+    authenticateUser: authenticateUser
 };

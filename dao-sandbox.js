@@ -148,7 +148,7 @@ dao.init()
     //
     //     let existingUser = await dao.getUserObjectByName(username)
     //     if (existingUser.length > 0) {
-    //         res.status(409).json({'msg': `Username ${username} is already taken.`})
+    //         return {'msg': `Username ${username} is already taken.`};
     //     } else {
     //         return dao.registerNewUserPassword(username, password).then((res) => {
     //             console.log(res)
@@ -159,6 +159,20 @@ dao.init()
     //             return addedUserIds
     //         }).catch(err => res.status(400).json({msg: 'registration failed'}))
     //     }
+    // })
+
+    // .then(async() => {
+    //     let loginData = {name: 'username123', pass: 'password123'}
+    //     // check DB
+    //     let validUser = await dao.authenticateUser(loginData.name, loginData.pass);
+    //     if (!validUser) {
+    //         // make the browser ask for credentials if none/wrong are provided
+    //         return {msg: 'invalid username and password'}
+    //     }
+    //
+    //     let userObjects = await dao.getUserObjectByName(loginData.name)
+    //     let user = User.fromJSON(userObjects[0])
+    //     return user
     // })
 
     // .then(() => dao.getPageRankCommunities(pageRankDemoData.peter.id))

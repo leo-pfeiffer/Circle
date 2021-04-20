@@ -27,17 +27,21 @@ const API_PORT = 3000;
  * @param {Response} res
  * @param {NextFunction} next
  * */
-let authenticate = function (req, res, next) {
-    let user = basicAuth(req);
+let authenticate = async function (req, res, next) {
+    let loginData = basicAuth(req);
+
     // check DB
-    let validUser = true;
+    let validUser = await dao.authenticateUser(loginData.name, loginData.pass);
     if (!validUser) {
         // make the browser ask for credentials if none/wrong are provided
         return res.sendStatus(401);
     }
-    req.username = user.username;
-    // todo
-    // req.userId = user.id;
+
+    let userObjects = await dao.getUserObjectByName(loginData.name)
+    let user = User.fromJSON(userObjects[0])
+
+    req.username = user.userName;
+    req.userId = user.id;
     next();
 };
 
