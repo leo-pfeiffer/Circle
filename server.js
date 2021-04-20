@@ -236,9 +236,10 @@ let createEvent = async (req, res, next) => {
     let description = body.description;
 
     let communityId = body.communityId
-    let datetime = body.datetime
+    let datetime = body.datetime;
+    let location = body.location;
+    let link = body.link;
 
-    // todo authenticate
     let  userId = req.userId;
 
     // get user
@@ -251,13 +252,15 @@ let createEvent = async (req, res, next) => {
         });
 
     let event = new Event(title, description, author, datetime)
+    event.link = link;
+    event.location = link;
 
     //adding new Event instance to the database
     dao.addEvent(communityId, event)
-        .then(() => res.status(200).json({ msg: `Added new comment '${event.id}' to community ${communityId}` }))
+        .then(() => res.status(200).json({ msg: `Added new event '${event.id}' to community ${communityId}` }))
         .catch(err => {
-            console.log(`Could not add comment`, err);
-            res.status(400).json({ msg: `Could not add comment` });
+            console.log(`Could not add event`, err);
+            res.status(400).json({ msg: `Could not add event` });
         });
 }
 
