@@ -200,6 +200,35 @@ let addThreadToCommunity = function (communityId, thread) {
 }
 
 /**
+ * Add User to a commnunity
+ * @param {string} communityId
+ * @param {User} user
+ * @return {Promise}
+ * */
+let addUserToCommunity = function (communityId, user) {
+
+    return communities_collection.updateOne(
+        { id: communityId },
+        { $push: { users: user } }
+    )
+}
+
+/**
+ * Remove User from a commnunity
+ * @param {string} communityId
+ * @param {User} user
+ * @return {Promise}
+ * */
+let removeUserFromCommunity = function (communityId, user) {
+
+    return communities_collection.updateOne(
+        { id: communityId },
+        { $pull: { users: user } }
+    )
+}
+
+
+/**
  * add comment to a thread.
  * @param {Comment} comment
  * @param {string} threadId
@@ -662,6 +691,8 @@ module.exports = {
     addCommunity: addCommunity,
     addCommunities: addCommunities,
     addThreadToCommunity: addThreadToCommunity,
+    addUserToCommunity: addUserToCommunity,
+    removeUserFromCommunity: removeUserFromCommunity,
     addComment: addComment,
     getUserObjectByName: getUserObjectByName,
     addEvent: addEvent,

@@ -189,6 +189,63 @@ let createThread = async (req, res, next) => {
         res.status(400).json({ msg: `Could not add thread` });
     });
 }
+/**
+ * Handler function to join a community
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+let joinCommunity = async (req, res, next) => {
+    let communityId = req.body.communityId
+
+    let userId = req.userId
+
+    // get user
+    let user = await dao.getUserObject(userId)
+        .then((res) => {
+            return User.fromJSON(res)
+        }).catch(err => {
+            console.log(`Could not find user`, err);
+            res.status(404).json({ msg: `Could not find user` });
+        });
+
+    // add
+    dao.addUserToCommunity(communityId, user).then(() => {
+        res.status(200).json({ msg: `Added new user '${user.id}' to community ${communityId}` });
+    }).catch(err => {
+        console.log(`Could not add user`, err);
+        res.status(400).json({ msg: `Could not add user` });
+    });
+}
+
+/**
+ * Handler function to leave a community
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+let leaveCommunity = async (req, res, next) => {
+    let communityId = req.body.communityId
+
+    let userId = req.userId
+
+    // get user
+    let user = await dao.getUserObject(userId)
+        .then((res) => {
+            return User.fromJSON(res)
+        }).catch(err => {
+            console.log(`Could not find user`, err);
+            res.status(404).json({ msg: `Could not find user` });
+        });
+
+    // remove
+    dao.removeUserFromCommunity(communityId, user).then(() => {
+        res.status(200).json({ msg: `Removed user '${user.id}' from community ${communityId}` });
+    }).catch(err => {
+        console.log(`Could not remove user`, err);
+        res.status(400).json({ msg: `Could not remove user` });
+    });
+}
 
 /**
  * Handler function to create a new  Comment
@@ -813,6 +870,8 @@ app.post('/api/create-community/', authenticate, createCommunity);
 
 // Create a new thread in a community
 app.post('/api/create-thread/', authenticate, createThread);
+app.post('/api/join-community/', authenticate, joinCommunity);
+app.post('/api/leave-community/', authenticate, leaveCommunity);
 
 // Create a new comment in a thread
 app.post('/api/create-comment/', authenticate, createComment);

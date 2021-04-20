@@ -618,6 +618,9 @@
                                             <button class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#new-event-modal"v-show="isMember">
                                                 Event <i class="text-white fas fa-plus"></i>
                                             </button>
+                                            <button class="btn btn-sm btn-primary float-right" v-on:click="leave" v-show="isMember">
+                                                Leave <i class="text-white fas fa-sign-out-alt"></i>
+                                            </button>
                                             <button class="btn btn-sm btn-primary float-right" v-on:click="join" v-show="!isMember">
                                                 Join <i class="text-white fas fa-sign-in-alt"></i>
                                             </button>

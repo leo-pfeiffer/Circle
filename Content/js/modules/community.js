@@ -218,11 +218,49 @@ const makeCommunityInfoVue = function() {
              * Join the community
              * */
             join: function() {
-                // todo join via API
-                let apiResponse = {status: 'success'}
-                if (apiResponse.status === 'success') {
-                    this.users.push({name: client.userData.name, picture: client.userData.picture})
-                }
+                fetch('/api/join-community/', {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Basic " + client.userKey,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        communityId: this.communityData.id,
+                    })
+                }).then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Failed to join community')
+                    } else {
+                        return res.json()
+                    }
+                }).then((jsn) => {
+                    // trigger reload of the current community data
+                    goToCommunity(this.communityData.id)
+                }).catch(err => console.log(err))
+            },
+            /**
+             * Leave the community.
+             * */
+            leave: function() {
+                fetch('/api/leave-community/', {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Basic " + client.userKey,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        communityId: this.communityData.id,
+                    })
+                }).then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Failed to leave community')
+                    } else {
+                        return res.json()
+                    }
+                }).then((jsn) => {
+                    // trigger reload of the current community data
+                    goToCommunity(this.communityData.id)
+                }).catch(err => console.log(err))
             },
         },
     })
@@ -331,18 +369,9 @@ const makeCommunityFeedVue = function() {
                         }
                     }).then((jsn) => {
                         // trigger reload of the current community data
-                        console.log(jsn)
                         goToCommunity(this.communityData.id)
                         this.newComments[threadId] = "";
                     }).catch(err => console.log(err))
-                }
-            },
-            getThreadById: function(threadId) {
-                let arr = this.threads.filter(thread => thread.id === threadId)
-                if (arr.length === 1) {
-                    return arr[0]
-                } else {
-                    console.err(`Thread with id ${threadId} not found.`)
                 }
             },
         }
