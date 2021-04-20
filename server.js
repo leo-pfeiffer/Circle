@@ -264,6 +264,21 @@ let createEvent = async (req, res, next) => {
         });
 }
 
+// handler function for adding tag to community
+let addTag = async (req, res, next) => {
+    let body = req.body;
+    let tag = body.tag;
+    let communityId = body.communityId
+
+    //adding new tag to the database
+    dao.addTag(communityId, tag)
+        .then(() => res.status(200).json({ msg: `Added new tag '${tag}' to community ${communityId}` }))
+        .catch(err => {
+            console.log(`Could not add tag`, err);
+            res.status(400).json({ msg: `Could not add tag` });
+        });
+}
+
 /**
  * Handler function to GET Community object by id
  * @param {Request} req
@@ -794,6 +809,7 @@ app.post('/api/create-comment/', authenticate, createComment);
 
 // Create a new event in a community
 app.post('/api/create-event/', authenticate, createEvent);
+app.post('/api/add-tag/', authenticate, addTag);
 
 // get a community by its ID
 app.post('/api/community-by-id/', authenticate, getCommunityById);
@@ -820,7 +836,6 @@ app.get('/api/get-user-comments/', authenticate, getNumberComments);
 app.get('/api/get-user-threads/', authenticate, getNumberThreads);
 
 app.post('/api/get-community-stats/', authenticate, getCommunityStats);
-
 
 // get community lists for sidenav access
 // get all communities the user is a member of 

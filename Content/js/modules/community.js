@@ -150,17 +150,44 @@ const makeCommunityInfoVue = function() {
         },
         methods: {
             addTag: function() {
+
                 // todo connect to API
-                if (this.tags.includes(this.newTag)) {
+                if (this.communityData.tags.includes(this.newTag)) {
                     console.log("new tag already in tags.")
+                    this.newTag = '';
                     return;
                 }
+
                 if ((this.newTag.length <= 20) && (this.newTag.length > 0)) {
-                    this.tags.push(this.newTag)
-                    this.newTag = '';
+
+                    fetch('/api/add-tag/', {
+                        method: "POST",
+                        headers: {
+                            "Authorization": "Basic " + client.userKey,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            communityId: this.communityData.id,
+                            tag: this.newTag
+                        })
+                    }).then((res) => {
+                        if (!res.ok) {
+                            throw new Error('Failed to create event')
+                        } else {
+                            return res.json()
+                        }
+                    }).then((jsn) => {
+                        console.log(jsn)
+                        // trigger reload of the current community data
+                        goToCommunity(this.communityData.id)
+                        this.newTag = '';
+                    }).catch(err => {
+                        console.log(err)
+                    })
                 }
                 else {
                     console.log("tag requires length 1 <= x <= 20.")
+                    this.newTag = '';
                 }
             },
             removeTag: function(tag) {
