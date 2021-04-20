@@ -14,14 +14,13 @@ import {
 const makeCommunityHeaderVue = function() {
     const communityHeaderVue = new Vue({
         el: '#community-header',
-        data: {
-            name: 'Gardening',
-            symbol: 'fas fa-seedling',
-        },
         computed: {
             state() {
                 return client.state;
             },
+            communityData() {
+                return client.communityData
+            }
         },
     })
 }
@@ -78,13 +77,6 @@ const makeCommunityInfoVue = function() {
     const communityInfoVue = new Vue({
         el: '#community-info',
         data: {
-            id: "someId",
-            name: "Gardening",
-            admin: "michaeljordan23",
-            symbol: 'fas fa-seedling',
-            description: 'This is a community about gardening, which seems to be a very interesting pass time for some. If ' +
-                'you are one of them, please join! 🪴🌵',
-            tags: ['gardening', 'wood', 'seeds', 'flowers'],
             users: [
                 {name: 'lebron', picture: 'https://randomuser.me/api/portraits/men/7.jpg', numComments: 12},
                 {name: 'kobe', picture: 'https://randomuser.me/api/portraits/men/8.jpg', numComments: 13},
@@ -137,10 +129,13 @@ const makeCommunityInfoVue = function() {
                 return client.state;
             },
             isMember() {
-                return this.users.map(el => el.name).includes(client.userData.name);
+                return this.communityData.users.map(el => el.name).includes(client.userData.name);
             },
             isAdmin() {
-                return this.admin === client.userData.name
+                return this.communityData.admin === client.userData.name;
+            },
+            communityData() {
+                return client.communityData
             }
         },
         methods: {
@@ -164,14 +159,6 @@ const makeCommunityInfoVue = function() {
             },
             goToProfile: function(userId) {
                 goToProfile(userId)
-            },
-            /**
-             * Get n most frequent contributors.
-             * @param {Number} n. If n = -1, all are returned
-             * */
-            getMostFrequentContributors: function(n=-1) {
-                n = n === -1 ? this.users.length : n;
-                return [...this.users].sort((a, b) => b.numComments - a.numComments).slice(0, n);
             },
             /**
              * Join the community

@@ -146,6 +146,7 @@ const makeGeneralTestData = function() {
     addUsersToCommunity(comF, [jon, darren, aida])
     addTagsToCommunity(comF, ['hobby1', 'hobby3', 'hobby5'])
     addEventsToCommunity(comF, [brunch, lunch])
+    comF.description = "This is an amazing community called F."
     // fix ID for testing purposes
     comF.id = "c50fc1fb-55c3-4f09-8774-59150286bfb4";
 
@@ -164,6 +165,7 @@ const makeGeneralTestData = function() {
     addThreadsToCommunity(comI, [thread1, thread2])
     // fix ID for testing purposes
     comI.id = "85958011-170d-442b-ad20-0e871fc3e021"
+    comI.description = "This is an amazing community called I."
 
     const comJ = new Community('J', jon)
     addUsersToCommunity(comJ, [betty])

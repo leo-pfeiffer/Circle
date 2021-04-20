@@ -2,7 +2,14 @@
  * This file contains the vue components of the dashboard.
  * */
 
-import {client, goToCommunity, isDateMatch, mostRecentActivities, timeOfDayFormatter} from './clientUtils.js'
+import {
+    client,
+    goToCommunity,
+    isDateMatch,
+    mostRecentActivities,
+    mostRecentCommunities,
+    timeOfDayFormatter
+} from './clientUtils.js'
 
 const makeDashboardHeaderVue = function() {
     const dashboardHeaderVue = new Vue({
@@ -11,6 +18,7 @@ const makeDashboardHeaderVue = function() {
             state() {
                 return client.state;
             },
+
         },
     })
 }
@@ -23,21 +31,18 @@ const makeShortlistVue = function() {
             state() {
                 return client.state;
             },
+            shortListedCommunities() {
+                console.log(mostRecentCommunities.communities.map(el => el.id))
+                return mostRecentCommunities.communities
+            }
         },
         data: {
-            // todo fill this with actual communities
-            shortListedCommunities: [
-                {name: 'Gardening', id: 1},
-                {name: 'Tennis', id: 2},
-                {name: 'Painting', id: 3},
-                {name: 'Cooking', id: 4}
-            ],
         },
         methods: {
             goToCommunity: function(communityId) {
                 goToCommunity(communityId)
-            }
-        }
+            },
+        },
     })
 }
 

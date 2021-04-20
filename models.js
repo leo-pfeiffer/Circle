@@ -18,6 +18,7 @@ User = class {
         this.interests = [];
         this.gender = null;
         this.age = null;
+        this.picture = '';
     }
 
     /**
@@ -40,6 +41,7 @@ User = class {
         user.interests = jsn.interests || [];
         user.gender = jsn.gender || null;
         user.age = jsn.age || null;
+        user.picture = jsn.picture || '';
         return user;
     }
 
@@ -178,6 +180,8 @@ Community = class {
         this.threads = []
         this.events = []
         this.tags = []
+        this.description = '';
+        this.symbol = "fas fa-users";
 
         this.addUser(this.admin, true)
     }
@@ -200,6 +204,8 @@ Community = class {
         community.threads = jsn.threads || [];
         community.events = jsn.events || [];
         community.tags = jsn.tags || [];
+        community.description = jsn.description || '';
+        community.symbol = jsn.symbol || "fas fa-users";
         return community;
     }
 
