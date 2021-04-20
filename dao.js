@@ -398,6 +398,32 @@ const getUserEventsOfCommunity = async function(userId, communityId) {
 }
 
 /**
+ * Returns total number of comments of a community.
+ * @param {string} communityId
+ * @return {Promise}
+ * */
+let getNumberCommentsOfCommunity = async function(communityId) {
+    const pipeline = [
+        {
+            $match: {"id": communityId}
+        },
+        {
+            $unwind: {path: '$threads'}
+        },
+        {
+            $unwind: {path: '$threads.comments'}
+        },
+        {
+            $group: {_id: "$threads.comments", communityId: {$first: "$id"}, communityName: {$first: "$communityName"}}
+        },
+        {
+            $count: "commentCount"
+        }
+    ]
+    return communities_collection.aggregate(pipeline);
+}
+
+/**
  * Returns total number of threads opened by a user.
  * @param {string} userId
  * @return {Promise}
@@ -415,6 +441,52 @@ const getUserEventsOfCommunity = async function(userId, communityId) {
         },
         {
             $count: "threadCount"
+        }
+    ]
+    return communities_collection.aggregate(pipeline);
+}
+
+/**
+ * Returns total number of threads of a community
+ * @param {string} communityId
+ * @return {Promise}
+ * */
+ let getNumberThreadsOfCommunity = async function(communityId) {
+    const pipeline = [
+        {
+            $match: {"id": communityId}
+        },
+        {
+            $unwind: {path: '$threads'}
+        },
+        {
+            $group: {_id: "$threads", communityId: {$first: "$id"}, communityName: {$first: "$communityName"}}
+        },
+        {
+            $count: "threadCount"
+        }
+    ]
+    return communities_collection.aggregate(pipeline);
+}
+
+/**
+ * Returns total number of events of a community
+ * @param {string} communityId
+ * @return {Promise}
+ * */
+ let getNumberEventsOfCommunity = async function(communityId) {
+    const pipeline = [
+        {
+            $match: {"id": communityId}
+        },
+        {
+            $unwind: {path: '$events'}
+        },
+        {
+            $group: {_id: "$threads", communityId: {$first: "$id"}, communityName: {$first: "$communityName"}}
+        },
+        {
+            $count: "eventCount"
         }
     ]
     return communities_collection.aggregate(pipeline);
@@ -531,7 +603,10 @@ module.exports = {
     getMostRecentComments: getMostRecentComments,
     getUserEventsOfCommunity: getUserEventsOfCommunity,
     getNumberComments: getNumberComments,
+    getNumberCommentsOfCommunity: getNumberCommentsOfCommunity,
     getNumberThreads: getNumberThreads,
+    getNumberThreadsOfCommunity: getNumberThreadsOfCommunity,
+    getNumberEventsOfCommunity: getNumberEventsOfCommunity,
     getAllCommunityTags: getAllCommunityTags,
     registerNewUserPassword: registerNewUserPassword,
     authenticateUser: authenticateUser,

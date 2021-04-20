@@ -480,10 +480,35 @@ let getUserEventsOfCommunity = function (req, res, next) {
  * @param {NextFunction} next
  * */
  let getNumberComments = function (req, res, next) {
-    
+
     const userId = req.body.userId
 
     dao.getNumberComments(userId)
+        .then(async function(cursor) {
+            const numComments = [];
+            await cursor.forEach(el => {
+                numComments.push(el);
+            })
+            return numComments
+        })
+        .then(numComments => res.status(200).json(numComments))
+        .catch(err => {
+            console.log(`Could not get number of comments`, err);
+            res.status(400).json({ msg: `Could not get number of comments` });
+        })
+};
+
+/**
+ * Handler function to GET the total number of comments of a community.
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+let getNumberCommentsOfCommunity = function (req, res, next) {
+
+    const communityId = req.body.communityId
+
+    dao.getNumberCommentsOfCommunity(communityId)
         .then(async function(cursor) {
             const numComments = [];
             await cursor.forEach(el => {
@@ -518,8 +543,58 @@ let getUserEventsOfCommunity = function (req, res, next) {
     })
     .then(numThreads => res.status(200).json(numThreads))
     .catch(err => {
-        console.log(`Could not get number of comments`, err);
-        res.status(400).json({ msg: `Could not get number of comments` });
+        console.log(`Could not get number of threads`, err);
+        res.status(400).json({ msg: `Could not get number of threads` });
+    })
+};
+
+/**
+ * Handler function to GET the total number of threads of a community
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+ let getNumberThreadsOfCommunity = function (req, res, next) {
+
+    const communityId = req.body.communityId
+
+    dao.getNumberThreads(communityId)
+    .then(async function(cursor) {
+        const numThreads = [];
+        await cursor.forEach(el => {
+            numThreads.push(el);
+        })
+        return numThreads
+    })
+    .then(numThreads => res.status(200).json(numThreads))
+    .catch(err => {
+        console.log(`Could not get number of threads`, err);
+        res.status(400).json({ msg: `Could not get number of threads` });
+    })
+};
+
+/**
+ * Handler function to GET the total number of events of a community
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+ let getNumberEventsOfCommunity = function (req, res, next) {
+
+    const communityId = req.body.communityId
+
+    dao.getNumberEventsOfCommunity(communityId)
+    .then(async function(cursor) {
+        const numEvents = [];
+        await cursor.forEach(el => {
+            numEvents.push(el);
+        })
+        return numEvents
+    })
+    .then(numEvents => res.status(200).json(numEvents))
+    .catch(err => {
+        console.log(`Could not get number of events`, err);
+        res.status(400).json({ msg: `Could not get number of events` });
     })
 };
 
@@ -756,6 +831,12 @@ app.get('/api/get-user-object/', authenticate, getUserObject);
 app.get('/api/get-user-comments/', authenticate, getNumberComments);
 app.get('/api/get-user-threads/', authenticate, getNumberThreads);
 
+app.get('/api/get-number-comments-community/', authenticate, getNumberCommentsOfCommunity);
+app.get('/api/get-number-threads-community/', authenticate, getNumberThreadsOfCommunity);
+app.get('/api/get-number-events-community/', authenticate, getNumberEventsOfCommunity);
+
+
+
 // get community lists for sidenav access
 // get all communities the user is a member of 
 app.get('/api/get-member-communities/', authenticate, getMemberCommunities)
@@ -763,10 +844,7 @@ app.get('/api/get-member-communities/', authenticate, getMemberCommunities)
 // get tags for levenshtein distance algorithm 
 app.get('/api/get-all-community-tags', authenticate, getAllCommunityTags);
 
-// TODO LIKELY UNNECESSARY
-// app.get('/api/get-all-users/', authenticate, getUser);
-// app.get('/api/get-comment/', authenticate, getComment);
-// app.get('/api/get-event/', authenticate, getEvent);
+
 
 /*
 * The following endpoints were introduced as a proxy in order to access external APIs that have
