@@ -428,7 +428,7 @@ let getMostRecentCommunities = function (req, res, next) {
  * */
 let getUserEvents = function (req, res, next) {
 
-    const userId = req.body.userId
+    const userId = req.userId
 
     dao.getUserEvents(userId)
         .then(async function(eventsRaw) {
@@ -528,31 +528,6 @@ let getUserEventsOfCommunity = function (req, res, next) {
 };
 
 /**
- * Handler function to GET the total number of comments of a community.
- * @param {Request} req
- * @param {Response} res
- * @param {NextFunction} next
- * */
-let getNumberCommentsOfCommunity = function (req, res, next) {
-
-    const communityId = req.body.communityId
-
-    dao.getNumberCommentsOfCommunity(communityId)
-        .then(async function(cursor) {
-            const numComments = [];
-            await cursor.forEach(el => {
-                numComments.push(el);
-            })
-            return numComments
-        })
-        .then(numComments => res.status(200).json(numComments))
-        .catch(err => {
-            console.log(`Could not get number of comments`, err);
-            res.status(400).json({ msg: `Could not get number of comments` });
-        })
-};
-
-/**
  * Handler function to GET the total number of threads a user has opened. 
  * @param {Request} req
  * @param {Response} res
@@ -577,55 +552,56 @@ let getNumberCommentsOfCommunity = function (req, res, next) {
     })
 };
 
+
 /**
- * Handler function to GET the total number of threads of a community
+ * Handler function to GET the stats for a community
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
  * */
- let getNumberThreadsOfCommunity = function (req, res, next) {
+ let getCommunityStats = async function (req, res, next) {
 
     const communityId = req.body.communityId
 
-    dao.getNumberThreads(communityId)
-    .then(async function(cursor) {
-        const numThreads = [];
-        await cursor.forEach(el => {
-            numThreads.push(el);
+    const numEvents = await dao.getNumberEventsOfCommunity(communityId)
+        .then(async function(cursor) {
+            const numEvents = [];
+            await cursor.forEach(el => {
+                numEvents.push(el);
+            })
+            return numEvents[0]
         })
-        return numThreads
-    })
-    .then(numThreads => res.status(200).json(numThreads))
-    .catch(err => {
-        console.log(`Could not get number of threads`, err);
-        res.status(400).json({ msg: `Could not get number of threads` });
-    })
+        .catch(err => {
+            res.status(400).json({ msg: `Could not get number of events` });
+        })
+
+    const numThreads = await dao.getNumberThreads(communityId)
+        .then(async function(cursor) {
+            const numThreads = [];
+            await cursor.forEach(el => {
+                numThreads.push(el);
+            })
+            return numThreads[0]
+        })
+        .catch(err => {
+            res.status(400).json({ msg: `Could not get number of threads` });
+        })
+
+    const numComments = await dao.getNumberCommentsOfCommunity(communityId)
+        .then(async function(cursor) {
+            const numComments = [];
+            await cursor.forEach(el => {
+                numComments.push(el);
+            })
+            return numComments[0]
+        })
+        .catch(err => {
+            res.status(400).json({ msg: `Could not get number of comments` });
+        })
+
+    res.status(200).json({numComments, numEvents, numThreads})
 };
 
-/**
- * Handler function to GET the total number of events of a community
- * @param {Request} req
- * @param {Response} res
- * @param {NextFunction} next
- * */
- let getNumberEventsOfCommunity = function (req, res, next) {
-
-    const communityId = req.body.communityId
-
-    dao.getNumberEventsOfCommunity(communityId)
-    .then(async function(cursor) {
-        const numEvents = [];
-        await cursor.forEach(el => {
-            numEvents.push(el);
-        })
-        return numEvents
-    })
-    .then(numEvents => res.status(200).json(numEvents))
-    .catch(err => {
-        console.log(`Could not get number of events`, err);
-        res.status(400).json({ msg: `Could not get number of events` });
-    })
-};
 
 /**
  * Handler function to GET all community tags per community 
@@ -895,9 +871,7 @@ app.get('/api/get-user-object/', authenticate, getUserObject);
 app.get('/api/get-user-comments/', authenticate, getNumberComments);
 app.get('/api/get-user-threads/', authenticate, getNumberThreads);
 
-app.get('/api/get-number-comments-community/', authenticate, getNumberCommentsOfCommunity);
-app.get('/api/get-number-threads-community/', authenticate, getNumberThreadsOfCommunity);
-app.get('/api/get-number-events-community/', authenticate, getNumberEventsOfCommunity);
+app.post('/api/get-community-stats/', authenticate, getCommunityStats);
 
 
 // get community lists for sidenav access

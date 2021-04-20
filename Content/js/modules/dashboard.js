@@ -80,7 +80,7 @@ const makeCalendarPreviewVue = function () {
             attributes() {
                 return [{
                     bar: { backgroundColor: 'blue' },
-                    dates: this.events.map(el => new Date (el.datetime)),
+                    dates: this.events.map(el => el.datetime),
                 }]
             },
             events() {

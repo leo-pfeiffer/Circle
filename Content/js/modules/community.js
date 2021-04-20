@@ -7,8 +7,7 @@ import {
     formatDateTime,
     goToProfile,
     isDateMatch,
-    timeOfDayFormatter, 
-    createChart
+    timeOfDayFormatter,
 } from './clientUtils.js'
 
 const makeCommunityHeaderVue = function() {
@@ -72,40 +71,6 @@ const makeCommunityInfoVue = function() {
         el: '#community-info',
         data: {
             newTag: '',
-            activityPieChartData: {
-                type: 'doughnut',
-                data: {
-                    labels: ['Comments', 'Threads', 'Events'],
-                    datasets:[
-                    {
-                        data: [99, 12, 6],
-                        backgroundColor:[
-                            '#e74a3b',
-                            '#4e73df',
-                            '#1cc88a'
-                          ],
-                        borderColor: 'rgb(165,165,165)',
-                    }
-                ],
-                }, 
-                options: {
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Total community activity',
-                            fontSize: 20,
-                            color: 'rgb(255, 255, 255)'
-                        },
-                        legend: {
-                            display: true,
-                            labels: {
-                                color: 'rgb(255, 255, 255)'
-                            }
-                        }
-                    },
-                }
-
-            },
         },
         computed: {
             state() {
@@ -119,7 +84,7 @@ const makeCommunityInfoVue = function() {
             },
             communityData() {
                 return client.communityData
-            }
+            },
         },
         methods: {
             addTag: function() {
@@ -153,13 +118,7 @@ const makeCommunityInfoVue = function() {
                     this.users.push({name: client.userData.name, picture: client.userData.picture})
                 }
             },
-            createChart: function(chartId, chartData) {
-                createChart(chartId, chartData)
-            },
         },
-        mounted() {
-            this.createChart('activityDoughnutChart', this.activityPieChartData)
-        }
     })
 }
 
@@ -168,69 +127,6 @@ const makeCommunityFeedVue = function() {
         el: '#community-feed',
         data: {
             // todo Threads should be sorted by most recent first -> maybe make computed property for this
-            threads: [
-                {
-                    id: 1,
-                    title: "Spaceships",
-                    text: "The rumor that I'm building a spaceship to get back to my home planet Mars is totally untrue",
-                    author: "elonmusk",
-                    time: "05/12/2015, 22:00",
-                    comments: [
-                        {
-                            author: 'realdonaldtrump',
-                            text: 'Despite the constant negative press covfefe',
-                            time: '06/12/2015, 22:12'
-                        },
-                        {
-                            author: 'someoneelse',
-                            text: 'Gesundheit!',
-                            time: '07/12/2015, 12:12'
-                        },
-                        {
-                            author: 'someoneelse',
-                            text: 'hello!',
-                            time: '07/12/2015, 12:12'
-                        },
-                        {
-                            author: 'someoneelse',
-                            text: 'hallo!',
-                            time: '07/12/2015, 12:12'
-                        },
-                        {
-                            author: 'someoneelse',
-                            text: 'salut!',
-                            time: '07/12/2015, 12:12'
-                        },
-                    ]
-                },
-                {
-                    id: 2,
-                    title: "Gigafactory",
-                    text: "One gigafactory is about the size of 50 billion hamsters",
-                    author: "elonmusk",
-                    time: "30/07/2016, 5:41",
-                    comments: [
-                        {
-                            author: 'whitequeen',
-                            text: 'Beware the Jubjub bird, and shun the frumious Bandersnatch',
-                            time: '30/07/2016, 23:12'
-                        },
-                        {
-                            author: 'whiteking',
-                            text: 'And hast thou slain the Jabberwock?',
-                            time: '31/07/2016, 14:23'
-                        },
-                    ]
-                },
-                {
-                    id: 3,
-                    title: "Jack and Jill went up a hill",
-                    text: "... you know how it goes.",
-                    author: "whoami",
-                    time: "30/07/2016, 5:41",
-                    comments: []
-                },
-            ],
             newComments: {},
             newThread: {
                 title: '',
