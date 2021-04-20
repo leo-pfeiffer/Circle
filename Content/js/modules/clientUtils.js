@@ -432,7 +432,7 @@ const makeCommunityChart = function() {
                         color: 'rgb(255, 255, 255)'
                     }
                 }
-            },
+            }
         }
     }
 
@@ -443,8 +443,143 @@ const makeCommunityChart = function() {
     return createChart('activityDoughnutChart', data)
 }
 
+const makeProfileBarChart = function() {
+    let data = {
+        type: 'bar',
+        data: {
+                labels: ['Gardening', 'Yoga', 'Cooking'], // todo
+                datasets: [
+                    {
+                        label:' # Comments written',
+                        data: [20, 5, 13], // todo
+                        backgroundColor:['#e74a3b',],
+                    },
+                    {
+                        label:' # Threads opened',
+                        data: [3, 4, 1], // todo
+                        backgroundColor:['#4e73df',],
+                    }
+                ],
+            },
+        options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Activities in your top 10 most popular communities',
+                        fontSize: 20,
+                        color: 'rgb(255, 255, 255)'
+                    },
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: 'rgb(255, 255, 255)',
+                            borderColor: 'rgb(165,165,165)',
+                        },
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        ticks: {
+                            color: 'rgb(255, 255, 255)',
+                        },
+                        grid: {
+                            color: 'rgb(165,165,165)',
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        ticks: {
+                            color: 'rgb(255, 255, 255)',
+                        },
+                        grid: {
+                            color: 'rgb(165,165,165)',
+                        }
+                    }
+                }
+            }
+    }
+
+    if (profileBarChart) {
+        profileBarChart.destroy()
+    }
+
+    return createChart('commentBarChart', data)
+}
+
+const makeProfileLineChart = function() {
+    let data = {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // todo
+            datasets:[
+                {
+                    label:' # Comments written',
+                    data: [20, 9, 13, 6, 3],  // todo
+                    backgroundColor:[
+                        '#e74a3b',
+                    ],
+                    borderColor: 'rgb(165,165,165)',
+                },
+                {
+                    label:' # Threads opened',
+                    data: [3, 4, 1, 2, 1],  // todo
+                    backgroundColor:[
+                        '#4e73df',
+                    ],
+                    borderColor: 'rgb(165,165,165)',
+                }
+            ],
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Total activities over time',
+                    fontSize: 20,
+                    color: 'rgb(255, 255, 255)'
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        color: 'rgb(255, 255, 255)'
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    stacked: true,
+                    ticks: {
+                        color: 'rgb(255, 255, 255)',
+                    },
+                    grid: {
+                        color: 'rgb(165,165,165)',
+                    }
+                },
+                y: {
+                    stacked: true,
+                    ticks: {
+                        color: 'rgb(255, 255, 255)',
+                    },
+                    grid: {
+                        color: 'rgb(165,165,165)',
+                    }
+                }
+            }
+        }
+    }
+
+    if (profileLineChart) {
+        profileLineChart.destroy()
+    }
+
+    return createChart('activityLineChart', data)
+}
+
 // initialise the community chart
 let communityChart;
+let profileBarChart;
+let profileLineChart;
 
 // Socket.io related utility functions ======
 /**
