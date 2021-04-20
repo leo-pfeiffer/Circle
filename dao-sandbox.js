@@ -11,6 +11,7 @@ let pageRankDemoData = makePageRankDemoData();
 let demoData = makeGeneralTestData();
 
 let userId = demoData.adrian.id
+let communityId = "c50fc1fb-55c3-4f09-8774-59150286bfb4";
 
 dao.init()
     // drop old data
@@ -187,6 +188,17 @@ dao.init()
     // .then(() => dao.getUserEvents(demoData.adrian.id))
 
     // .then(() => dao.getUserObject(demoData.adrian.id))
+    // .then(() => dao.getNumberThreads(demoData.adrian.id))
+    // .then(async function(cursor) {
+    //     await cursor.forEach(el => console.log(el))
+    // })
+
+    // .then(() => dao.getAllCommunityTags(communityId))
+    // .then(async function(cursor) {
+    //     await cursor.forEach(el => console.log(el))
+    // })
+       
+    
 
     .then((res) => {
         console.log(res)

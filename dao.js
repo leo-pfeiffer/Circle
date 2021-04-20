@@ -372,10 +372,82 @@ const getUserEventsOfCommunity = async function(userId, communityId) {
 };
 
 /**
- * Get an entire user object by name.
- * @param {string} userName
+ * Returns total number of comments posted by a user.
+ * @param {string} userId
  * @return {Promise}
  * */
+ let getNumberComments = async function(userId) {
+    const pipeline = [
+        {
+            $match: {"users.id": userId}
+        },
+        {
+            $unwind: {path: '$threads'}
+        },
+        {
+            $unwind: {path: '$threads.comments'}
+        },
+        {
+            $group: {_id: "$threads.comments", communityId: {$first: "$id"}, communityName: {$first: "$communityName"}}
+        },
+        {
+            $count: "commentCount"
+        }
+    ]
+    return communities_collection.aggregate(pipeline);
+}
+
+/**
+ * Returns total number of threads opened by a user.
+ * @param {string} userId
+ * @return {Promise}
+ * */
+ let getNumberThreads = async function(userId) {
+    const pipeline = [
+        {
+            $match: {"users.id": userId}
+        },
+        {
+            $unwind: {path: '$threads'}
+        },
+        {
+            $group: {_id: "$threads", communityId: {$first: "$id"}, communityName: {$first: "$communityName"}}
+        },
+        {
+            $count: "threadCount"
+        }
+    ]
+    return communities_collection.aggregate(pipeline);
+}
+
+/**
+ * Handler function to GET all tags of all communities.
+ * @param {string} communityId
+ * @return {Promise}
+ * */
+ const getAllCommunityTags = async function(communityId) {
+
+    const pipeline = [
+        {
+            $match: {"id": communityId}
+        },
+        // unwind the tags
+        {
+            $unwind: {path: "$tags"}
+        },
+        // group tags by community id 
+        {
+            $group: {_id: "$tags", communityId: {$first: "$id"}, communityTags: {$first: "$tags"}}
+        },
+    ]
+
+    return communities_collection.aggregate(pipeline);
+}
+/**  Get an entire user object by name.
+ * @param {string} userName
+ * @return {Promise}
+ */
+
 let getUserObjectByName = function (userName) {
     return user_passwords_collection.find({ "userName" :  userName}).toArray()
 };
@@ -442,6 +514,9 @@ module.exports = {
     getUserObject: getUserObject,
     getMostRecentComments: getMostRecentComments,
     getUserEventsOfCommunity: getUserEventsOfCommunity,
+    getNumberComments: getNumberComments,
+    getNumberThreads: getNumberThreads,
+    getAllCommunityTags: getAllCommunityTags,
     registerNewUserPassword: registerNewUserPassword,
     authenticateUser: authenticateUser
 };

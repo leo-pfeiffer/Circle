@@ -453,8 +453,104 @@ let getUserEventsOfCommunity = function (req, res, next) {
         })
 }
 
+/**
+ * Handler function to GET a user object
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+ let getUserObject = function (req, res, next) {
+    
+    const userId = req.body.userId
 
+    dao.getUserObject(userId)
+        .then(docs => {
+                if ( docs != null ) res.status(200).json(docs);
+                else res.status(400).send("No such user");
+            })
+        .catch(err => {
+            console.log(`Could not get user`, err);
+            res.status(400).json({ msg: `Could not get user` });
+            
+        })
+};
 
+/**
+ * Handler function to GET the total number of comments a user has made. 
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+ let getNumberComments = function (req, res, next) {
+    
+    const userId = req.body.userId
+
+    dao.getNumberComments(userId)
+        .then(async function(cursor) {
+            const numComments = [];
+            await cursor.forEach(el => {
+                numComments.push(el);
+            })
+            return numComments
+        })
+        .then(numComments => res.status(200).json(numComments))
+        .catch(err => {
+            console.log(`Could not get number of comments`, err);
+            res.status(400).json({ msg: `Could not get number of comments` });
+        })
+};
+
+/**
+ * Handler function to GET the total number of threads a user has opened. 
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+ let getNumberThreads = function (req, res, next) {
+    
+    const userId = req.body.userId
+
+    dao.getNumberThreads(userId)
+    .then(async function(cursor) {
+        const numThreads = [];
+        await cursor.forEach(el => {
+            numThreads.push(el);
+        })
+        return numThreads
+    })
+    .then(numThreads => res.status(200).json(numThreads))
+    .catch(err => {
+        console.log(`Could not get number of comments`, err);
+        res.status(400).json({ msg: `Could not get number of comments` });
+    })
+};
+
+/**
+ * Handler function to GET the total number of threads a user has opened. 
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+ let getAllCommunityTags = function (req, res, next) {
+    
+    const communityId = req.body.communityId
+
+    dao.getAllCommunityTags(communityId)
+    .then(async function(cursor) {
+        const allCommunityTags = [];
+        await cursor.forEach(el => {
+            let obj = {}
+                obj.community = {id: el.communityId, tags: el.communityTags}
+            allCommunityTags.push(obj);
+        })
+        return allCommunityTags
+    })
+    .then(allCommunityTags => res.status(200).json(allCommunityTags))
+    .catch(err => {
+        console.log(`Could not get all community tags`, err);
+        res.status(400).json({ msg: `Could not get all community tags` });
+    })
+};
 
 /**
  * Handler function to get community recommendations
@@ -488,29 +584,6 @@ let getRecommendation = function (req, res, next) {
             res.status(500).json({ msg: `Could not get PageRank recommendation` });
         })
 }
-
-/**
- * Handler function to GET a user object
- * @param {Request} req
- * @param {Response} res
- * @param {NextFunction} next
- * */
-let getUserObject = function (req, res, next) {
-    
-    const userId = req.body.userId
-
-    dao.getUserObject(userId)
-        .then(docs => {
-                if ( docs != null ) res.status(200).json(docs);
-                else res.status(400).send("No such user");
-            })
-        .catch(err => {
-            console.log(`Could not get user`, err);
-            res.status(400).json({ msg: `Could not get user` });
-            
-        })
-};
-
 
 /**
  * Proxy request handler that gets a random joke from an external API
@@ -615,6 +688,11 @@ app.get('/api/get-recommendation/', authenticate, getRecommendation);
 
 // get a user object by ID
 app.get('/api/get-user-object/', authenticate, getUserObject);
+app.get('/api/get-user-comments/', authenticate, getNumberComments);
+app.get('/api/get-user-threads/', authenticate, getNumberThreads);
+
+// get tags for levenshtein distance algorithm 
+app.get('/api/get-all-community-tags', authenticate, getAllCommunityTags);
 
 // TODO LIKELY UNNECESSARY
 // app.get('/api/get-all-users/', authenticate, getUser);
