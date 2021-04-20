@@ -61,7 +61,7 @@ dao.init()
         console.log('done')
     })
     .then(res => {
-        process.exit(0);
+        process.exit(0)
     })
 
 // const rl = readline.createInterface({
