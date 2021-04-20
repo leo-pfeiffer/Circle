@@ -66,20 +66,42 @@ dao.init()
     //     return events
     // })
 
-    .then(() => {
-        let communityId = "85958011-170d-442b-ad20-0e871fc3e021";
-        return dao.getThreadsOfCommunity(communityId)
-    })
-    .then(async function(cursor) {
-        const threads = [];
-        await cursor.forEach(arr => {
-            let obj = {}
-            obj.community = {id: arr.communityId, name: arr.communityName}
-            obj.thread = Thread.fromJSON(arr._id)
-            threads.push(obj);
-        })
-        return threads
-    })
+    // .then(() => {
+    //     let communityId = "85958011-170d-442b-ad20-0e871fc3e021";
+    //     return dao.getThreadsOfCommunity(communityId)
+    // })
+    // .then(async function(cursor) {
+    //     const threads = [];
+    //     await cursor.forEach(arr => {
+    //         let obj = {}
+    //         obj.community = {id: arr.communityId, name: arr.communityName}
+    //         obj.thread = Thread.fromJSON(arr._id)
+    //         threads.push(obj);
+    //     })
+    //     return threads
+    // })
+
+    // .then(async function() {
+    //     let communityId = "85958011-170d-442b-ad20-0e871fc3e021";
+    //     let text = 'hello'
+    //     let title = 'intro'
+    //
+    //     //creating new instances of class User, Community and Thread
+    //
+    //     // todo get from authenticate
+    //     let author = await dao.getUserObject(userId)
+    //         .then((res) => {
+    //             return User.fromJSON(res)
+    //         }).catch(err => {
+    //             console.log(`Could not find user`, err);
+    //             res.status(404).json({ msg: `Could not find user` });
+    //         });
+    //
+    //     let thread = new Thread(text, title, author)
+    //
+    //     //adding new Thread to the database
+    //     return dao.addThreadToCommunity(communityId, thread)
+    // })
 
     // .then(() => dao.getPageRankCommunities(pageRankDemoData.peter.id))
 

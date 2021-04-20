@@ -81,7 +81,7 @@ let getCommunity = function () {
 }
 
 /**
- * Returns all data stored in threads_collection
+ * Returns threads of a community
  * @param {string} communityId
  * @return {Promise}
  * */
@@ -218,14 +218,16 @@ let addCommunities = function (communities) {
 
 /**
  * Insert Thread object into DB.
+ * @param {string} communityId
  * @param {Thread} thread
  * @return {Promise}
  * */
-let addThread = function (thread) {
-    return threads_collection.insertOne(thread)
-        .then(res => {
-            return res.insertedId
-        });
+let addThreadToCommunity = function (communityId, thread) {
+
+    return communities_collection.updateOne(
+        { id: communityId },
+        { $push: { threads: thread } }
+    )
 }
 
 /**
@@ -360,8 +362,8 @@ const getUserEventsOfCommunity = async function(userId, communityId) {
  * @param {string} userId
  * @return {Promise}
  * */
- let getUserObject = function (userId) {
-    return users_collection.findOne({ "users.id" :  userId})
+ let getUserObject = async function (userId) {
+    return users_collection.findOne({ "id" :  userId})
 };
 
 /**
@@ -397,7 +399,7 @@ module.exports = {
     addUsers: addUsers,
     addCommunity: addCommunity,
     addCommunities: addCommunities,
-    addThread: addThread,
+    addThreadToCommunity: addThreadToCommunity,
     addComment: addComment,
     addEvent: addEvent,
     getUser: getUser,

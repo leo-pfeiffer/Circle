@@ -157,29 +157,34 @@ let createCommunity = (req, res, next) => {
  * @param {Response} res
  * @param {NextFunction} next
  * */
-let createThread = (req, res, next) => {
+let createThread = async (req, res, next) => {
     let body = req.body;
     let text = body.text;
     let title = body.title;
-    let communityName = body.communityName
-    let userName = body.admin.userName
-    let userEmail = body.admin.userEmail
+    let communityId = body.communityId
 
     //creating new instances of class User, Community and Thread
-    let author = new User(userName, userEmail)
-    let community = new Community(communityName, author)
-    let thread = new Thread(text, title, author, community)
+    let userId = req.userId
+    // todo get from authenticate
 
-    //adding new Thread to the database
-    dao.addThread(thread)
-        .then((id) => {
-            res.status(200).json({ msg: `Added new thread '${thread}' in community ${community}` });
-        })
-        .catch(err => {
-            console.log(`Could not add thread`, err);
-            res.status(400).json({ msg: `Could not add thread` });
+    // todo get from authenticate
+    let author = await dao.getUserObject(userId)
+        .then((res) => {
+            return User.fromJSON(res)
+        }).catch(err => {
+            console.log(`Could not find user`, err);
+            res.status(404).json({ msg: `Could not find user` });
         });
 
+    let thread = new Thread(text, title, author)
+
+    //adding new Thread to the database
+    dao.addThreadToCommunity(communityId, thread).then((res) => {
+        res.status(200).json({ msg: `Added new thread '${thread.id}' to community ${communityId}` });
+    }).catch(err => {
+        console.log(`Could not add thread`, err);
+        res.status(400).json({ msg: `Could not add thread` });
+    });
 }
 
 /**
