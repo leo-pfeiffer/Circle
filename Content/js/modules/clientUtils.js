@@ -19,6 +19,7 @@ export const client = Vue.observable({
         name: '',
         admin: {},
         users: [],
+        events: [],
         symbol: '',
     },
     profileData: {

@@ -60,7 +60,7 @@ const makeLoginVue = function() {
                     console.log(jsn)
 
                     // todo save entire User object to client.userData for convenience
-                    client.userData.username = jsn.user.userName;
+                    client.userData.name = jsn.user.userName;
                     client.userData.id = jsn.user.id
                     makeSocket();
                     console.log('Login successful')

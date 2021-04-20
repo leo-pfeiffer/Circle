@@ -30,15 +30,6 @@ const makeCommunityCalendarVue = function() {
         el: '#community-calendar',
         data: {
             selectedDate: null,
-            // todo get from API (only for current community)
-            events: [
-                {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 1, 10, 0)},
-                {title: 'Lunch', desciption: 'Just lunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 10, 13, 0)},
-                {title: 'Breakfast', desciption: 'Just breakhast.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 10, 9, 0)},
-                {title: 'Tea', desciption: 'Just tea.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 22, 17, 0)},
-                {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 6, 10, 0)},
-                {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 16, 11, 0)},
-            ],
         },
         computed: {
             state() {
@@ -47,8 +38,11 @@ const makeCommunityCalendarVue = function() {
             attributes() {
                 return [{
                     bar: {backgroundColor: 'blue'},
-                    dates: this.events.map(el => el.datetime),
+                    dates: this.communityData.events.map(el => new Date(el.datetime)),
                 }]
+            },
+            communityData() {
+                return client.communityData
             },
             /**
              * Return all events of the currently selected day sorted by time of event.
@@ -57,17 +51,17 @@ const makeCommunityCalendarVue = function() {
                 if (this.selectedDate === null) {
                     return [];
                 }
-                return this.events.filter(el => isDateMatch(el.datetime, this.selectedDate))
+                return this.communityData.events.filter(el => isDateMatch(new Date(el.datetime), this.selectedDate))
                     .sort((a, b) => a.datetime - b.datetime)
             }
         },
         methods: {
             /**
              * Return hour and minute in a nicer format
-             * @param {Date} datetime
+             * @param {Date | string} datetime
              * */
             timeOfDayFormatter: function(datetime) {
-                return timeOfDayFormatter(datetime)
+                return timeOfDayFormatter(new Date(datetime))
             }
         }
     })
@@ -77,17 +71,6 @@ const makeCommunityInfoVue = function() {
     const communityInfoVue = new Vue({
         el: '#community-info',
         data: {
-            users: [
-                {name: 'lebron', picture: 'https://randomuser.me/api/portraits/men/7.jpg', numComments: 12},
-                {name: 'kobe', picture: 'https://randomuser.me/api/portraits/men/8.jpg', numComments: 13},
-                {name: 'shaquille', picture: 'https://randomuser.me/api/portraits/men/9.jpg', numComments: 14},
-                {name: 'kareem', picture: 'https://randomuser.me/api/portraits/men/10.jpg', numComments: 16},
-                {name: 'michael', picture: 'https://randomuser.me/api/portraits/men/11.jpg', numComments: 3},
-                {name: 'stephen', picture: 'https://randomuser.me/api/portraits/men/12.jpg', numComments: 0},
-                {name: 'bill', picture: 'https://randomuser.me/api/portraits/men/13.jpg', numComments: 0},
-                {name: 'larry', picture: 'https://randomuser.me/api/portraits/men/14.jpg', numComments: 1},
-                {name: 'dirk', picture: 'https://randomuser.me/api/portraits/men/15.jpg', numComments: 5},
-            ],
             newTag: '',
             activityPieChartData: {
                 type: 'doughnut',
@@ -132,7 +115,7 @@ const makeCommunityInfoVue = function() {
                 return this.communityData.users.map(el => el.name).includes(client.userData.name);
             },
             isAdmin() {
-                return this.communityData.admin === client.userData.name;
+                return this.communityData.admin.userName === client.userData.name;
             },
             communityData() {
                 return client.communityData

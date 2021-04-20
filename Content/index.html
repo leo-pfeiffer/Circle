@@ -460,14 +460,15 @@
 
                                         <div v-for="(event, index) in eventsOnSelectedDay">
                                             <div class="card border-left-warning shadow">
-                                                <div class="card-body is-link" v-on:click="goToCommunity(event.community.id)">
+                                                <!-- Add link to event -->
+                                                <div class="card-body is-link">
                                                     <div class="row no-gutters align-items-center">
                                                         <div class="col mr-2">
                                                             <h5>{{ event.title }} @ {{ timeOfDayFormatter(event.datetime) }}</h5>
                                                             <div class="text text-danger mb-1">
-                                                                <span class="text-primary">Created by </span> {{ event.organiser.username }}<span class="text-primary">.</span>
+                                                                <span class="text-primary">Created by </span> {{ event.organiser.userName }}<span class="text-primary">.</span>
                                                             </div>
-                                                            <div>{{ event.desciption }}</div>
+                                                            <div>{{ event.description }}</div>
                                                         </div>
                                                     </div>
                                                 </div>
