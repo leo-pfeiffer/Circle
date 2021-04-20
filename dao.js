@@ -149,28 +149,29 @@ let getMostRecentComments = async function(userId, n) {
     return communities_collection.aggregate(pipeline)
 }
 
-/**
- * Returns all data stored in comments_collection
- * @param {Array<Comment>} comments
- * @return {Promise}
- * */
-let getComment = function () {
-    // todo this is likely unnecessary => if not, get from community collection
-    // return comments_collection.find({}).toArray()
-    //     .then(comments => comments.map(comment => Comment.fromJSON(comment)))
-    //     .catch(err=>console.log("Could not find",err.message));
-}
+// /**
+//  * // todo this is likely unnecessary => if not, get from community collection
+//  * Returns all data stored in comments_collection
+//  * @param {Array<Comment>} comments
+//  * @return {Promise}
+//  * */
+// let getComment = function () {
+//     return comments_collection.find({}).toArray()
+//         .then(comments => comments.map(comment => Comment.fromJSON(comment)))
+//         .catch(err=>console.log("Could not find",err.message));
+// }
 
-/**
- * Returns all data stored in events_collection
- * @param {Array<Event>} events
- * @return {Promise}
- * */
-let getEvent = function () {
-    return events_collection.find({}).toArray()
-        .then(events => events.map(event => Event.fromJSON(event)))
-        .catch(err=>console.log("Could not find",err.message));
-}
+// /**
+//  * TODO LIKELY OBSOLETE
+//  * Returns all data stored in events_collection
+//  * @param {Array<Event>} events
+//  * @return {Promise}
+//  * */
+// let getEvent = function () {
+//     return events_collection.find({}).toArray()
+//         .then(events => events.map(event => Event.fromJSON(event)))
+//         .catch(err=>console.log("Could not find",err.message));
+// }
 
 /**
  * Insert User object into DB.
@@ -246,14 +247,15 @@ let addComment = function (comment, threadId) {
 
 /**
  * Insert Event object into DB.
+ * @param {string} communityId
  * @param {Event} event
  * @return {Promise}
  * */
-let addEvent = function (event) {
-    return events_collection.insertOne(event)
-        .then(res => {
-            return res.insertedId
-        });
+let addEvent = function (communityId, event) {
+    return communities_collection.updateOne(
+        { id: communityId },
+        { $push: { events: event } }
+    )
 }
 
 /**
@@ -407,8 +409,8 @@ module.exports = {
     getUser: getUser,
     getCommunity: getCommunity,
     getThreadsOfCommunity: getThreadsOfCommunity,
-    getComment: getComment,
-    getEvent: getEvent,
+    // getComment: getComment,
+    // getEvent: getEvent,
     dropCollections: dropCollections,
     getPageRankCommunities: getPageRankCommunities,
     getUserEvents: getUserEvents,

@@ -103,6 +103,25 @@ dao.init()
     //     return dao.addThreadToCommunity(communityId, thread)
     // })
 
+    .then(async function() {
+        let communityId = "85958011-170d-442b-ad20-0e871fc3e021";
+        let title = 'tea'
+        let description = 'having some team'
+        let datetime = new Date(2020, 3, 12)
+
+        let author = await dao.getUserObject(userId)
+            .then((res) => {
+                return User.fromJSON(res)
+            }).catch(err => {
+                console.log(`Could not find user`, err);
+                res.status(404).json({ msg: `Could not find user` });
+            });
+
+        let event = new Event(title, description, author, datetime)
+
+        return dao.addEvent(communityId, event)
+    })
+
     // .then(async function() {
     //     let threadId = "2eec1791-d327-43b0-b7bf-1e6cfad7a498";
     //     let text = "this is a comment"
