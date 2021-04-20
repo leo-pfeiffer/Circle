@@ -297,10 +297,8 @@ const makeCommunityFeedVue = function() {
                         // trigger reload of the current community data
                         console.log(jsn)
                         goToCommunity(this.communityData.id)
-                        this.newTag = '';
+                        this.newThread = {title: '', text: ''}
                     }).catch(err => console.log(err))
-
-                    this.newThread = {title: '', text: ''}
 
                 } else {
                     this.newThread = {title: '', text: ''}
@@ -314,20 +312,29 @@ const makeCommunityFeedVue = function() {
             submitNewComment: function(threadId) {
                 if (this.newComments.hasOwnProperty(threadId) && this.newComments[threadId].length > 0) {
 
-                    let thread = this.getThreadById(threadId)
-
-                    let comment = {
-                        // todo get real username
-                        author: 'leopold',
-                        text: this.newComments[threadId],
-                        time: formatDateTime(new Date)
-                    }
-
-                    thread.comments.push(comment)
-
-                    console.log("New comment: ", this.newComments[threadId])
-                    // todo send to API
-                    this.newComments[threadId] = "";
+                    fetch('/api/create-comment/', {
+                        method: "POST",
+                        headers: {
+                            "Authorization": "Basic " + client.userKey,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            communityId: this.communityData.id,
+                            text: this.newComments[threadId],
+                            threadId: threadId
+                        })
+                    }).then((res) => {
+                        if (!res.ok) {
+                            throw new Error('Failed to add comment')
+                        } else {
+                            return res.json()
+                        }
+                    }).then((jsn) => {
+                        // trigger reload of the current community data
+                        console.log(jsn)
+                        goToCommunity(this.communityData.id)
+                        this.newComments[threadId] = "";
+                    }).catch(err => console.log(err))
                 }
             },
             getThreadById: function(threadId) {

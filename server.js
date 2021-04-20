@@ -197,18 +197,15 @@ let createThread = async (req, res, next) => {
  * @param {NextFunction} next
  * */
 let createComment = async (req, res, next) => {
-    let body = req.body;
-    let text = body.text;
-    let userName = body.user.userName
-
-    let threadId = body.threadId
+    let text = req.body.text;
+    let threadId = req.body.threadId
 
     // creating new User and Comment instances
     let userId = req.userId
 
     let author = await dao.getUserObject(userId)
-        .then((res) => {
-            return User.fromJSON(res)
+        .then((userData) => {
+            return User.fromJSON(userData)
         }).catch(err => {
             console.log(`Could not find user`, err);
             res.status(404).json({ msg: `Could not find user` });
