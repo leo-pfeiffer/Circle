@@ -4,9 +4,9 @@
 
  import {
     client, 
-    setState,
-    createChart,
+    setState
 } from './clientUtils.js'
+
 
  const makeProfileInfoVue = function() {
      const profileInfoVue = new Vue({
@@ -182,15 +182,15 @@
                 return client.state;
             },
         },
-        methods: {
-            createChart: function(chartId, chartData) {
-                createChart(chartId, chartData)
-            },
-        },
-        mounted() {
-            this.createChart('commentBarChart', this.commentBarChartData)
-            this.createChart('activityLineChart', this.activityLineChartData)
-        }
+        // methods: {
+        //     createChart: function(chartId, chartData) {
+        //         createChart(chartId, chartData)
+        //     },
+        // },
+        // mounted() {
+        //     this.createChart('commentBarChart', this.commentBarChartData)
+        //     this.createChart('activityLineChart', this.activityLineChartData)
+        // }
     })
 }
 
