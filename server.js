@@ -791,6 +791,31 @@ let getRecommendation = function (req, res, next) {
 }
 
 /**
+ * Handler function to get search results
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+let getSearchResults = function (req, res, next) {
+    const searchTerm = req.body.searchTerm
+
+    //retrieving data from DB (from events_collection)
+    dao.getSearchResults(searchTerm)
+        .then((results) => {
+            results.userResults = results.userResults.map(u => User.fromJSON(u));
+            results.communityResults = results.communityResults.map(u => Community.fromJSON(u));
+            res.status(200).json(results);
+
+        })
+        .catch(err => {
+            console.log(`Could not get search results`, err);
+            res.status(500).json({ msg: `Could not get search results` });
+        })
+}
+
+
+
+/**
  * Proxy request handler that gets a random joke from an external API
  * @param {Request} req
  * @param {Response} res
@@ -908,6 +933,9 @@ app.post('/api/get-recent-communities/', authenticate, getMostRecentCommunities)
 
 // get result of the recommendation system
 app.get('/api/get-recommendation/', authenticate, getRecommendation);
+
+// get search results
+app.post('/api/get-search-results/', authenticate, getSearchResults);
 
 // get a user object by ID
 app.get('/api/get-user-object/', authenticate, getUserObject);

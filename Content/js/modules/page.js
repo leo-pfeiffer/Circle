@@ -43,6 +43,30 @@ const makeHeaderVue = function() {
                 if (search.term === '') return;
                 search.type = 'search'
                 // todo call to api -> save response in observable -> access it from search vue
+
+                fetch("/api/get-search-results/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Basic " + client.userKey,
+                    },
+                    body: JSON.stringify({searchTerm: search.term})
+                }).then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Failed to create new community.')
+                    }
+                    else {
+                        return res.json()
+                    }
+                }).then((jsn) => {
+                    search.communityResults = jsn.communityResults
+                    search.userResults = jsn.userResults
+                    console.log(search.communityResults)
+                    console.log(search.userResults)
+                }).catch((err) => {
+                    console.log(err)
+                })
+
                 this.goToSearch();
             },
             getRecommendations: function () {
@@ -107,7 +131,6 @@ const makeNewCommunityModalVue = function () {
                         return res.json()
                     }
                 }).then((jsn) => {
-                    console.log('Created new community.')
                     this.message = 'Community created. You can now close this popup.'
                     setTimeout(this.resetMessageAndStatus, 5000);
                     this.resetNewCommunity();

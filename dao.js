@@ -37,6 +37,28 @@ let init = function () {
             user_passwords_collection = client.db().collection(user_passwords_data);
 
             console.log("Connected to database @", sanitisedUrl);
+        }).then(() => {
+
+           // create index for community search
+            return communities_collection.createIndex(
+                {
+                    description: "text",
+                    communityName: "text",
+                    tags: "text",
+                }
+            )
+
+        }).then(() => {
+
+            // create index for user search
+            return users_collection.createIndex(
+                {
+                    userName: "text",
+                    location: "text",
+                    interests: "text",
+                }
+            )
+
         })
         .catch(err => {
             console.log(`Could not connect to ${sanitisedUrl}`, err);
@@ -347,6 +369,20 @@ const getPageRankCommunities = async function(userId) {
     })
 
     return communities
+}
+
+/**
+ * Get the search results for a query.
+ * @param {string} searchTerm
+ * @return {Promise}
+ * */
+const getSearchResults = async function(searchTerm) {
+    const userResults = await users_collection.find( { $text: { $search: searchTerm } } ).toArray()
+    const communityResults = await communities_collection.find( { $text: { $search: searchTerm } } ).toArray()
+    return {
+        userResults: userResults,
+        communityResults: communityResults
+    }
 }
 
 /**
@@ -703,6 +739,7 @@ module.exports = {
     // getEvent: getEvent,
     dropCollections: dropCollections,
     getPageRankCommunities: getPageRankCommunities,
+    getSearchResults: getSearchResults,
     getUserEvents: getUserEvents,
     getUserObject: getUserObject,
     getMostRecentComments: getMostRecentComments,

@@ -155,7 +155,7 @@
                     <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
-                            <input type="text" class="form-control bg-secondary border-0 small" aria-label="Search" aria-describedby="basic-addon2" v-model="searchTerm">
+                            <input type="text" class="form-control bg-secondary border-0 small text-white" aria-label="Search" aria-describedby="basic-addon2" v-model="searchTerm">
                             <div class="input-group-append">
                                 <button class="btn btn-info" type="button" v-on:click="search" title="Search">
                                     <i class="fas fa-search fa-sm"></i>
@@ -744,13 +744,34 @@
 
                                 <div class="collapse" id="collapseCommunityResults">
                                     <div class="card-body">
-                                        Here are the communities that were found.
+                                        <p v-show="communityResults.length === 0">No matches found</p>
+
+                                        <div v-for="(item, index) in communityResults">
+                                            <div class="card border-left-warning shadow">
+                                                <div class="card-body is-link" v-on:click="goToCommunity(item.id)">
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col mr-2">
+
+                                                            <h2 class="h3 mb-0" v-show="item.picture !== ''">
+                                                                <img v-bind:src="item.picture" class="small-user-img is-link" v-bind:title="item.communityName">  {{ item.communityName }} {{item.id}}
+                                                            </h2>
+                                                            <h2 class="h3 mb-0 text-warning" v-show="item.picture === ''">
+                                                                <i class="text-warning" v-bind:class="item.symbol"></i> {{ item.communityName }} {{item.id}}
+                                                            </h2>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <hr class="sidebar-divider" v-show="index < communityResults.length - 1">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- User Results -->
-                            <div class="card shadow mb-4 bg-secondary" id="user-search-results" v-show="state === 'search'">
+                            <div class="card shadow mb-4 bg-secondary" id="user-search-results" v-show="state === 'search' && searchType === 'search'">
 
                                 <a href="#collapseUserResults" class="d-block card-header py-3" data-toggle="collapse"
                                    role="button" aria-expanded="true" aria-controls="collapseCommunityCalendar">
@@ -759,7 +780,28 @@
 
                                 <div class="collapse" id="collapseUserResults">
                                     <div class="card-body">
-                                        Here are the users that were found.
+                                        <p v-show="userResults.length === 0">No matches found</p>
+
+                                        <div v-for="(item, index) in userResults">
+                                            <div class="card border-left-warning shadow">
+                                                <div class="card-body is-link" v-on:click="goToProfile(item.id)">
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col mr-2">
+
+                                                            <h2 class="h3 mb-0" v-show="item.picture !== ''">
+                                                                <img v-bind:src="item.picture" class="small-user-img is-link" v-bind:title="item.userName">  {{ item.userName }} {{item.id}}
+                                                            </h2>
+                                                            <h2 class="h3 mb-0 text-warning" v-show="item.picture === ''">
+                                                                <i class="text-warning" v-bind:class="item.symbol"></i> {{ item.userName }} {{item.id}}
+                                                            </h2>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <hr class="sidebar-divider" v-show="index < userResults.length - 1">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
