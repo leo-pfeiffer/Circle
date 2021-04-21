@@ -629,11 +629,12 @@ let getNumberCommentsOfCommunity = async function(communityId) {
 }
 
 /**
- * Get all communities with their tags for the Levenshtein algorithm.
+ * Get all communities with their tags for the Levenshtein algorithm (except the ones where user is already member".
+ * @param {string} userId
  * @return {Promise}
  * */
-const getCommunityTagsForLevenshtein = async function() {
-    return communities_collection.find({}, {_id: 0, id: 1, tags: 1}).toArray();
+const getCommunityTagsForLevenshtein = async function(userId) {
+    return communities_collection.find({'users.id': {$ne: userId}}, {_id: 0, id: 1, tags: 1}).toArray();
 }
 
 
