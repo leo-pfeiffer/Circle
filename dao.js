@@ -39,6 +39,8 @@ let init = function () {
             console.log("Connected to database @", sanitisedUrl);
 
         })
+        .then(() => createUserIndex())
+        .then(() => createCommunityIndex())
         .catch(err => {
             console.log(`Could not connect to ${sanitisedUrl}`, err);
             throw err;
@@ -53,6 +55,8 @@ const createCommunityIndex = function() {
             communityName: "text",
             tags: "text",
         })
+        .then((result) => console.log('created index', result))
+        .catch(err => console.log('failed to create index', err))
 }
 
 const createUserIndex = function() {
@@ -61,8 +65,9 @@ const createUserIndex = function() {
             userName: "text",
             location: "text",
             interests: "text",
-        }
-    )
+        })
+        .then((result) => console.log('created index', result))
+        .catch(err => console.log('failed to create index', err))
 }
 
 /**
@@ -701,27 +706,10 @@ let authenticateUser = async function(username, password) {
  * Drop all data collections.
  * WARNING: This cannot be undone!
  * */
-const dropCollections = function() {
-    let collections = [
-        users_data,
-        communities_data,
-        threads_data,
-        comments_data,
-        events_data,
-        user_passwords_data,
-        'test_collection',
-        'collection'
-    ]
-
-    // drop the collections if they exist
-    return collections.forEach((col) => {
-        client.db().listCollections({name: col})
-            .next((err, collectionInfo) => {
-                if (collectionInfo) {
-                    client.db().collection(col).drop()
-                }
-            });
-    })
+const dropCollections = async function() {
+    await users_collection.drop().catch(err => console.log(err))
+    await communities_collection.drop().catch(err => console.log(err))
+    await user_passwords_collection.drop().catch(err => console.log(err))
 }
 
 //exporting modules

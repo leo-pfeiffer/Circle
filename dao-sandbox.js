@@ -15,24 +15,7 @@ let starterData = makeStarterData();
 
 dao.init()
     // drop old data
-    .then(() => {
-        dao.dropCollections()
-        console.log('dropped collections')
-    })
-
-    // // some users
-    // .then(() => dao.registerNewUserPassword('test', 'test'))
-    // .then(() => dao.registerNewUserPassword('akl8', 'password'))
-    // .then(() => dao.registerNewUserPassword('adrian', 'password'))
-    // .then(() => dao.registerNewUserPassword('am557', 'password'))
-    // .then(() => dao.registerNewUserPassword('gasj1', 'password'))
-    // .then(() => dao.registerNewUserPassword('jl341', 'password'))
-    //
-    // // add new data
-    // .then(() => dao.addUsers(pageRankDemoData.users))
-    // .then(() => dao.addCommunities(pageRankDemoData.communities))
-    // .then(() => dao.addUsers(demoData.users))
-    // .then(() => dao.addCommunities(demoData.communities))
+    .then(() => dao.dropCollections())
 
     .then(() => {
         console.log('Creating logins')
