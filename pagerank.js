@@ -265,6 +265,9 @@ const CommunityNetwork = class {
             }
         })
 
+        if (this.communities.length === 0) {
+            throw new Error ("`communities` cannot be an empty array.")
+        }
         // Assert that user is in one of the communities
         if (!this.communities.map(el => el.users).reduce((a, b) => a.concat(b), []).map(el => el.id).includes(this.userId)) {
             throw new Error ("User must be a member of one of the communities.")

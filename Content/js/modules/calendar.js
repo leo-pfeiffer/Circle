@@ -1,4 +1,12 @@
-import { client, goToCommunity, isDateMatch, timeOfDayFormatter,updateCalendar } from "./clientUtils.js";
+import {
+    client,
+    eventData,
+    goToCommunity,
+    goToProfile,
+    isDateMatch,
+    timeOfDayFormatter,
+    updateCalendar
+} from "./clientUtils.js";
 
 /**
  * This file contains the vue components of the calendar.
@@ -9,14 +17,6 @@ const makeMainCalendarVue = function () {
         el: '#main-calendar',
         data: {
             selectedDate: null,
-            // events: [
-            //     // {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 1, 10, 0)},
-            //     // {title: 'Lunch', desciption: 'Just lunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 10, 13, 0)},
-            //     // {title: 'Breakfast', desciption: 'Just breakhast.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 10, 9, 0)},
-            //     // {title: 'Tea', desciption: 'Just tea.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 22, 17, 0)},
-            //     // {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 6, 10, 0)},
-            //     // {title: 'Brunch', desciption: 'Just brunch.. ', community: {name: 'Gardening', id: 1}, organiser: {username: 'lebron', id: 123}, datetime: new Date(2021, 3, 16, 11, 0)},
-            // ],
         },
         computed: {
             state() {
@@ -30,7 +30,6 @@ const makeMainCalendarVue = function () {
             },
             events() {
                 return updateCalendar.events
-                console.log(updateCalendar.events)
             },
             /**
              * Return all events of the currently selected day sorted by time of event.
@@ -47,12 +46,18 @@ const makeMainCalendarVue = function () {
             goToCommunity: function (communityId) {
                 goToCommunity(communityId)
             },
+            goToProfile: function (userId) {
+                goToProfile(userId)
+            },
             /**
              * Return hour and minute in a nicer format
              * @param {Date} datetime
              * */
             timeOfDayFormatter: function (datetime) {
                 return timeOfDayFormatter(datetime)
+            },
+            setSelectedEvent: function(event) {
+                eventData.event = event
             }
 
         }

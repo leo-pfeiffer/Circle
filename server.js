@@ -325,6 +325,29 @@ let createEvent = async (req, res, next) => {
         });
 }
 
+// handler function for remove an event
+let removeEvent = async (req, res, next) => {
+
+    let communityId = req.body.communityId;
+    let eventId = req.body.eventId;
+
+    let cursor = dao.getEventById(eventId)
+    let events = await cursor.toArray()
+
+    if (events.length > 0) {
+        let event = Event.fromJSON(events[0].events)
+
+        dao.removeEvent(communityId, event)
+            .then(() => res.status(200).json({ msg: `Removed event '${event.id}' from community ${communityId}` }))
+            .catch(err => {
+                console.log(`Could not remove event`, err);
+                res.status(400).json({ msg: `Could not remove event` });
+            });
+    } else {
+        res.status(400).json({msg: 'Could not get event'})
+    }
+}
+
 // handler function for adding tag to community
 let addTag = async (req, res, next) => {
     let body = req.body;
@@ -775,8 +798,12 @@ let getRecommendation = async function (req, res, next) {
         });
 
     //retrieving data from DB (from events_collection)
-    dao.getPageRankCommunities(userId)
+    let communities = await dao.getPageRankCommunities(userId)
         .then((coms) => {
+            // handle case where user has no communities
+            if (coms.length === 0) {
+                return [];
+            }
             let communities = coms.map(com => Community.fromJSON(com))
 
             let network = new CommunityNetwork(communities, userId, user.interests)
@@ -792,6 +819,9 @@ let getRecommendation = async function (req, res, next) {
                 .sort((a, b) => b[1] - a[1]).map(arr => arr[0]);
 
         }).then(async (idArr) => {
+            if (idArr.length === 0) {
+                return [];
+            }
             let cursor = dao.getCommunitiesById(idArr)
             let communities = []
 
@@ -804,13 +834,13 @@ let getRecommendation = async function (req, res, next) {
             })
 
             // return at most first 10 results
-            communities = communities.slice(0, 10)
-            res.status(200).json({communities: communities})
-        })
-        .catch(err => {
+            return communities.slice(0, 10)
+        }).catch(err => {
             console.log(`Could not get PageRank recommendation`, err);
-            res.status(500).json({ msg: `Could not get PageRank recommendation` });
+            return [];
         })
+
+    res.status(200).json({communities: communities})
 }
 
 /**
@@ -935,6 +965,7 @@ app.post('/api/create-comment/', authenticate, createComment);
 
 // Create a new event in a community
 app.post('/api/create-event/', authenticate, createEvent);
+app.post('/api/remove-event/', authenticate, removeEvent);
 app.post('/api/add-tag/', authenticate, addTag);
 app.post('/api/remove-tag/', authenticate, removeTag);
 

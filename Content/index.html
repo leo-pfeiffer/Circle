@@ -215,7 +215,7 @@
                         <!-- Nav Item - User Information -->
                         <li class="nav-item" v-on:click="goToProfile">
                             <a class="nav-link" href="#" id="modal" role="button" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-400">Douglas McGee</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-400">{{ username }}</span>
                             </a>
                             
                         </li>
@@ -703,14 +703,21 @@
 
                                     <div v-for="(event, index) in eventsOnSelectedDay">
                                         <div class="card border-left-warning shadow">
-                                            <div class="card-body is-link" v-on:click="goToCommunity(event.community.id)">
+                                            <div class="card-body" v-on:click="setSelectedEvent(event)">
                                                 <div class="row no-gutters align-items-center">
                                                     <div class="col mr-2">
                                                         <h4>{{ event.title }} @ {{ timeOfDayFormatter(event.datetime) }}</h4>
                                                         <div class="text text-danger mb-1">
-                                                            <span class="text-primary">Created by </span> {{ event.organiser.username }}<span class="text-primary"> in </span> {{ event.community.name }}<span class="text-primary">.</span>
+                                                            <span class="text-primary">Created by </span>
+                                                            <span v-on:click="goToProfile(event.organiser.id)" class="is-link">{{ event.organiser.username }}</span>
+                                                            <span class="text-primary"> in </span>
+                                                            <span v-on:click="goToCommunity(event.community.id)" class="is-link">{{ event.community.name }}</span>
+                                                            <span class="text-primary">.</span>
                                                         </div>
                                                         <div>{{ event.desciption }}</div>
+                                                        <a class="nav-link" href="#" data-toggle="modal" data-target="#view-event-modal">
+                                                            <i class="fas fa-eye fa-sm fa-fw mr-2"></i>
+                                                            <span>View</span></a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -739,7 +746,7 @@
 
                                 <a href="#collapseCommunityResults" class="d-block card-header py-3" data-toggle="collapse"
                                    role="button" aria-expanded="true" aria-controls="collapseCommunityCalendar">
-                                    <h6 class="m-0 font-weight-bold text-success">Communities</h6>
+                                    <h6 class="m-0 font-weight-bold text-success">Communities [{{communityResults.length}}]</h6>
                                 </a>
 
                                 <div class="collapse" id="collapseCommunityResults">
@@ -775,7 +782,7 @@
 
                                 <a href="#collapseUserResults" class="d-block card-header py-3" data-toggle="collapse"
                                    role="button" aria-expanded="true" aria-controls="collapseCommunityCalendar">
-                                    <h6 class="m-0 font-weight-bold text-success">Users</h6>
+                                    <h6 class="m-0 font-weight-bold text-success">Users [{{userResults.length}}]</h6>
                                 </a>
 
                                 <div class="collapse" id="collapseUserResults">
@@ -1087,6 +1094,35 @@
                         </div>
                     </div>
                     <!-- Ende of change profile info modal -->
+
+                    <!-- View event modal -->
+                    <div class="modal fade" id="view-event-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog" role="document" v-if="event">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">{{ event.title }}</h5>
+                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div>Admin: {{ event.organiser.username }}</div>
+                                    <hr>
+                                    <div>Community: {{ event.community.name }}</div>
+                                    <hr>
+                                    <div>{{ event.description }}</div>
+                                    <div v-show="event.location"><hr>Location: {{ event.location }}</div>
+                                    <div v-show="event.link"><hr>URL: <a v-bind:href="event.link">{{ event.link }}</a></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-warning" type="button" data-dismiss="modal">Close</button>
+                                    <button class="btn btn-info" data-dismiss="modal" v-show="isOrganiser"
+                                            v-on:click="cancelEvent">Cancel Event</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Ende of view event modal -->
 
                 </div>
                 <!-- /.container-fluid -->

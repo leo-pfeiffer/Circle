@@ -279,6 +279,22 @@ let addComment = function (comment, threadId) {
 }
 
 /**
+ * Returns event by its ID
+ * @param {string} eventId
+ * @return {Promise}
+ * */
+let getEventById = function (eventId) {
+
+    const pipeline = [
+        {$unwind: {path: "$events"}},
+        {$match: {"events.id": eventId}},
+        {$project: {"events": 1, _id: 0}}
+    ]
+    return communities_collection.aggregate(pipeline)
+}
+
+
+/**
  * Insert Event object into DB.
  * @param {string} communityId
  * @param {Event} event
@@ -288,6 +304,19 @@ let addEvent = function (communityId, event) {
     return communities_collection.updateOne(
         { id: communityId },
         { $push: { events: event } }
+    )
+}
+
+/**
+ * Remove an event from a community.
+ * @param {string} communityId
+ * @param {Event} event
+ * @return {Promise}
+ * */
+let removeEvent = function (communityId, event) {
+    return communities_collection.updateOne(
+        { id: communityId },
+        { $pull: { events: event } }
     )
 }
 
@@ -747,12 +776,11 @@ module.exports = {
     addComment: addComment,
     getUserObjectByName: getUserObjectByName,
     addEvent: addEvent,
-    // getUser: getUser,
+    removeEvent: removeEvent,
+    getEventById: getEventById,
     getCommunityById: getCommunityById,
     getCommunitiesById: getCommunitiesById,
     getThreadsOfCommunity: getThreadsOfCommunity,
-    // getComment: getComment,
-    // getEvent: getEvent,
     dropCollections: dropCollections,
     getPageRankCommunities: getPageRankCommunities,
     getSearchResults: getSearchResults,

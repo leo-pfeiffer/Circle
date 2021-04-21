@@ -4,7 +4,7 @@
 
 import {
     client,
-    destroySocket,
+    destroySocket, eventData, getUpdateCalendar,
     goToCommunity, goToProfile,
     joinRoom,
     search,
@@ -25,6 +25,14 @@ const makeHeaderVue = function() {
                 set: function(searchRequest) {
                     search.term = searchRequest;
                 }
+            },
+            username() {
+                return client.userData.name;
+            }
+        },
+        watch: {
+            searchTerm() {
+                this.search()
             }
         },
         methods: {
@@ -42,6 +50,7 @@ const makeHeaderVue = function() {
                 // don't do anything if no search term was entered
                 if (search.term === '') return;
                 search.type = 'search'
+                console.log('searching')
 
                 fetch("/api/get-search-results/", {
                     method: "POST",
@@ -67,7 +76,6 @@ const makeHeaderVue = function() {
                 })
 
                 this.goToSearch();
-                search.term = ''
             },
             getRecommendations: function () {
                 search.type = 'recommendation'
@@ -260,8 +268,56 @@ const makeSidenavVue = function() {
     })
 }
 
+const makeViewEventVue = function() {
+    const viewEventVue = new Vue({
+        el: "#view-event-modal",
+        computed: {
+            state() {
+                return client.state
+            },
+            event() {
+                return eventData.event;
+            },
+            isOrganiser() {
+                return client.userData.id === this.event.organiser.id
+            }
+        },
+        methods: {
+            cancelEvent: function() {
+                if (!this.isOrganiser) {
+                    console.log('Only organiser can cancel an event.')
+                    return;
+                }
+
+                fetch('/api/remove-event/', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Basic " + client.userKey,
+                    },
+                    body: JSON.stringify({
+                        communityId: this.event.community.id,
+                        eventId: this.event.id
+                    })
+                }).then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Failed to remove event.')
+                    }
+                    else {
+                        return res.json()
+                    }
+                }).then(() => {
+                    getUpdateCalendar()
+                    console.log('event removed')
+                }).catch((err) => console.log(err))
+            }
+        }
+    })
+}
+
 export const makePage = function() {
     makeHeaderVue();
     makeSidenavVue();
     makeNewCommunityModalVue();
+    makeViewEventVue();
 }

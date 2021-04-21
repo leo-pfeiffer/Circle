@@ -338,7 +338,7 @@ Event = class {
 
         let event = new Event(title, description, organiser, datetime);
 
-        event.id = id
+        event.id = jsn.id
         event.location = jsn.location || null;
         event.link = jsn.link || null;
 

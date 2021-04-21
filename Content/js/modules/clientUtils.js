@@ -83,6 +83,7 @@ export const setState = function (newState) {
     }
 
     else if (newState === "dashboard") {
+        search.term = ''
         getMostRecentActivities();
         getMostRecentlyActiveCommunities();
         leaveRoom(client.communityData.id);
@@ -91,14 +92,17 @@ export const setState = function (newState) {
     }
 
     else if (newState === "community") {
+        search.term = ''
         resetProfileData();
     }
 
     else if (newState === "profile") {
+        search.term = ''
         leaveRoom(client.communityData.id);
     }
 
     else if (newState === "logout") {
+        search.term = ''
         leaveRoom(client.communityData.id);
         resetClientData();
         resetProfileData();
@@ -110,7 +114,9 @@ export const setState = function (newState) {
     }
 
     else if (newState === "calendar") {
+        search.term = ''
         leaveRoom(client.communityData.id);
+        getUpdateCalendar();
         resetProfileData();
     }
 
@@ -126,9 +132,16 @@ export const updateCalendar = Vue.observable({
 })
 
 /**
+ * Vue observable for calendar updates.
+ * */
+export const eventData = Vue.observable({
+    event: null
+})
+
+/**
  * Get the events to display on the dashboard calendar.
  * */
-const getUpdateCalendar = function () {
+export const getUpdateCalendar = function () {
     fetch('/api/get-user-events/', {
         method: "GET",
         headers: {
@@ -147,8 +160,11 @@ const getUpdateCalendar = function () {
 
         jsn.forEach(element => {
             let obj = {}
+            obj.id = element.event.id
             obj.title = element.event.title
             obj.description = element.event.description
+            obj.link = element.event.link
+            obj.location = element.event.location
             obj.community = {
                 name: element.community.communityName,
                 id: element.community.communityId

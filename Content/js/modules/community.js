@@ -73,8 +73,11 @@ const makeNewEventModalVue = function() {
                         }
                     }).then((jsn) => {
                         console.log(jsn)
-                        this.message = 'Successfully created event.'
-                        // trigger reload of the current community data
+                        this.title = ''
+                        this.description = ''
+                        this.datetime = ''
+                        this.location = ''
+                        this.link = ''
                         goToCommunity(this.communityData.id)
                     }).catch(err => {
                         console.log(err)
