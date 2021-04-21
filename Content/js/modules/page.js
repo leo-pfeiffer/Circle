@@ -42,7 +42,6 @@ const makeHeaderVue = function() {
                 // don't do anything if no search term was entered
                 if (search.term === '') return;
                 search.type = 'search'
-                // todo call to api -> save response in observable -> access it from search vue
 
                 fetch("/api/get-search-results/", {
                     method: "POST",
@@ -72,8 +71,26 @@ const makeHeaderVue = function() {
             },
             getRecommendations: function () {
                 search.type = 'recommendation'
-                // todo call to api -> get recommendations for current user
-                this.goToSearch();
+
+                fetch("/api/get-recommendation/", {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Basic " + client.userKey,
+                    },
+                }).then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Failed to get recommendation.')
+                    }
+                    else {
+                        return res.json()
+                    }
+                }).then((jsn) => {
+                    console.log(jsn)
+                    search.communityResults = jsn.communities || []
+                    this.goToSearch();
+                }).catch((err) => {
+                    console.log(err)
+                })
             }
         },
     })

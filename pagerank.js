@@ -258,10 +258,10 @@ const CommunityNetwork = class {
 
         // Fill communityHash and assert that communities are unique
         this.communities.forEach((community, i) => {
-            if (this.communityHash.hasOwnProperty(community.communityName)) {
+            if (this.communityHash.hasOwnProperty(community.id)) {
                 throw new Error ("Entries in 'communities' must be unique.")
             } else {
-                this.communityHash[community.communityName] = i;
+                this.communityHash[community.id] = i;
             }
         })
 
@@ -278,7 +278,7 @@ const CommunityNetwork = class {
     makeCommunitiesClean() {
         return this.communities.map(community => {
             let obj = {}
-            obj.communityName = community.communityName;
+            obj.id = community.id;
             obj.users = community.users.map(user => user.id);
             return obj;
         })
@@ -297,7 +297,7 @@ const CommunityNetwork = class {
             let maxVal = 0;
 
             // add the current node
-            this.graph[community.communityName] = this.communitiesClean
+            this.graph[community.id] = this.communitiesClean
 
                 // no self references
                 .filter(com => com !== community)
@@ -305,7 +305,7 @@ const CommunityNetwork = class {
                 // calculate the closeness score between the current and all other communities
                 .map(com => {
                     let obj = {}
-                    obj.communityName = com.communityName
+                    obj.id = com.id
                     obj.similarityScore = com.users.filter(v => community.users.includes(v)).length / numUsers
                     maxVal = obj.similarityScore > maxVal ? obj.similarityScore : maxVal
                     return obj
@@ -315,7 +315,7 @@ const CommunityNetwork = class {
                 .filter(com => com.similarityScore === maxVal)
 
                 // only return the name for simplicity
-                .map(com => com.communityName)
+                .map(com => com.id)
         }
     }
 
@@ -331,11 +331,11 @@ const CommunityNetwork = class {
         for (let community of this.communitiesClean) {
 
             // get the edges from the current community
-            let edgesTo = this.graph[community.communityName]
+            let edgesTo = this.graph[community.id]
 
             // add 1s in the correct place of the adjacency matrix for all edges
             for (let edge of edgesTo) {
-                this.adjacency[this.communityHash[community.communityName]][this.communityHash[edge]] = 1;
+                this.adjacency[this.communityHash[community.id]][this.communityHash[edge]] = 1;
             }
         }
     }

@@ -37,8 +37,9 @@ let init = function () {
             user_passwords_collection = client.db().collection(user_passwords_data);
 
             console.log("Connected to database @", sanitisedUrl);
-        }).then(async () => {
 
+        }).then(async () => {
+            // create indexes to allow search: https://docs.mongodb.com/manual/text-search/
             // remove existing indexes to avoid duplication
             return communities_collection.dropIndexes().then(() => {
                 // create index for community search
@@ -72,12 +73,21 @@ let init = function () {
 }
 
 /**
- * Returns all data stored in communities_collection
+ * Returns community by its ID
  * @param {string} communityId
  * @return {Promise}
  * */
 let getCommunityById = function (communityId) {
     return communities_collection.find({"id": communityId})
+}
+
+/**
+ * Returns all communities from an array by their ID
+ * @param {Array<string>} communityIds
+ * @return {Promise}
+ * */
+let getCommunitiesById = function (communityIds) {
+    return communities_collection.find({"id": {$in: communityIds}})
 }
 
 /**
@@ -739,6 +749,7 @@ module.exports = {
     addEvent: addEvent,
     // getUser: getUser,
     getCommunityById: getCommunityById,
+    getCommunitiesById: getCommunitiesById,
     getThreadsOfCommunity: getThreadsOfCommunity,
     // getComment: getComment,
     // getEvent: getEvent,

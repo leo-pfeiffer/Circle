@@ -763,17 +763,23 @@ let getUserEventsOfCommunity = function (req, res, next) {
  * @param {Response} res
  * @param {NextFunction} next
  * */
-let getRecommendation = function (req, res, next) {
-    let body = req.body;
-    let userId = body.user.id
-    let interests = body.user.interests
+let getRecommendation = async function (req, res, next) {
+    let userId = req.userId
+
+    let user = await dao.getUserObject(userId)
+        .then((u) => {
+            return User.fromJSON(u)
+        }).catch(err => {
+            console.log(`Could not find user`, err);
+            res.status(404).json({ msg: `Could not find user` });
+        });
 
     //retrieving data from DB (from events_collection)
     dao.getPageRankCommunities(userId)
-        .then((res) => {
-            let communities = res.map(com => Community.fromJSON(com))
+        .then((coms) => {
+            let communities = coms.map(com => Community.fromJSON(com))
 
-            let network = new CommunityNetwork(communities, userId, interests)
+            let network = new CommunityNetwork(communities, userId, user.interests)
             network.createGraph();
             network.createAdjacency();
             let v = network.getDistributionVector(0.5);
@@ -781,8 +787,25 @@ let getRecommendation = function (req, res, next) {
             let rank = new PageRank(network.adjacency, v);
             let result = rank.iterate(network.communityHash);
 
-            res.status(200).json(result);
+            // sort community IDs by descending rank
+            return Object.entries(result.mappedResult)
+                .sort((a, b) => b[1] - a[1]).map(arr => arr[0]);
 
+        }).then(async (idArr) => {
+            let cursor = dao.getCommunitiesById(idArr)
+            let communities = []
+
+            await cursor.forEach((com) => {
+                let community = Community.fromJSON(com)
+                // keep only the ones that the user isn't already a member of
+                if (!community.users.map(el => el.id).includes(user.id)) {
+                    communities.push(community)
+                }
+            })
+
+            // return at most first 10 results
+            communities = communities.slice(0, 10)
+            res.status(200).json({communities: communities})
         })
         .catch(err => {
             console.log(`Could not get PageRank recommendation`, err);
