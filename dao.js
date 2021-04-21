@@ -39,55 +39,38 @@ let init = function () {
             console.log("Connected to database @", sanitisedUrl);
 
         })
-        .then(async () => {
-            // create indexes to allow search: https://docs.mongodb.com/manual/text-search/
-            // remove existing indexes to avoid duplication
-            return communities_collection.dropIndexes().then(() => {
-                // create index for community search
-                return communities_collection.createIndex(
-                    {
-                        description: "text",
-                        communityName: "text",
-                        tags: "text",
-                    })
-            })
-
-        }).then(() => {
-
-            // drop indexes to avoid duplication
-            return users_collection.dropIndexes().then(() => {
-                // create index for user search
-                return users_collection.createIndex(
-                    {
-                        userName: "text",
-                        location: "text",
-                        interests: "text",
-                    }
-                )
-            })
-
-        })
         .catch(err => {
             console.log(`Could not connect to ${sanitisedUrl}`, err);
             throw err;
         })
 }
 
-/**
- * Initialise the database *without* indexing -> required for starter data.
- * */
-const initStarterData = function () {
-    return client.connect()
-        .then(() => {
-            users_collection = client.db().collection(users_data);
-            communities_collection = client.db().collection(communities_data);
-            user_passwords_collection = client.db().collection(user_passwords_data);
-            console.log("Connected to database @", sanitisedUrl);
-        })
-        .catch(err => {
-            console.log(`Could not connect to ${sanitisedUrl}`, err);
-            throw err;
-        })
+const createCommunityIndex = function() {
+    // create indexes to allow search: https://docs.mongodb.com/manual/text-search/
+    // remove existing indexes to avoid duplication
+    return communities_collection.dropIndexes().then(() => {
+        // create index for community search
+        return communities_collection.createIndex(
+            {
+                description: "text",
+                communityName: "text",
+                tags: "text",
+            })
+    })
+}
+
+const createUserIndex = function() {
+    // drop indexes to avoid duplication
+    return users_collection.dropIndexes().then(() => {
+        // create index for user search
+        return users_collection.createIndex(
+            {
+                userName: "text",
+                location: "text",
+                interests: "text",
+            }
+        )
+    })
 }
 
 /**
@@ -743,7 +726,6 @@ const dropCollections = function() {
         client.db().listCollections({name: col})
             .next((err, collectionInfo) => {
                 if (collectionInfo) {
-                    console.log(col)
                     client.db().collection(col).drop()
                 }
             });
@@ -753,7 +735,6 @@ const dropCollections = function() {
 //exporting modules
 module.exports = {
     init: init,
-    initStarterData: initStarterData,
     addUser: addUser,
     addUsers: addUsers,
     addCommunity: addCommunity,
@@ -790,5 +771,7 @@ module.exports = {
     addTag: addTag,
     removeTag: removeTag,
     getCommunityTagsForLevenshtein: getCommunityTagsForLevenshtein,
+    createUserIndex: createUserIndex,
+    createCommunityIndex: createCommunityIndex
     //updateUserInfo: updateUserInfo,
 };

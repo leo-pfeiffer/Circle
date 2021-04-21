@@ -13,7 +13,7 @@ let starterData = makeStarterData();
 // let userId = demoData.adrian.id
 // let communityId = "c50fc1fb-55c3-4f09-8774-59150286bfb4";
 
-dao.initStarterData()
+dao.init()
     // drop old data
     .then(() => dao.dropCollections())
 
@@ -38,6 +38,10 @@ dao.initStarterData()
     })
     .then(() => dao.addUsers(starterData.users))
     .then(() => dao.addCommunities(starterData.communities))
+
+    .then(() => dao.createCommunityIndex())
+    .then(() => dao.createUserIndex())
+
     .then(res => {
         console.log('done')
         process.exit(0)

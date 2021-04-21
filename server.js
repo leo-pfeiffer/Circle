@@ -1014,7 +1014,7 @@ app.get('/api/get-recommendation/', authenticate, getRecommendation);
 app.post('/api/get-search-results/', authenticate, getSearchResults);
 
 // get a user object by ID
-app.get('/api/get-user-object/', authenticate, getUserObject);
+app.post('/api/get-user-object/', authenticate, getUserObject);
 app.get('/api/get-user-comments/', authenticate, getNumberComments);
 app.get('/api/get-user-threads/', authenticate, getNumberThreads);
 

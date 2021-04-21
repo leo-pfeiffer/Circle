@@ -202,6 +202,10 @@ const makeStarterData = function() {
         'cooking', 'poetry'
     ]
 
+    const locations = [
+        'Munich', 'London', 'Frankfurt', 'Edinburgh', 'Glasgow', 'St Andrews'
+    ]
+
     const randomHobbies = (n) => hobbies.sort(() => 0.5 - Math.random()).slice(0, n)
     const randomUsers = (n) => users.sort(() => 0.5 - Math.random()).slice(0, n)
 
@@ -215,6 +219,8 @@ const makeStarterData = function() {
 
     for (let name of names) {
         let user = new User(name, `${name}@mail.com`)
+        user.age = parseInt(Math.random() * 20 + 18)
+        user.location = locations[parseInt(Math.random() * locations.length)]
         addInterestsToUser(user, randomHobbies(3))
         users.push(user)
         logins.push({username: name, password: `${name}123`})
