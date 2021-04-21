@@ -629,6 +629,15 @@ let getNumberCommentsOfCommunity = async function(communityId) {
 }
 
 /**
+ * Get all communities with their tags for the Levenshtein algorithm.
+ * @return {Promise}
+ * */
+const getCommunityTagsForLevenshtein = async function() {
+    return communities_collection.find({}, {_id: 0, id: 1, tags: 1}).toArray();
+}
+
+
+/**
  * Get all communities the user is a member of.
  * @param {string} userId
  * @return {Promise}
@@ -802,5 +811,6 @@ module.exports = {
     getRecentlyActiveCommunities: getRecentlyActiveCommunities,
     addTag: addTag,
     removeTag: removeTag,
+    getCommunityTagsForLevenshtein: getCommunityTagsForLevenshtein,
     //updateUserInfo: updateUserInfo,
 };
