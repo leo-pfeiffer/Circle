@@ -2,9 +2,6 @@
  * This file contains the vue components of the dashboard.
  * */
 
-<<<<<<< HEAD
-import {client, goToCommunity, isDateMatch, mostRecentActivities, timeOfDayFormatter, updateCalendar} from './clientUtils.js'
-=======
 import {
     client,
     goToCommunity,
@@ -13,7 +10,6 @@ import {
     mostRecentCommunities,
     timeOfDayFormatter
 } from './clientUtils.js'
->>>>>>> 2d07a8aaf5936cc73d896d191030c3038aae6c3c
 
 const makeDashboardHeaderVue = function() {
     const dashboardHeaderVue = new Vue({

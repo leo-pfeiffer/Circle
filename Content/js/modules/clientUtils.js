@@ -89,6 +89,8 @@ export const setState = function (newState) {
         leaveRoom(client.communityData.id);
         resetProfileData();
         getUpdateCalendar();
+        getAllCommunities();
+        getAllOwnedCommunity();
     }
 
     else if (newState === "community") {
@@ -210,7 +212,6 @@ const getMostRecentActivities = function () {
         }
     }).then((jsn) => {
         mostRecentActivities.activities = [];
-
         jsn.forEach(activity => {
             let obj = {}
             obj.community = { id: activity.community.id, name: activity.community.name };
@@ -231,6 +232,7 @@ const getMostRecentActivities = function () {
  * */
 export const mostRecentCommunities = Vue.observable({
     communities: [],
+    recentCommunities: []
 })
 
 /**
@@ -255,13 +257,79 @@ const getMostRecentlyActiveCommunities = function() {
             return res.json();
         }
     }).then((jsn) => {
+        console.log("recent community activity",jsn)
         mostRecentCommunities.communities = [];
+        mostRecentCommunities.recentCommunities = [];
 
         jsn.forEach(comm => {
             mostRecentCommunities.communities.push(comm)
+            let obj= {}
+            obj.name = comm.communityName,
+            obj.id = comm.id
+            mostRecentCommunities.recentCommunities.push(obj)
         })
     }).catch(err => console.log(err))
 }
+
+/**
+ * Vue observable for all the communities 
+ * */
+export const allCommunities = Vue.observable({
+    communities: [],
+})
+
+
+/**
+ * Get all the communities
+ * */
+
+const getAllCommunities = function () {
+
+    fetch('/api/get-member-communities', {
+        method: "GET",
+        headers: {
+            "Authorization": "Basic " + client.userKey,
+            "Content-Type": "application/json"
+        }
+    }).then((res) => {
+        if (!res.ok) {
+            throw new Error('Failed to get all the communities')
+        } else {
+            return res.json();
+        }
+    }).then((jsn) => {
+   console.log("All communities",jsn)
+    }).catch(err => console.log(err))
+}
+
+/**
+ * Vue observable for all the owned communities 
+ * */
+export const allOwnedCommunities = Vue.observable({
+    ownedCommunities: [],
+})
+
+/**
+ * Get a community with all its data and save it to the client observable.
+ * */
+const getAllOwnedCommunity = function () {
+    fetch('/api/get-owned-communities', {
+        method: "GET",
+        headers: {
+            "Authorization": "Basic " + client.userKey,
+            "Content-Type": "application/json"
+        }
+    }).then((res) => {
+        if (!res.ok) {
+            throw new Error('Failed to get all the owned communities')
+        } else {
+            return res.json();
+        }
+    }).then((jsn) => {
+        console.log(jsn,"owned communities")
+    }).catch(err => console.log(err))
+}
+
 
 /**
  * Get a community with all its data and save it to the client observable.
@@ -287,7 +355,6 @@ const getCommunity = function (communityId) {
         client.communityData = jsn;
     }).catch(err => console.log(err))
 }
-
 
 /**
  * Get the stats for a specific community
