@@ -9,7 +9,9 @@ import {
     joinRoom,
     search,
     setState,
-    allCommunities, mostRecentCommunities
+    allCommunities, 
+    mostRecentCommunities,
+    allOwnedCommunities
 } from "./clientUtils.js";
 
 const makeHeaderVue = function() {
@@ -217,11 +219,14 @@ const makeSidenavVue = function() {
             state() {
                 return client.state;
             },
-            communities(){
-                return allCommunities.communities
-            },
             getRecentCommunitiesToDisplay(){
                 return mostRecentCommunities.recentCommunities
+            },
+            getAllCommunitiesToDisplay() {
+                return allCommunities.communities_all;
+            },
+            getOwnedCommunitiesToDisplay() {
+                return allOwnedCommunities.ownedCommunities;
             }
         },
         methods: {
@@ -240,22 +245,14 @@ const makeSidenavVue = function() {
                 setState('dashboard');
             },
             /**
-             * Get all communities with only the relevant information (name, id)
-             * */
-            getAllCommunitiesToDisplay: function() {
-                return this.communities.map(el => {
-                    return {name: el.name, id: el.id}
-                })
-            },
-            /**
              * Get owned communities with only the relevant information (name, id)
              * */
-            getOwnedCommunitiesToDisplay: function() {
-                return this.communities.filter(el => el.admin === client.username)
-                    .map(el => {
-                        return {name: el.name, id: el.id}
-                    })
-            },
+            // getOwnedCommunitiesToDisplay: function() {
+            //     return this.communities.filter(el => el.admin === client.username)
+            //         .map(el => {
+            //             return {name: el.name, id: el.id}
+            //         })
+            // },
         }
     })
 }
