@@ -128,7 +128,7 @@
                 </a>
                 <div id="collapseRecentlyActive" class="collapse" data-parent="#accordionSidebar">
                     <div class="bg-secondary py-2 collapse-inner rounded">
-                        <a class="collapse-item" v-for="com in getRecentCommunitiesToDisplay()" v-on:click="goToCommunity(com.id)">{{ com.name }}</a>
+                        <a class="collapse-item" v-for="com in getRecentCommunitiesToDisplay" v-on:click="goToCommunity(com.id)">{{ com.name }}</a>
                     </div>
                 </div>
             </li>

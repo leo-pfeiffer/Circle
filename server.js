@@ -705,6 +705,7 @@ let getUserEventsOfCommunity = function (req, res, next) {
     dao.getMemberCommunities(userId)
         .then(async function(communityList) {
             const memberCommunities = [];
+            console.log(communityList,"communityList")
             await communityList.forEach(arr => {
                 arr.memberCommunities.forEach((community) => {
                     let newComm = Event.fromJSON(community)
@@ -735,7 +736,9 @@ let getUserEventsOfCommunity = function (req, res, next) {
     dao.getOwnedCommunities(userId)
         .then(async function(communityList) {
             const ownedCommunities = [];
+            console.log(communityList)
             await communityList.forEach(arr => {
+                console.log("first loop",arr)
                 arr.ownedCommunities.forEach((community) => {
                     let newComm = Event.fromJSON(community)
                     if (!ownedCommunities.map(el => el.id).includes(newComm.id))
