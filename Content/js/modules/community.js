@@ -3,7 +3,7 @@
  * */
 
 import {
-    client,
+    client, eventData,
     formatDateTime, goToCommunity,
     goToProfile,
     isDateMatch,
@@ -126,7 +126,13 @@ const makeCommunityCalendarVue = function() {
              * */
             timeOfDayFormatter: function(datetime) {
                 return timeOfDayFormatter(new Date(datetime))
-            }
+            },
+            setSelectedEvent: function(event) {
+                eventData.event = event
+            },
+            goToProfile: function (userId) {
+                goToProfile(userId)
+            },
         }
     })
 }

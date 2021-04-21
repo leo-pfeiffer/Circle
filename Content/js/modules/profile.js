@@ -16,22 +16,23 @@
                  return client.state;
             },
             isOwnProfile() {
-                 // todo proabbly change this to ID instead of username but for that we need to add API connection first
-                 return this.id === client.userData.id
+                 return client.profileData.id === client.userData.id
+            },
+            profileData() {
+                return client.profileData;
             },
             userData() {
-                return client.userData
+                return client.userData;
             }
         },
         data: {    
             id: client.userData.id,
             name: client.userData.name, 
-            age: '',
-            email: '',
-            location: '',
+            age: client.userData.age,
+            email: client.userData.email,
+            location: client.userData.location,
             picture: client.userData.picture, 
-            status: '', 
-            tags: [],
+            tags: client.userData.tags,
             newTag: ''
         },
         methods: {

@@ -349,14 +349,22 @@
 
                                     <div v-for="(event, index) in eventsOnSelectedDay">
                                         <div class="card border-left-warning shadow">
-                                            <div class="card-body is-link" v-on:click="goToCommunity(event.community.id)">
+                                            <div class="card-body" v-on:click="setSelectedEvent(event)">
                                                 <div class="row no-gutters align-items-center">
                                                     <div class="col mr-2">
-                                                        <h5>{{ event.title }} @ {{ timeOfDayFormatter(event.datetime) }}</h5>
+                                                        <h4>{{ event.title }} @ {{ timeOfDayFormatter(event.datetime) }}</h4>
                                                         <div class="text text-danger mb-1">
-                                                            <span class="text-primary">Created by </span> {{ event.organiser.username }}<span class="text-primary"> in </span> {{ event.community.name }}<span class="text-primary">.</span>
+                                                            <span class="text-primary">Created by </span>
+                                                            <span v-on:click="goToProfile(event.organiser.id)" class="is-link">{{ event.organiser.username }}</span>
+                                                            <span class="text-primary"> in </span>
+                                                            <span v-on:click="goToCommunity(event.community.id)" class="is-link">{{ event.community.name }}</span>
+                                                            <span class="text-primary">.</span>
                                                         </div>
                                                         <div>{{ event.desciption }}</div>
+                                                        <a class="nav-link" href="#" data-toggle="modal" data-target="#view-event-modal">
+                                                            <i class="fas fa-eye fa-sm fa-fw mr-2"></i>
+                                                            <span>View</span>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -397,7 +405,8 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-warning">My data</h6>
+                                    <h6 v-show="isOwnProfile" class="m-0 font-weight-bold text-warning">My data</h6>
+                                    <h6 v-show="!isOwnProfile" class="m-0 font-weight-bold text-warning">About {{profileData.userName}}</h6>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body bg-secondary">
@@ -406,22 +415,21 @@
                                             Update picture <i class="text-white fas fa-camera"></i>
                                         </button>
                                         <div class="row">
-                                                <img v-bind:src="picture" class="large-user-img"/>
-                                                <h2 class="text-info">{{name}}</h2>
+                                                <img v-bind:src="profileData.picture" class="large-user-img"/>
+                                                <h2 class="text-info">{{profileData.userName}}</h2>
                                         </div>
                                     
                                         <hr>
                                         <button class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#profile-info-modal">
                                             Update info <i class="text-white fas fa-edit"></i>
                                         </button>
-                                        <p>Email: {{email}} </p>
-                                        <p>Age: {{age}}</p>
-                                        <p>Location: {{location}}</p>
-                                        <p>Status: {{status}}</p>
+                                        <p>Email: {{profileData.userEmail}} </p>
+                                        <p>Age: {{profileData.age}}</p>
+                                        <p>Location: {{profileData.location}}</p>
                                         <h5>My tags:</h5>
                                         <div class="custom-tag-container">
                                             <!-- display existing tags -->
-                                            <span class="custom-tag" v-for="tag in tags" v-bind:class="[ isOwnProfile ? 'editable' : '']">
+                                            <span class="custom-tag" v-for="tag in profileData.interests" v-bind:class="[ isOwnProfile ? 'editable' : '']">
                                                 <button class="btn btn-info btn-circle btn-sm font-weight-bolder" v-on:click="removeTag(tag)" v-show="isOwnProfile">&times;</button> {{ tag }}
                                             </span>
                                             <!-- add tags -->
@@ -735,7 +743,8 @@
                                                         <div>{{ event.desciption }}</div>
                                                         <a class="nav-link" href="#" data-toggle="modal" data-target="#view-event-modal">
                                                             <i class="fas fa-eye fa-sm fa-fw mr-2"></i>
-                                                            <span>View</span></a>
+                                                            <span>View</span>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1056,9 +1065,6 @@
                                         </div>
                                         <div class="form-group">
                                             <input type="text" class="form-control form-control-user" placeholder="location" v-model="newLocation">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control form-control-user" placeholder="status" v-model="newStatus">
                                         </div>
                                     </form>
                                 </div>
