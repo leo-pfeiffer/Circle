@@ -298,7 +298,7 @@ const getAllCommunities = function () {
             return res.json();
         }
     }).then((jsn) => {
-        console.log(jsn)
+   console.log("All communities",jsn)
     }).catch(err => console.log(err))
 }
 
@@ -326,7 +326,7 @@ const getAllOwnedCommunity = function () {
             return res.json();
         }
     }).then((jsn) => {
-        console.log(jsn)
+        console.log(jsn,"owned communities")
     }).catch(err => console.log(err))
 }
 

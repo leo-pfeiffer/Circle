@@ -240,13 +240,6 @@ const makeSidenavVue = function() {
                 setState('dashboard');
             },
             /**
-             * Get n most recently active communities.
-             * @param {Number} n
-             * */
-            // getRecentCommunities: function(n) {
-            //     return [...this.communities].sort((a, b) => b.lastActive - a.lastActive).slice(0, n)
-            // },
-            /**
              * Get all communities with only the relevant information (name, id)
              * */
             getAllCommunitiesToDisplay: function() {
@@ -263,15 +256,6 @@ const makeSidenavVue = function() {
                         return {name: el.name, id: el.id}
                     })
             },
-            /**
-             * Get 5 most recently active communities with only the relevant information (name, id)
-             * */
-            // getRecentCommunitiesToDisplay: function() {
-            //     let communities = this.getRecentCommunities(4);
-            //     return communities.map(el => {
-            //         return {name: el.name, id: el.id}
-            //     })
-            // },
         }
     })
 }
