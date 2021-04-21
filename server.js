@@ -705,17 +705,14 @@ let getUserEventsOfCommunity = function (req, res, next) {
     dao.getMemberCommunities(userId)
         .then(async function(communityList) {
             const memberCommunities = [];
-            await communityList.forEach(arr => {
-                arr.memberCommunities.forEach((community) => {
-                    let newComm = Event.fromJSON(community)
-                    if (!memberCommunities.map(el => el.id).includes(newComm.id))
-                    memberCommunities.push(newComm);
-                })
+            await communityList.forEach(community => {
+                let newComm = Event.fromJSON(community)
+                if (!memberCommunities.map(el => el.id).includes(newComm.id))
+                memberCommunities.push(newComm);
             })
-
-            return events;
+            return memberCommunities
         })
-        .then(docs => res.status(200).json(docs))
+        .then(communities => res.status(200).json(communities))
         .catch(err => {
             console.log(`Could not get member communities`, err);
             res.status(400).json({ msg: `Could not get member communities` });
