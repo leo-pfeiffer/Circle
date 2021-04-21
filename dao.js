@@ -47,30 +47,22 @@ let init = function () {
 
 const createCommunityIndex = function() {
     // create indexes to allow search: https://docs.mongodb.com/manual/text-search/
-    // remove existing indexes to avoid duplication
-    return communities_collection.dropIndexes().then(() => {
-        // create index for community search
-        return communities_collection.createIndex(
-            {
-                description: "text",
-                communityName: "text",
-                tags: "text",
-            })
-    })
+    return communities_collection.createIndex(
+        {
+            description: "text",
+            communityName: "text",
+            tags: "text",
+        })
 }
 
 const createUserIndex = function() {
-    // drop indexes to avoid duplication
-    return users_collection.dropIndexes().then(() => {
-        // create index for user search
-        return users_collection.createIndex(
-            {
-                userName: "text",
-                location: "text",
-                interests: "text",
-            }
-        )
-    })
+    return users_collection.createIndex(
+        {
+            userName: "text",
+            location: "text",
+            interests: "text",
+        }
+    )
 }
 
 /**

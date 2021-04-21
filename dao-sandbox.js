@@ -15,7 +15,10 @@ let starterData = makeStarterData();
 
 dao.init()
     // drop old data
-    .then(() => dao.dropCollections())
+    .then(() => {
+        dao.dropCollections()
+        console.log('dropped collections')
+    })
 
     // // some users
     // .then(() => dao.registerNewUserPassword('test', 'test'))
@@ -32,17 +35,28 @@ dao.init()
     // .then(() => dao.addCommunities(demoData.communities))
 
     .then(() => {
+        console.log('Creating logins')
         return starterData.logins.forEach(async (user) => {
             await dao.registerNewUserPassword(user.username, user.password)
         });
     })
-    .then(() => dao.addUsers(starterData.users))
-    .then(() => dao.addCommunities(starterData.communities))
-
-    .then(() => dao.createCommunityIndex())
-    .then(() => dao.createUserIndex())
-
-    .then(res => {
+    .then(() => {
+        console.log('Creating users')
+        return dao.addUsers(starterData.users)
+    })
+    .then(() => {
+        console.log('Creating communities')
+        return dao.addCommunities(starterData.communities)
+    })
+    .then(() => {
+        console.log('Indexing community')
+        return dao.createCommunityIndex()
+    })
+    .then(() => {
+        console.log('Indexing users')
+        return dao.createUserIndex()
+    })
+    .then(() => {
         console.log('done')
         process.exit(0)
     }).catch(err => {
