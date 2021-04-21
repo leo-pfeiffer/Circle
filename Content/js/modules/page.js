@@ -13,6 +13,7 @@ import {
     mostRecentCommunities,
     allOwnedCommunities
 } from "./clientUtils.js";
+import {makeMap} from "./weather-map.js";
 
 const makeHeaderVue = function() {
     const headerVue = new Vue({
@@ -274,6 +275,9 @@ const makeViewEventVue = function() {
                     getUpdateCalendar()
                     console.log('event removed')
                 }).catch((err) => console.log(err))
+            },
+            getMap: function() {
+                makeMap()
             }
         }
     })

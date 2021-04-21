@@ -10,6 +10,7 @@ import {makeProfile} from "./modules/profile.js";
 import {makeLogout} from "./modules/logout.js";
 import {makeSearch} from "./modules/search.js";
 import {makeCalendar} from "./modules/calendar.js";
+import {resetMap} from "./modules/weather-map.js";
 
 window.onload = () => {
     makeLogin();
@@ -20,4 +21,11 @@ window.onload = () => {
     makeLogout();
     makeSearch();
     makeCalendar();
+
+    $('#view-event-modal').on('hide.bs.modal', function(){
+        setTimeout(function() {
+            resetMap();
+        }, 300);
+    });
+
 }

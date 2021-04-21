@@ -87,3 +87,18 @@
 #collapseUploadSection {
   margin-bottom: 10px;
 }
+
+/* Weather Map */
+#weather-map {
+  height: 600px;
+  width: 100%;
+}
+.weather-info {
+  font-size: 1.2vw;
+  color: #1296db;
+}
+.weather-container {
+  max-height: 300px;
+  min-width: 300px;
+  overflow-y: scroll;
+}

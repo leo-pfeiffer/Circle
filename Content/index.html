@@ -35,6 +35,10 @@
 
     <!--  Bootstrap CSS(for bootstrap template) -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Leaflet for weather map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
 </head>
 
 <body id="page-top">
@@ -1121,7 +1125,7 @@
 
                     <!-- View event modal -->
                     <div class="modal fade" id="view-event-modal" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog" role="document" v-if="event">
+                        <div class="modal-dialog modal-lg" role="document" v-if="event">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">{{ event.title }}</h5>
@@ -1137,6 +1141,15 @@
                                     <div>{{ event.description }}</div>
                                     <div v-show="event.location"><hr>Location: {{ event.location }}</div>
                                     <div v-show="event.link"><hr>URL: <a v-bind:href="event.link">{{ event.link }}</a></div>
+
+                                    <hr>
+                                    <button v-on:click="getMap">Get Map</button>
+                                    <div>
+                                        <div id="weather-map"></div>
+                                        <input type="date" id="start-date">
+                                        <input type="date" id="end-date">
+                                    </div>
+
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-warning" type="button" data-dismiss="modal">Close</button>
@@ -1177,9 +1190,8 @@
 
 </body>
 
-<!-- Custom javascript -->
-<script src="js/index.js" type="module"></script>
-
+<!-- Leaflet for weather map -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <!--  jQuery (for bootstrap template)  -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
 <!--  popper.js (for bootstrap template)  -->
@@ -1195,5 +1207,8 @@
 
 <!-- Bootstrap template scripts -->
 <script src="js/sb-admin-2.min.js"></script>
+
+<!-- Custom javascript -->
+<script src="js/index.js" type="module"></script>
 
 </html>
