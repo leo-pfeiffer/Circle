@@ -67,6 +67,18 @@ const addInterestsToUser = function(user, interests) {
 }
 
 /**
+ * Return random date in march, april or may of 2021.
+ * */
+const randomDateNearby = function() {
+    let year = 2021;
+    let month = parseInt(Math.random() * 3 + 3);
+    let day = parseInt(Math.random() * 31)
+    let hour = parseInt(Math.random() * 23)
+    let minute = parseInt(Math.random() * 59)
+    return new Date(year, month, day, hour, minute);
+}
+
+/**
  * Make demo data to test page rank
  * */
 const makePageRankDemoData = function() {
@@ -177,7 +189,259 @@ const makeGeneralTestData = function() {
     return {users, communities, adrian}
 }
 
+const makeStarterData = function() {
+
+    const users = []
+    const logins = []
+    const communities = []
+
+    const hobbies = [
+        'fishing', 'gardening', 'sports', 'reading', 'horses', 'dogs', 'gym', 'workouts',
+        'guitar', 'piano', 'coding', 'computers', 'running', 'cats', 'wrestling',
+        'party', 'surfing', 'videography', 'photography', 'youtube', 'movies', 'music', 'singing',
+        'cooking', 'poetry'
+    ]
+
+    const randomHobbies = (n) => hobbies.sort(() => 0.5 - Math.random()).slice(0, n)
+    const randomUsers = (n) => users.sort(() => 0.5 - Math.random()).slice(0, n)
+
+    // 32 names
+    const names = [
+        'barry', 'tom', 'farley', 'lemoine', 'chrystelle', 'honey', 'kwame', 'holden', 'abdoulaye',
+        'crew', 'courtney', 'irvin', 'sherman', 'jeffrey', 'vanessa', 'kermit', 'racquel',
+        'magalie', 'ange', 'rita', 'norene', 'pierce', 'carlisa', 'rochus', 'jean-paul', 'jayla',
+        'paulette', 'merril', 'esther', 'toni', 'maddox', 'chloe'
+    ]
+
+    for (let name of names) {
+        let user = new User(name, `${name}@mail.com`)
+        addInterestsToUser(user, randomHobbies(3))
+        users.push(user)
+        logins.push({username: name, password: `${name}123`})
+    }
+
+    const communityData = [
+        [
+            'Sports', ['gym', 'workout', 'running', 'wrestling'], randomUsers(7),
+
+            [
+                {
+                    thread: ['Recent workouts', 'Tell us about your most recent workouts!'],
+                    comments: ['Just benched 100kg for the first time:)', 'Just went on an amazing run!']
+                },
+                {
+                    thread: ['Workout ideas', 'What are the coolest workout ideas'],
+                    comments: ['Sleep, train, repeat', 'Calisthenics > Crossfit', 'Is chess a sport?']
+                }
+            ],
+            [
+                {
+                    title: 'Outdoor workout',
+                    description: 'workout with us in the park',
+                    location: 'park',
+                    link: 'www.example.com'
+                },
+                {
+                    title: 'Indoor workout',
+                    description: 'workout with us in the gym',
+                    location: 'gym',
+                    link: 'www.example.com'
+                },
+                {
+                    title: 'Run by the beach',
+                    description: '5k run at the beach',
+                    location: 'East Sands',
+                    link: 'www.example.com'
+                },
+            ]
+
+        ],
+
+        [
+            'CS5003', ['coding', 'programming', 'javascript', 'computers'], randomUsers(7),
+
+            // threads
+            [
+                {
+                    thread: ['Practical 1', 'All about the first practical'],
+                    comments: ['Not sure about Vue', 'Why does CSS take so much time?']
+                },
+                {
+                    thread: ['Practical 3', 'All about the second practical'],
+                    comments: ['MongoDB .. I miss SQL', 'Node rocks', 'Algorithms > Frontend']
+                }
+            ],
+            [
+                {
+                    title: 'Meeting',
+                    description: 'Discuss project',
+                    location: 'MS Teams',
+                    link: 'www.example.com'
+                },
+                {
+                    title: 'Meeting',
+                    description: 'Discuss project status',
+                    location: 'MS Teams',
+                    link: 'www.example.com'
+                },
+                {
+                    title: 'Deadline',
+                    description: 'Get it done on time!',
+                    location: 'St Andrews',
+                    link: 'www.example.com'
+                },
+            ]
+        ],
+
+        [
+            'St Andrews', ['uni', 'studying', 'scotland'], randomUsers(7),
+            // threads
+            [
+                {
+                    thread: ['Housing', 'Post offers etc.'],
+                    comments: ['Got a nice flat in North street', 'Ayton House got an amazing gym']
+                },
+                {
+                    thread: ['Parties', 'Where to go tonight'],
+                    comments: ['Union, obviously...', 'Party at my house.']
+                }
+            ],
+            [
+                {
+                    title: 'Party',
+                    description: 'BYOB',
+                    location: 'North Street',
+                    link: 'www.example.com'
+                },
+                {
+                    title: 'Party',
+                    description: 'Food and drinks provided',
+                    location: 'Gannochy',
+                    link: 'www.example.com'
+                },
+            ]
+
+        ],
+
+        [
+            'Gardening', ['outdoors', 'flowers', 'trees', 'seeds'], randomUsers(7),
+            [
+                {
+                    thread: ['Favourite flowers', 'all about your fav flowers'],
+                    comments: ['tbh, poppies are amazing']
+                },
+            ],
+            [
+                {
+                    title: 'Trade show',
+                    description: 'look at plants together',
+                    location: 'Edinburgh',
+                    link: 'www.example.com'
+                },
+                {
+                    title: 'Garden party',
+                    description: 'Food and drinks provided',
+                    location: 'My garden',
+                    link: 'www.example.com'
+                },
+            ]
+        ],
+
+        [
+            'Arts', ['videography', 'photography', 'singing', 'piano'], randomUsers(7),
+            [
+                {
+                    thread: ['Favourite instrument', 'piano, guitar, ... ?'],
+                    comments: ['been playing the piano for 10 years', 'just started playing the flute']
+                }
+            ],
+            [
+                {
+                    title: 'Gallery tour',
+                    description: 'look at sculptures',
+                    location: 'Edinburgh',
+                    link: 'www.example.com'
+                },
+                {
+                    title: 'Exposition',
+                    description: 'Performing arts and other stuff',
+                    location: 'London',
+                    link: 'www.example.com'
+                },
+            ]
+        ],
+
+        [
+            'Internet', ['youtube', 'facebook', 'socials', 'computers'], randomUsers(7),
+            [
+                {
+                    thread: ['Who is your fav youtuber?', 'let us know...'],
+                    comments: ['graham stephen is pretty good :)', 'what ever the algorithm recommends']
+                }
+            ],
+            [
+                {
+                    title: 'Livestream',
+                    description: 'WOW',
+                    location: 'Youtube',
+                    link: 'www.youtube.com'
+                },
+            ]
+        ],
+
+        [
+            'Food', ['cooking', 'chicken', 'veggie'], randomUsers(7),
+            [
+                {
+                    thread: ['Favourite foods?', 'Whatever it is - tell us!'],
+                    comments: ['chicken, chicken, chicken', 'miso soup', 'pancakes']
+                }
+            ],
+            [
+                {
+                    title: 'Gordon Ramsey',
+                    description: 'Watch with us',
+                    location: 'TV',
+                    link: 'www.example.com'
+                },
+            ]
+        ],
+
+    ]
+
+    for (let com of communityData) {
+        let community = new Community(com[0], com[2][0])
+        addTagsToCommunity(community, com[1])
+        addUsersToCommunity(community, com[2].slice(1, 7))
+
+        for (let th of com[3]) {
+            let thread = new Thread(th.thread[0], th.thread[1], community.users[parseInt(Math.random() * community.users.length)])
+
+            for (let cmts of th.comments) {
+                let comment = new Comment(cmts, community.users[parseInt(Math.random() * community.users.length)])
+                thread.addComment(comment)
+            }
+
+            community.addThread(thread)
+
+        }
+
+        for (let ev of com[4]) {
+            let event = new Event(ev.title, ev.description, community.users[parseInt(Math.random() * community.users.length)], randomDateNearby())
+            event.link = ev.link
+            event.location = ev.location
+            community.addEvent(event)
+        }
+
+        communities.push(community)
+    }
+
+    return {communities, users, logins}
+
+}
+
 module.exports = {
     makePageRankDemoData: makePageRankDemoData,
-    makeGeneralTestData: makeGeneralTestData
+    makeGeneralTestData: makeGeneralTestData,
+    makeStarterData: makeStarterData
 };

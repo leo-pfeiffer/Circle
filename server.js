@@ -705,18 +705,14 @@ let getUserEventsOfCommunity = function (req, res, next) {
     dao.getMemberCommunities(userId)
         .then(async function(communityList) {
             const memberCommunities = [];
-            console.log(communityList,"communityList")
-            await communityList.forEach(arr => {
-                arr.memberCommunities.forEach((community) => {
-                    let newComm = Event.fromJSON(community)
-                    if (!memberCommunities.map(el => el.id).includes(newComm.id))
-                    memberCommunities.push(newComm);
-                })
+            await communityList.forEach(community => {
+                let newComm = Event.fromJSON(community)
+                if (!memberCommunities.map(el => el.id).includes(newComm.id))
+                memberCommunities.push(newComm);
             })
-
-            return events;
+            return memberCommunities
         })
-        .then(docs => res.status(200).json(docs))
+        .then(communities => res.status(200).json(communities))
         .catch(err => {
             console.log(`Could not get member communities`, err);
             res.status(400).json({ msg: `Could not get member communities` });
@@ -736,19 +732,15 @@ let getUserEventsOfCommunity = function (req, res, next) {
     dao.getOwnedCommunities(userId)
         .then(async function(communityList) {
             const ownedCommunities = [];
-            console.log(communityList)
-            await communityList.forEach(arr => {
-                console.log("first loop",arr)
-                arr.ownedCommunities.forEach((community) => {
-                    let newComm = Event.fromJSON(community)
-                    if (!ownedCommunities.map(el => el.id).includes(newComm.id))
-                    memberCommunities.push(newComm);
-                })
+            await communityList.forEach(community => {
+                let newComm = Community.fromJSON(community)
+                if (!ownedCommunities.map(el => el.id).includes(newComm.id))
+                    ownedCommunities.push(newComm);
             })
 
-            return events;
+            return ownedCommunities;
         })
-        .then(docs => res.status(200).json(docs))
+        .then(communities => res.status(200).json(communities))
         .catch(err => {
             console.log(`Could not get owned communities`, err);
             res.status(400).json({ msg: `Could not get owned communities` });
