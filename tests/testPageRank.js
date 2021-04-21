@@ -10,11 +10,85 @@ const expect = chai.expect;
 
 chai.use(chaiAlmost(0.01));
 
-let pageRankDemoData = makePageRankDemoData();
+/**
+ * Create some test data for the tests.
+ * */
+testData = function() {
+    const addUsersToCommunity = function(community, users) {
+        for (let user of users) {
+            community.addUser(user)
+        }
+    };
+    const addTagsToCommunity = function(community, tags) {
+        for (let tag of tags) {
+            community.addTag(tag)
+        }
+    };
+    const addEventsToCommunity = function(community, events) {
+        for (let event of events) {
+            community.addEvent(event);
+        }
+    };
+    const addThreadsToCommunity = function(community, threads) {
+        for (let thread of threads) {
+            community.addThread(thread);
+        }
+    };
+    const addCommentsToThread = function(thread, comments) {
+        for (let comment of comments) {
+            thread.addComment(comment);
+        }
+    };
+    const addInterestsToUser = function(user, interests) {
+        for (let interest of interests) {
+            user.addInterest(interest)
+        }
+    };
 
-let communities = pageRankDemoData.communities
-let userId = pageRankDemoData.peter.id
-let interests = pageRankDemoData.peter.interests
+    const peter = new User('peter', 'mail')
+    addInterestsToUser(peter, ['hobby1', 'hobby2', 'hobby3'])
+
+    const tom = new User('tom', 'mail')
+    const anna = new User('anna', 'mail')
+    const jenny = new User('jenny', 'mail')
+    const fred = new User('fred', 'mail')
+
+    const comA = new Community('A', peter)
+    comA.id = 'A';
+    addUsersToCommunity(comA, [tom, anna, jenny])
+    addTagsToCommunity(comA, ['hobby1', 'hobby3', 'hobby5'])
+
+    const comB = new Community('B', peter)
+    comB.id = 'B';
+    addUsersToCommunity(comB, [anna, fred])
+    addTagsToCommunity(comB, ['hobby3'])
+
+    const comC = new Community('C', peter)
+    comC.id = 'C';
+    addUsersToCommunity(comC, [tom, jenny])
+    addTagsToCommunity(comC, ['hobby4', 'hobby5'])
+
+    const comD = new Community('D', fred)
+    comD.id = 'D'
+    addUsersToCommunity(comD, [tom, jenny])
+    addTagsToCommunity(comD, ['hobby1', 'hobby2', 'hobby3'])
+
+    const comE = new Community('E', anna)
+    comE.id = 'E'
+    addUsersToCommunity(comE, [jenny])
+    addTagsToCommunity(comE, ['hobby1', 'hobby5'])
+
+    let users = [peter, anna, fred, tom, jenny]
+    let communities = [comA, comB, comC, comD, comE]
+
+    return {users, communities, peter}
+
+
+}()
+
+let communities = testData.communities
+let userId = testData.peter.id
+let interests = testData.peter.interests
 
 describe("CreateNetwork", function() {
     it("should create a graph with correct nodes", function() {
