@@ -33,7 +33,6 @@ const makeShortlistVue = function () {
                 return client.state;
             },
             shortListedCommunities() {
-                console.log(mostRecentCommunities.communities.map(el => el.id))
                 return mostRecentCommunities.communities
             }
         },

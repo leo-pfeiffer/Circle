@@ -155,7 +155,7 @@
                     <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
-                            <input type="text" class="form-control bg-secondary border-0 small" aria-label="Search" aria-describedby="basic-addon2" v-model="searchTerm">
+                            <input type="text" class="form-control bg-secondary border-0 small text-white" aria-label="Search" aria-describedby="basic-addon2" v-model="searchTerm">
                             <div class="input-group-append">
                                 <button class="btn btn-info" type="button" v-on:click="search" title="Search">
                                     <i class="fas fa-search fa-sm"></i>
@@ -230,7 +230,12 @@
                     <!-- Community header with name -->
                     <div id="community-header" v-show="state === 'community'">
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                            <h1 class="h3 mb-0 text-white"><i class="text-white" v-bind:class="communityData.symbol"></i> {{ communityData.communityName }} </h1>
+                            <h2 class="h3 mb-0 text-white" v-show="communityData.picture !== ''">
+                                <img v-bind:src="communityData.picture" class="small-user-img is-link" v-bind:title="communityData.communityName">  {{ communityData.communityName }}
+                            </h2>
+                            <h2 class="h3 mb-0 text-white" v-show="communityData.picture === ''">
+                                <i class="text-white" v-bind:class="communityData.symbol"></i> {{ communityData.communityName }}
+                            </h2>
                         </div>
                     </div>
                     <!-- End of Community header with name -->
@@ -254,7 +259,8 @@
                                             <div class="h5 mb-0 font-weight-bold text-white">{{ community.communityName }}</div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                                            <i class="fas fa-users fa-2x text-gray-300" v-show="community.picture === ''"></i>
+                                            <img v-bind:src="community.picture" class="small-user-img is-link" v-bind:title="community.communityName" v-show="community.picture !== ''">
                                         </div>
                                     </div>
                                 </div>
@@ -613,8 +619,14 @@
 
                                 <div class="card-body bg-secondary">
                                     <div class="text-white">
-                                        <h2 class="h3 mb-0 text-white">
+                                        <h2 class="h3 mb-0 text-white" v-show="communityData.picture !== ''">
+                                            <img v-bind:src="communityData.picture" class="small-user-img is-link" v-bind:title="communityData.communityName">  {{ communityData.communityName }}
+                                        </h2>
+                                        <h2 class="h3 mb-0 text-white" v-show="communityData.picture === ''">
                                             <i class="text-white" v-bind:class="communityData.symbol"></i> {{ communityData.communityName }}
+                                        </h2>
+                                        <hr>
+                                        <div class="row mb-0 text-white">
                                             <button class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#new-event-modal"v-show="isMember">
                                                 Event <i class="text-white fas fa-plus"></i>
                                             </button>
@@ -624,8 +636,7 @@
                                             <button class="btn btn-sm btn-primary float-right" v-on:click="join" v-show="!isMember">
                                                 Join <i class="text-white fas fa-sign-in-alt"></i>
                                             </button>
-                                        </h2>
-
+                                        </div>
                                         <hr>
                                         <p>{{ communityData.description }}</p>
                                         <hr>
@@ -733,13 +744,34 @@
 
                                 <div class="collapse" id="collapseCommunityResults">
                                     <div class="card-body">
-                                        Here are the communities that were found.
+                                        <p v-show="communityResults.length === 0">No matches found</p>
+
+                                        <div v-for="(item, index) in communityResults">
+                                            <div class="card border-left-warning shadow">
+                                                <div class="card-body is-link" v-on:click="goToCommunity(item.id)">
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col mr-2">
+
+                                                            <h2 class="h3 mb-0" v-show="item.picture !== ''">
+                                                                <img v-bind:src="item.picture" class="small-user-img is-link" v-bind:title="item.communityName">  {{ item.communityName }}
+                                                            </h2>
+                                                            <h2 class="h3 mb-0 text-warning" v-show="item.picture === ''">
+                                                                <i class="text-warning" v-bind:class="item.symbol"></i> {{ item.communityName }}
+                                                            </h2>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <hr class="sidebar-divider" v-show="index < communityResults.length - 1">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- User Results -->
-                            <div class="card shadow mb-4 bg-secondary" id="user-search-results" v-show="state === 'search'">
+                            <div class="card shadow mb-4 bg-secondary" id="user-search-results" v-show="state === 'search' && searchType === 'search'">
 
                                 <a href="#collapseUserResults" class="d-block card-header py-3" data-toggle="collapse"
                                    role="button" aria-expanded="true" aria-controls="collapseCommunityCalendar">
@@ -748,7 +780,28 @@
 
                                 <div class="collapse" id="collapseUserResults">
                                     <div class="card-body">
-                                        Here are the users that were found.
+                                        <p v-show="userResults.length === 0">No matches found</p>
+
+                                        <div v-for="(item, index) in userResults">
+                                            <div class="card border-left-warning shadow">
+                                                <div class="card-body is-link" v-on:click="goToProfile(item.id)">
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col mr-2">
+
+                                                            <h2 class="h3 mb-0" v-show="item.picture !== ''">
+                                                                <img v-bind:src="item.picture" class="small-user-img is-link" v-bind:title="item.userName">  {{ item.userName }} {{item.id}}
+                                                            </h2>
+                                                            <h2 class="h3 mb-0 text-warning" v-show="item.picture === ''">
+                                                                <i class="text-warning" v-bind:class="item.symbol"></i> {{ item.userName }} {{item.id}}
+                                                            </h2>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <hr class="sidebar-divider" v-show="index < userResults.length - 1">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -815,9 +868,8 @@
                                                     <p class="text-white">{{ confirmPasswordMessage }}</p>
                                                     <hr>
 
-                                                    <!-- TODO: Selection not showing up -->
                                                     <div class="form-group">
-                                                        <select class="form-control form-control-user" v-model="gender">
+                                                        <select class="form-control" v-model="gender">
                                                             <option disabled value="">Gender</option>
                                                             <option value="female">Female</option>
                                                             <option value="male">Male</option>
@@ -826,13 +878,12 @@
                                                         </select>
                                                     </div>
                                                     <div class="form-group">
-                                                        <select class="form-control form-control-user" v-model="age">
+                                                        <select class="form-control" v-model="age">
                                                             <option disabled value="">Age</option>
                                                             <option v-for="n in 83" v-bind:value="n + 17">{{ n + 17 }}</option>
                                                         </select>
                                                     </div>
 
-                                                    <!-- Todo don't make this a free text field -->
                                                     <div class="form-group">
                                                         <input type="text" class="form-control form-control-user" placeholder="Location" v-model="location">
                                                     </div>

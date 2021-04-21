@@ -131,28 +131,37 @@ let createUser = function (req, res, next) {
  * @param {Response} res
  * @param {NextFunction} next
  * */
-let createCommunity = (req, res, next) => {
-    let body = req.body;
+let createCommunity = async (req, res, next) => {
+    const communityName = req.body.communityName;
+    const description = req.body.description;
+    const tags = req.body.tags;
+    const picture = req.body.picture;
 
     // deserialize the User object
-    //let admin = User.fromJSON(body.admin)
+    const userId = req.userId
 
-    let userName = body.admin.userName
-    let userEmail = body.admin.userEmail
+    const admin = await dao.getUserObject(userId)
+        .then((u) => {
+            return User.fromJSON(u)
+        }).catch(err => {
+            console.log(`Could not find user`, err);
+            res.status(404).json({ msg: `Could not find user` });
+        });
 
-    //create new instance of the class User
-    let user = new User(userName, userEmail)
     // create a new instance of the class Community
-    let community = new Community(body.communityName, user)
+    const community = new Community(communityName, admin)
+    community.tags = tags;
+    community.picture = picture;
+    community.description = description;
 
     //adding new Community instance to the database
     dao.addCommunity(community)
         .then((id) => {
-            res.status(200).json({ msg: `Added community '${body.communityName}' with ID ${id}` });
+            res.status(200).json({ msg: `Added community '${communityName}' with ID ${id}` });
         })
         .catch(err => {
-            console.log(`Could not add community '${body.communityName}`, err);
-            res.status(400).json({ msg: `Could not add community '${body.communityName}` });
+            console.log(`Could not add community '${communityName}`, err);
+            res.status(400).json({ msg: `Could not add community '${communityName}` });
         });
 }
 
@@ -754,17 +763,23 @@ let getUserEventsOfCommunity = function (req, res, next) {
  * @param {Response} res
  * @param {NextFunction} next
  * */
-let getRecommendation = function (req, res, next) {
-    let body = req.body;
-    let userId = body.user.id
-    let interests = body.user.interests
+let getRecommendation = async function (req, res, next) {
+    let userId = req.userId
+
+    let user = await dao.getUserObject(userId)
+        .then((u) => {
+            return User.fromJSON(u)
+        }).catch(err => {
+            console.log(`Could not find user`, err);
+            res.status(404).json({ msg: `Could not find user` });
+        });
 
     //retrieving data from DB (from events_collection)
     dao.getPageRankCommunities(userId)
-        .then((res) => {
-            let communities = res.map(com => Community.fromJSON(com))
+        .then((coms) => {
+            let communities = coms.map(com => Community.fromJSON(com))
 
-            let network = new CommunityNetwork(communities, userId, interests)
+            let network = new CommunityNetwork(communities, userId, user.interests)
             network.createGraph();
             network.createAdjacency();
             let v = network.getDistributionVector(0.5);
@@ -772,14 +787,56 @@ let getRecommendation = function (req, res, next) {
             let rank = new PageRank(network.adjacency, v);
             let result = rank.iterate(network.communityHash);
 
-            res.status(200).json(result);
+            // sort community IDs by descending rank
+            return Object.entries(result.mappedResult)
+                .sort((a, b) => b[1] - a[1]).map(arr => arr[0]);
 
+        }).then(async (idArr) => {
+            let cursor = dao.getCommunitiesById(idArr)
+            let communities = []
+
+            await cursor.forEach((com) => {
+                let community = Community.fromJSON(com)
+                // keep only the ones that the user isn't already a member of
+                if (!community.users.map(el => el.id).includes(user.id)) {
+                    communities.push(community)
+                }
+            })
+
+            // return at most first 10 results
+            communities = communities.slice(0, 10)
+            res.status(200).json({communities: communities})
         })
         .catch(err => {
             console.log(`Could not get PageRank recommendation`, err);
             res.status(500).json({ msg: `Could not get PageRank recommendation` });
         })
 }
+
+/**
+ * Handler function to get search results
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
+let getSearchResults = function (req, res, next) {
+    const searchTerm = req.body.searchTerm
+
+    //retrieving data from DB (from events_collection)
+    dao.getSearchResults(searchTerm)
+        .then((results) => {
+            results.userResults = results.userResults.map(u => User.fromJSON(u));
+            results.communityResults = results.communityResults.map(u => Community.fromJSON(u));
+            res.status(200).json(results);
+
+        })
+        .catch(err => {
+            console.log(`Could not get search results`, err);
+            res.status(500).json({ msg: `Could not get search results` });
+        })
+}
+
+
 
 /**
  * Proxy request handler that gets a random joke from an external API
@@ -899,6 +956,9 @@ app.post('/api/get-recent-communities/', authenticate, getMostRecentCommunities)
 
 // get result of the recommendation system
 app.get('/api/get-recommendation/', authenticate, getRecommendation);
+
+// get search results
+app.post('/api/get-search-results/', authenticate, getSearchResults);
 
 // get a user object by ID
 app.get('/api/get-user-object/', authenticate, getUserObject);

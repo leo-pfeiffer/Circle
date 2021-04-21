@@ -32,7 +32,12 @@ export const client = Vue.observable({
 /**
  * Vue observable to pass the search term between components
  * */
-export const search = Vue.observable({ term: '', type: '' })
+export const search = Vue.observable({
+    term: '',
+    type: '',
+    communityResults: [],
+    userResults: []
+})
 
 /**
  * Reset the userData of the client Vue observable to its default values

@@ -42,13 +42,55 @@ const makeHeaderVue = function() {
                 // don't do anything if no search term was entered
                 if (search.term === '') return;
                 search.type = 'search'
-                // todo call to api -> save response in observable -> access it from search vue
+
+                fetch("/api/get-search-results/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Basic " + client.userKey,
+                    },
+                    body: JSON.stringify({searchTerm: search.term})
+                }).then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Failed to create new community.')
+                    }
+                    else {
+                        return res.json()
+                    }
+                }).then((jsn) => {
+                    search.communityResults = jsn.communityResults
+                    search.userResults = jsn.userResults
+                    console.log(search.communityResults)
+                    console.log(search.userResults)
+                }).catch((err) => {
+                    console.log(err)
+                })
+
                 this.goToSearch();
+                search.term = ''
             },
             getRecommendations: function () {
                 search.type = 'recommendation'
-                // todo call to api -> get recommendations for current user
-                this.goToSearch();
+
+                fetch("/api/get-recommendation/", {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Basic " + client.userKey,
+                    },
+                }).then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Failed to get recommendation.')
+                    }
+                    else {
+                        return res.json()
+                    }
+                }).then((jsn) => {
+                    console.log(jsn)
+                    search.communityResults = jsn.communities || []
+                    this.goToSearch();
+                }).catch((err) => {
+                    console.log(err)
+                })
             }
         },
     })
@@ -87,23 +129,35 @@ const makeNewCommunityModalVue = function () {
                 // split tags into list
                 this.newCommunity.tags = this.newCommunity.tags.split(' ').filter(el => el !== "")
 
-                // todo send this.newCommunity data to API
-                let apiResponse = {status: 'success'}
-                if (apiResponse.status === 'success') {
+                fetch('/api/create-community/', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Basic " + client.userKey,
+                    },
+                    body: JSON.stringify({
+                        communityName: this.newCommunity.name,
+                        description: this.newCommunity.description,
+                        tags: this.newCommunity.tags,
+                        picture: this.newCommunity.picture,
+                    })
+                }).then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Failed to create new community.')
+                    }
+                    else {
+                        return res.json()
+                    }
+                }).then((jsn) => {
                     this.message = 'Community created. You can now close this popup.'
-                    this.success = true;
-
-                    // reset this message and status after 5 seconds
                     setTimeout(this.resetMessageAndStatus, 5000);
-
                     this.resetNewCommunity();
-                } else {
-                    this.message = 'There was an error. Please check your entries.'
-                    this.success = false;
-
-                    // reset this message and status after 5 seconds
+                }).catch((err) => {
+                    console.log(err)
+                    this.message = 'There was an error. Please check your entries.';
                     setTimeout(this.resetMessageAndStatus, 5000);
-                }
+                })
+
             },
             resetMessageAndStatus: function() {
                 this.message = ''

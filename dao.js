@@ -31,12 +31,40 @@ const test_data = [{ userName: "A", userEmail: 'abc@gmail.com' },
 let init = function () {
     return client.connect()
         .then(conn => {
-            //if the collection does not exist it will automatically be created
+            // if the collection does not exist it will automatically be created
             users_collection = client.db().collection(users_data);
             communities_collection = client.db().collection(communities_data);
             user_passwords_collection = client.db().collection(user_passwords_data);
 
-            console.log("Connected!", sanitisedUrl, 'collection name:', users_data);
+            console.log("Connected to database @", sanitisedUrl);
+
+        }).then(async () => {
+            // create indexes to allow search: https://docs.mongodb.com/manual/text-search/
+            // remove existing indexes to avoid duplication
+            return communities_collection.dropIndexes().then(() => {
+                // create index for community search
+                return communities_collection.createIndex(
+                    {
+                        description: "text",
+                        communityName: "text",
+                        tags: "text",
+                    })
+            })
+
+        }).then(() => {
+
+            // drop indexes to avoid duplication
+            return users_collection.dropIndexes().then(() => {
+                // create index for user search
+                return users_collection.createIndex(
+                    {
+                        userName: "text",
+                        location: "text",
+                        interests: "text",
+                    }
+                )
+            })
+
         })
         .catch(err => {
             console.log(`Could not connect to ${sanitisedUrl}`, err);
@@ -45,12 +73,21 @@ let init = function () {
 }
 
 /**
- * Returns all data stored in communities_collection
+ * Returns community by its ID
  * @param {string} communityId
  * @return {Promise}
  * */
 let getCommunityById = function (communityId) {
     return communities_collection.find({"id": communityId})
+}
+
+/**
+ * Returns all communities from an array by their ID
+ * @param {Array<string>} communityIds
+ * @return {Promise}
+ * */
+let getCommunitiesById = function (communityIds) {
+    return communities_collection.find({"id": {$in: communityIds}})
 }
 
 /**
@@ -347,6 +384,20 @@ const getPageRankCommunities = async function(userId) {
     })
 
     return communities
+}
+
+/**
+ * Get the search results for a query.
+ * @param {string} searchTerm
+ * @return {Promise}
+ * */
+const getSearchResults = async function(searchTerm) {
+    const userResults = await users_collection.find( { $text: { $search: searchTerm } } ).toArray()
+    const communityResults = await communities_collection.find( { $text: { $search: searchTerm } } ).toArray()
+    return {
+        userResults: userResults,
+        communityResults: communityResults
+    }
 }
 
 /**
@@ -698,11 +749,13 @@ module.exports = {
     addEvent: addEvent,
     // getUser: getUser,
     getCommunityById: getCommunityById,
+    getCommunitiesById: getCommunitiesById,
     getThreadsOfCommunity: getThreadsOfCommunity,
     // getComment: getComment,
     // getEvent: getEvent,
     dropCollections: dropCollections,
     getPageRankCommunities: getPageRankCommunities,
+    getSearchResults: getSearchResults,
     getUserEvents: getUserEvents,
     getUserObject: getUserObject,
     getMostRecentComments: getMostRecentComments,
