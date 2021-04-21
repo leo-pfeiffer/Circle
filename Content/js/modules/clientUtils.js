@@ -238,7 +238,7 @@ export const mostRecentCommunities = Vue.observable({
 /**
  * Get the most recent activities to display on the dashboard.
  * */
-const getMostRecentlyActiveCommunities = function() {
+const getMostRecentlyActiveCommunities = function () {
 
     fetch('/api/get-recent-communities/', {
         method: "POST",
@@ -257,14 +257,14 @@ const getMostRecentlyActiveCommunities = function() {
             return res.json();
         }
     }).then((jsn) => {
-        console.log("recent community activity",jsn)
+        console.log("recent community activity", jsn)
         mostRecentCommunities.communities = [];
         mostRecentCommunities.recentCommunities = [];
 
         jsn.forEach(comm => {
             mostRecentCommunities.communities.push(comm)
-            let obj= {}
-            obj.name = comm.communityName,
+            let obj = {}
+            obj.name = comm.communityName
             obj.id = comm.id
             mostRecentCommunities.recentCommunities.push(obj)
         })
@@ -275,7 +275,7 @@ const getMostRecentlyActiveCommunities = function() {
  * Vue observable for all the communities 
  * */
 export const allCommunities = Vue.observable({
-    communities: [],
+    communities_all: [],
 })
 
 
@@ -298,7 +298,14 @@ const getAllCommunities = function () {
             return res.json();
         }
     }).then((jsn) => {
-   console.log("All communities",jsn)
+        allCommunities.communities_all = [];
+        jsn.forEach(el => {
+            let obj = {};
+            obj.name = el.communityName
+            obj.id = el.id
+
+            allCommunities.communities_all.push(obj)
+        })
     }).catch(err => console.log(err))
 }
 
@@ -326,7 +333,14 @@ const getAllOwnedCommunity = function () {
             return res.json();
         }
     }).then((jsn) => {
-        console.log(jsn,"owned communities")
+        allOwnedCommunities.ownedCommunities = [];
+        jsn.forEach(el => {
+            let obj = {};
+            obj.name = el.communityName
+            obj.id = el.id
+
+            allOwnedCommunities.ownedCommunities.push(obj)
+        })
     }).catch(err => console.log(err))
 }
 
@@ -391,7 +405,7 @@ const getCommunityStats = function (communityId) {
  * Go to the community with ID `communityId`
  * @param {string} communityId
  * */
-export const goToCommunity = function(communityId) {
+export const goToCommunity = function (communityId) {
     client.communityData.id = communityId;
     getCommunity(communityId)
     getCommunityStats(communityId)
@@ -400,9 +414,9 @@ export const goToCommunity = function(communityId) {
     joinRoom(communityId)
 }
 
- /**
- * Get a user with all its data and save it to the client observable.
- * */
+/**
+* Get a user with all its data and save it to the client observable.
+* */
 const getUser = function (userId) {
 
     fetch('/api/get-user-object/', {
@@ -503,15 +517,15 @@ export const createChart = function (chartId, chartData) {
     });
 }
 
-const makeCommunityChart = function() {
+const makeCommunityChart = function () {
     let data = {
         type: 'doughnut',
         data: {
             labels: Object.keys(communityStats),
-            datasets:[
+            datasets: [
                 {
                     data: Object.values(communityStats),
-                    backgroundColor:[
+                    backgroundColor: [
                         '#e74a3b',
                         '#4e73df',
                         '#1cc88a'
@@ -545,61 +559,61 @@ const makeCommunityChart = function() {
     return createChart('activityDoughnutChart', data)
 }
 
-const makeProfileBarChart = function() {
+const makeProfileBarChart = function () {
     let data = {
         type: 'bar',
         data: {
-                labels: ['Gardening', 'Yoga', 'Cooking'], // todo
-                datasets: [
-                    {
-                        label:' # Comments written',
-                        data: [20, 5, 13], // todo
-                        backgroundColor:['#e74a3b',],
-                    },
-                    {
-                        label:' # Threads opened',
-                        data: [3, 4, 1], // todo
-                        backgroundColor:['#4e73df',],
-                    }
-                ],
-            },
+            labels: ['Gardening', 'Yoga', 'Cooking'], // todo
+            datasets: [
+                {
+                    label: ' # Comments written',
+                    data: [20, 5, 13], // todo
+                    backgroundColor: ['#e74a3b',],
+                },
+                {
+                    label: ' # Threads opened',
+                    data: [3, 4, 1], // todo
+                    backgroundColor: ['#4e73df',],
+                }
+            ],
+        },
         options: {
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Activities in your top 10 most popular communities',
-                        fontSize: 20,
-                        color: 'rgb(255, 255, 255)'
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Activities in your top 10 most popular communities',
+                    fontSize: 20,
+                    color: 'rgb(255, 255, 255)'
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        color: 'rgb(255, 255, 255)',
+                        borderColor: 'rgb(165,165,165)',
                     },
-                    legend: {
-                        display: true,
-                        labels: {
-                            color: 'rgb(255, 255, 255)',
-                            borderColor: 'rgb(165,165,165)',
-                        },
+                }
+            },
+            scales: {
+                x: {
+                    stacked: true,
+                    ticks: {
+                        color: 'rgb(255, 255, 255)',
+                    },
+                    grid: {
+                        color: 'rgb(165,165,165)',
                     }
                 },
-                scales: {
-                    x: {
-                        stacked: true,
-                        ticks: {
-                            color: 'rgb(255, 255, 255)',
-                        },
-                        grid: {
-                            color: 'rgb(165,165,165)',
-                        }
+                y: {
+                    stacked: true,
+                    ticks: {
+                        color: 'rgb(255, 255, 255)',
                     },
-                    y: {
-                        stacked: true,
-                        ticks: {
-                            color: 'rgb(255, 255, 255)',
-                        },
-                        grid: {
-                            color: 'rgb(165,165,165)',
-                        }
+                    grid: {
+                        color: 'rgb(165,165,165)',
                     }
                 }
             }
+        }
     }
 
     if (profileBarChart) {
@@ -609,24 +623,24 @@ const makeProfileBarChart = function() {
     return createChart('commentBarChart', data)
 }
 
-const makeProfileLineChart = function() {
+const makeProfileLineChart = function () {
     let data = {
         type: 'line',
         data: {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // todo
-            datasets:[
+            datasets: [
                 {
-                    label:' # Comments written',
+                    label: ' # Comments written',
                     data: [20, 9, 13, 6, 3],  // todo
-                    backgroundColor:[
+                    backgroundColor: [
                         '#e74a3b',
                     ],
                     borderColor: 'rgb(165,165,165)',
                 },
                 {
-                    label:' # Threads opened',
+                    label: ' # Threads opened',
                     data: [3, 4, 1, 2, 1],  // todo
-                    backgroundColor:[
+                    backgroundColor: [
                         '#4e73df',
                     ],
                     borderColor: 'rgb(165,165,165)',
