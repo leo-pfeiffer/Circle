@@ -613,7 +613,10 @@
 
                                 <div class="card-body bg-secondary">
                                     <div class="text-white">
-                                        <h2 class="h3 mb-0 text-white">
+                                        <h2 class="h3 mb-0 text-white" v-show="communityData.picture !== ''">
+                                            <img v-bind:src="communityData.picture" class="small-user-img is-link" v-bind:title="communityData.communityName">  {{ communityData.communityName }}
+                                        </h2>
+                                        <h2 class="h3 mb-0 text-white" v-show="communityData.picture === ''">
                                             <i class="text-white" v-bind:class="communityData.symbol"></i> {{ communityData.communityName }}
                                         </h2>
                                         <hr>
