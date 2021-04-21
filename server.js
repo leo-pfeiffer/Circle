@@ -566,6 +566,55 @@ let getUserEventsOfCommunity = function (req, res, next) {
         })
 };
 
+// handler function for adding tag to user interests
+let addTagUser = async (req, res, next) => {
+    let body = req.body;
+    let tag = body.tag;
+    let userId = body.userId
+
+    //adding new tag to the database
+    dao.addTagUser(userId, tag)
+        .then(() => res.status(200).json({ msg: `Added new tag '${tag}' to user ${userId}` }))
+        .catch(err => {
+            console.log(`Could not add tag`, err);
+            res.status(400).json({ msg: `Could not add tag` });
+        });
+}
+
+// handler function for removing tag from user interests
+let removeTagUser = async (req, res, next) => {
+    let body = req.body;
+    let tag = body.tag;
+    let userId = body.userId
+
+    //adding new tag to the database
+    dao.removeTagUser(userId, tag)
+        .then(() => res.status(200).json({ msg: `Removed tag '${tag}' from user ${userId}` }))
+        .catch(err => {
+            console.log(`Could not remove tag`, err);
+            res.status(400).json({ msg: `Could not remove tag` });
+        });
+}
+
+// update user info from modal on profile
+let updateUserInfo = async (req, res, next) => {
+    let body = req.body;
+    let newEmail = body.newEmail;
+    let newAge = body.newAge; 
+    let newLocation = body.newLocation;
+    let newStatus = body.newStatus;
+    let userId = body.userId;
+
+    // adding the new info to the users_collection
+    dao.updateUserInfo(userId, newEmail, newAge, newLocation, newStatus)
+        .then(() => res.status(200).json({ msg: `Updated user info for ${userId}` }))
+        .catch(err => {
+            console.log(`Could not update info`, err);
+            res.status(400).json({ msg: `Could not update info` });
+        });
+}
+
+
 /**
  * Handler function to GET the total number of comments a user has made. 
  * @param {Request} req
@@ -582,7 +631,7 @@ let getUserEventsOfCommunity = function (req, res, next) {
             await cursor.forEach(el => {
                 numComments.push(el);
             })
-            return numComments
+            return numComments[0]
         })
         .then(numComments => res.status(200).json(numComments))
         .catch(err => {
@@ -607,7 +656,7 @@ let getUserEventsOfCommunity = function (req, res, next) {
         await cursor.forEach(el => {
             numThreads.push(el);
         })
-        return numThreads
+        return numThreads[0]
     })
     .then(numThreads => res.status(200).json(numThreads))
     .catch(err => {
@@ -1017,6 +1066,9 @@ app.post('/api/get-search-results/', authenticate, getSearchResults);
 app.post('/api/get-user-object/', authenticate, getUserObject);
 app.get('/api/get-user-comments/', authenticate, getNumberComments);
 app.get('/api/get-user-threads/', authenticate, getNumberThreads);
+app.post('/api/add-tag-user/', authenticate, addTagUser);
+app.post('/api/remove-tag-user/', authenticate, removeTagUser);
+app.post('/api/update-user-info/', authenticate,updateUserInfo);
 
 app.post('/api/get-community-stats/', authenticate, getCommunityStats);
 

@@ -410,7 +410,7 @@
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 v-show="isOwnProfile" class="m-0 font-weight-bold text-warning">My data</h6>
-                                    <h6 v-show="!isOwnProfile" class="m-0 font-weight-bold text-warning">About {{profileData.userName}}</h6>
+                                    <h6 v-show="!isOwnProfile" class="m-0 font-weight-bold text-warning">About {{userData.userName}}</h6>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body bg-secondary">
@@ -420,20 +420,21 @@
                                         </button>
                                         <div class="row">
                                                 <img v-bind:src="profileData.picture" class="large-user-img"/>
-                                                <h2 class="text-info">{{profileData.userName}}</h2>
+                                                <h2 class="text-info">{{userData.userName}}</h2>
                                         </div>
                                     
                                         <hr>
                                         <button class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#profile-info-modal">
                                             Update info <i class="text-white fas fa-edit"></i>
                                         </button>
-                                        <p>Email: {{profileData.userEmail}} </p>
-                                        <p>Age: {{profileData.age}}</p>
-                                        <p>Location: {{profileData.location}}</p>
+                                        <p>Email: {{userData.userEmail}} </p>
+                                        <p>Age: {{userData.age}}</p>
+                                        <p>Location: {{userData.location}}</p>
+                                        <p>Status: {{userData.status}}</p>
                                         <h5>My tags:</h5>
                                         <div class="custom-tag-container">
                                             <!-- display existing tags -->
-                                            <span class="custom-tag" v-for="tag in profileData.interests" v-bind:class="[ isOwnProfile ? 'editable' : '']">
+                                            <span class="custom-tag" v-for="tag in userData.interests" v-bind:class="[ isOwnProfile ? 'editable' : '']">
                                                 <button class="btn btn-info btn-circle btn-sm font-weight-bolder" v-on:click="removeTag(tag)" v-show="isOwnProfile">&times;</button> {{ tag }}
                                             </span>
                                             <!-- add tags -->
