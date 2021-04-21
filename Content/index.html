@@ -230,7 +230,12 @@
                     <!-- Community header with name -->
                     <div id="community-header" v-show="state === 'community'">
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                            <h1 class="h3 mb-0 text-white"><i class="text-white" v-bind:class="communityData.symbol"></i> {{ communityData.communityName }} </h1>
+                            <h2 class="h3 mb-0 text-white" v-show="communityData.picture !== ''">
+                                <img v-bind:src="communityData.picture" class="small-user-img is-link" v-bind:title="communityData.communityName">  {{ communityData.communityName }}
+                            </h2>
+                            <h2 class="h3 mb-0 text-white" v-show="communityData.picture === ''">
+                                <i class="text-white" v-bind:class="communityData.symbol"></i> {{ communityData.communityName }}
+                            </h2>
                         </div>
                     </div>
                     <!-- End of Community header with name -->
@@ -254,7 +259,8 @@
                                             <div class="h5 mb-0 font-weight-bold text-white">{{ community.communityName }}</div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                                            <i class="fas fa-users fa-2x text-gray-300" v-show="community.picture === ''"></i>
+                                            <img v-bind:src="community.picture" class="small-user-img is-link" v-bind:title="community.communityName" v-show="community.picture !== ''">
                                         </div>
                                     </div>
                                 </div>
