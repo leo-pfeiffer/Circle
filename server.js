@@ -1,4 +1,4 @@
-import {calculateLevenshteinScore, LevenshteinScores} from "./levenshtein";
+import {calculateLevenshteinScore} from "./levenshtein";
 
 const { User, Community, Thread, Comment, Event } = require('./models')
 const {PageRank, CommunityNetwork} = require("./pagerank");
@@ -786,64 +786,64 @@ let getUserEventsOfCommunity = function (req, res, next) {
 let getRecommendation = async function (req, res, next) {
     let userId = req.userId
 
-    // let user = await dao.getUserObject(userId)
-    //     .then((u) => {
-    //         return User.fromJSON(u)
-    //     }).catch(err => {
-    //         console.log(`Could not find user`, err);
-    //         res.status(404).json({ msg: `Could not find user` });
-    //     });
-    //
-    // //retrieving data from DB (from events_collection)
-    // let pageRank = await dao.getPageRankCommunities(userId)
-    //     .then((coms) => {
-    //         // handle case where user has no communities
-    //         if (coms.length === 0) {
-    //             return {};
-    //         }
-    //         let communities = coms.map(com => Community.fromJSON(com))
-    //
-    //         let network = new CommunityNetwork(communities, userId, user.interests)
-    //         network.createGraph();
-    //         network.createAdjacency();
-    //         let v = network.getDistributionVector(0.5);
-    //
-    //         let rank = new PageRank(network.adjacency, v);
-    //         let result = rank.iterate(network.communityHash);
-    //
-    //         // sort community IDs by descending rank
-    //         return result.mappedResult
-    //     })
-    //
-    // let levenshtein = await dao.getCommunityTagsForLevenshtein()
-    //     .then((coms) => {
-    //         return calculateLevenshteinScore(coms, user.interests)
-    //     })
-    //
-    //     Promise.then(async (idArr) => {
-    //         if (idArr.length === 0) {
-    //             return [];
-    //         }
-    //         let cursor = dao.getCommunitiesById(idArr)
-    //         let communities = []
-    //
-    //         await cursor.forEach((com) => {
-    //             let community = Community.fromJSON(com)
-    //             // keep only the ones that the user isn't already a member of
-    //             if (!community.users.map(el => el.id).includes(user.id)) {
-    //                 communities.push(community)
-    //             }
-    //         })
-    //
-    //         // return at most first 10 results
-    //         return communities.slice(0, 10)
-    //     }).catch(err => {
-    //         console.log(`Could not get PageRank recommendation`, err);
-    //         return [];
-    //     })
-    //
-    // // returns array of recommended communities in descending rank order
-    res.status(200).json({communities: []})
+    let user = await dao.getUserObject(userId)
+        .then((u) => {
+            return User.fromJSON(u)
+        }).catch(err => {
+            console.log(`Could not find user`, err);
+            res.status(404).json({ msg: `Could not find user` });
+        });
+
+    //retrieving data from DB (from events_collection)
+    let pageRank = await dao.getPageRankCommunities(userId)
+        .then((coms) => {
+            // handle case where user has no communities
+            if (coms.length === 0) {
+                return {};
+            }
+            let communities = coms.map(com => Community.fromJSON(com))
+
+            let network = new CommunityNetwork(communities, userId, user.interests)
+            network.createGraph();
+            network.createAdjacency();
+            let v = network.getDistributionVector(0.5);
+
+            let rank = new PageRank(network.adjacency, v);
+            let result = rank.iterate(network.communityHash);
+
+            // sort community IDs by descending rank
+            return result.mappedResult
+        })
+
+    let levenshtein = await dao.getCommunityTagsForLevenshtein()
+        .then((coms) => {
+            return calculateLevenshteinScore(coms, user.interests)
+        })
+
+        Promise.then(async (idArr) => {
+            if (idArr.length === 0) {
+                return [];
+            }
+            let cursor = dao.getCommunitiesById(idArr)
+            let communities = []
+
+            await cursor.forEach((com) => {
+                let community = Community.fromJSON(com)
+                // keep only the ones that the user isn't already a member of
+                if (!community.users.map(el => el.id).includes(user.id)) {
+                    communities.push(community)
+                }
+            })
+
+            // return at most first 10 results
+            return communities.slice(0, 10)
+        }).catch(err => {
+            console.log(`Could not get PageRank recommendation`, err);
+            return [];
+        })
+
+    // returns array of recommended communities in descending rank order
+    res.status(200).json({communities: communities})
 }
 
 /**
