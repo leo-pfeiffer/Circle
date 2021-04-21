@@ -68,6 +68,7 @@ const makeHeaderVue = function() {
                 })
 
                 this.goToSearch();
+                search.term = ''
             },
             getRecommendations: function () {
                 search.type = 'recommendation'

@@ -37,27 +37,32 @@ let init = function () {
             user_passwords_collection = client.db().collection(user_passwords_data);
 
             console.log("Connected to database @", sanitisedUrl);
+        }).then(async () => {
+
+            // remove existing indexes to avoid duplication
+            return communities_collection.dropIndexes().then(() => {
+                // create index for community search
+                return communities_collection.createIndex(
+                    {
+                        description: "text",
+                        communityName: "text",
+                        tags: "text",
+                    })
+            })
+
         }).then(() => {
 
-           // create index for community search
-            return communities_collection.createIndex(
-                {
-                    description: "text",
-                    communityName: "text",
-                    tags: "text",
-                }
-            )
-
-        }).then(() => {
-
-            // create index for user search
-            return users_collection.createIndex(
-                {
-                    userName: "text",
-                    location: "text",
-                    interests: "text",
-                }
-            )
+            // drop indexes to avoid duplication
+            return users_collection.dropIndexes().then(() => {
+                // create index for user search
+                return users_collection.createIndex(
+                    {
+                        userName: "text",
+                        location: "text",
+                        interests: "text",
+                    }
+                )
+            })
 
         })
         .catch(err => {
