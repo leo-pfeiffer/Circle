@@ -183,6 +183,7 @@ Community = class {
         this.tags = []
         this.description = '';
         this.symbol = "fas fa-users";
+        this.picture = "";
 
         this.addUser(this.admin, true)
     }
@@ -207,6 +208,7 @@ Community = class {
         community.tags = jsn.tags || [];
         community.description = jsn.description || '';
         community.symbol = jsn.symbol || "fas fa-users";
+        community.picture = jsn.picture || "";
         return community;
     }
 

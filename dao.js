@@ -31,12 +31,12 @@ const test_data = [{ userName: "A", userEmail: 'abc@gmail.com' },
 let init = function () {
     return client.connect()
         .then(conn => {
-            //if the collection does not exist it will automatically be created
+            // if the collection does not exist it will automatically be created
             users_collection = client.db().collection(users_data);
             communities_collection = client.db().collection(communities_data);
             user_passwords_collection = client.db().collection(user_passwords_data);
 
-            console.log("Connected!", sanitisedUrl, 'collection name:', users_data);
+            console.log("Connected to database @", sanitisedUrl);
         })
         .catch(err => {
             console.log(`Could not connect to ${sanitisedUrl}`, err);

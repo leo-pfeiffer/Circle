@@ -615,6 +615,9 @@
                                     <div class="text-white">
                                         <h2 class="h3 mb-0 text-white">
                                             <i class="text-white" v-bind:class="communityData.symbol"></i> {{ communityData.communityName }}
+                                        </h2>
+                                        <hr>
+                                        <div class="row mb-0 text-white">
                                             <button class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#new-event-modal"v-show="isMember">
                                                 Event <i class="text-white fas fa-plus"></i>
                                             </button>
@@ -624,8 +627,7 @@
                                             <button class="btn btn-sm btn-primary float-right" v-on:click="join" v-show="!isMember">
                                                 Join <i class="text-white fas fa-sign-in-alt"></i>
                                             </button>
-                                        </h2>
-
+                                        </div>
                                         <hr>
                                         <p>{{ communityData.description }}</p>
                                         <hr>

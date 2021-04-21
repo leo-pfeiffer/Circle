@@ -87,23 +87,36 @@ const makeNewCommunityModalVue = function () {
                 // split tags into list
                 this.newCommunity.tags = this.newCommunity.tags.split(' ').filter(el => el !== "")
 
-                // todo send this.newCommunity data to API
-                let apiResponse = {status: 'success'}
-                if (apiResponse.status === 'success') {
+                fetch('/api/create-community/', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Basic " + client.userKey,
+                    },
+                    body: JSON.stringify({
+                        communityName: this.newCommunity.name,
+                        description: this.newCommunity.description,
+                        tags: this.newCommunity.tags,
+                        picture: this.newCommunity.picture,
+                    })
+                }).then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Failed to create new community.')
+                    }
+                    else {
+                        return res.json()
+                    }
+                }).then((jsn) => {
+                    console.log('Created new community.')
                     this.message = 'Community created. You can now close this popup.'
-                    this.success = true;
-
-                    // reset this message and status after 5 seconds
                     setTimeout(this.resetMessageAndStatus, 5000);
-
                     this.resetNewCommunity();
-                } else {
-                    this.message = 'There was an error. Please check your entries.'
-                    this.success = false;
-
-                    // reset this message and status after 5 seconds
+                }).catch((err) => {
+                    console.log(err)
+                    this.message = 'There was an error. Please check your entries.';
                     setTimeout(this.resetMessageAndStatus, 5000);
-                }
+                })
+
             },
             resetMessageAndStatus: function() {
                 this.message = ''

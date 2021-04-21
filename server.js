@@ -131,28 +131,37 @@ let createUser = function (req, res, next) {
  * @param {Response} res
  * @param {NextFunction} next
  * */
-let createCommunity = (req, res, next) => {
-    let body = req.body;
+let createCommunity = async (req, res, next) => {
+    const communityName = req.body.communityName;
+    const description = req.body.description;
+    const tags = req.body.tags;
+    const picture = req.body.picture;
 
     // deserialize the User object
-    //let admin = User.fromJSON(body.admin)
+    const userId = req.userId
 
-    let userName = body.admin.userName
-    let userEmail = body.admin.userEmail
+    const admin = await dao.getUserObject(userId)
+        .then((u) => {
+            return User.fromJSON(u)
+        }).catch(err => {
+            console.log(`Could not find user`, err);
+            res.status(404).json({ msg: `Could not find user` });
+        });
 
-    //create new instance of the class User
-    let user = new User(userName, userEmail)
     // create a new instance of the class Community
-    let community = new Community(body.communityName, user)
+    const community = new Community(communityName, admin)
+    community.tags = tags;
+    community.picture = picture;
+    community.description = description;
 
     //adding new Community instance to the database
     dao.addCommunity(community)
         .then((id) => {
-            res.status(200).json({ msg: `Added community '${body.communityName}' with ID ${id}` });
+            res.status(200).json({ msg: `Added community '${communityName}' with ID ${id}` });
         })
         .catch(err => {
-            console.log(`Could not add community '${body.communityName}`, err);
-            res.status(400).json({ msg: `Could not add community '${body.communityName}` });
+            console.log(`Could not add community '${communityName}`, err);
+            res.status(400).json({ msg: `Could not add community '${communityName}` });
         });
 }
 
