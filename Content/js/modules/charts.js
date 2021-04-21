@@ -1,4 +1,6 @@
-// ===== Chart stuff ======
+/**
+ * This file contains all functions related to fetching the data  which creates the charts and creating the charts in the profile view and the community view. 
+ * */
 
 import {
     client
@@ -98,29 +100,83 @@ export const makeCommunityChart = function () {
   return createChart('activityDoughnutChart', data)
 }
 
+
+/**
+ * User Stats for graph
+ * @type{Object}
+ * */
+ let userStats = {
+    Comments: 0,
+    Threads: 0,
+  };
+
+/**
+ * Get the comments a user has made
+ * */
+export const getUserComments = function () {
+
+    fetch('/api/get-user-comments/', {
+        method: "GET",
+        headers: {
+            "Authorization": "Basic " + client.userKey,
+            "Content-Type": "application/json"
+        }
+    }).then((res) => {
+        if (!res.ok) {
+            throw new Error('Failed to get number of comments')
+        } else {
+            return res.json();
+        }
+    }).then((jsn) => {
+        console.log(jsn)
+        userStats.Comments = jsn.commentCount;
+        console.log(userStats)
+        return userStats
+    }).catch(err => console.log(err))
+
+    fetch('/api/get-user-threads/', {
+        method: "GET",
+        headers: {
+            "Authorization": "Basic " + client.userKey,
+            "Content-Type": "application/json"
+        }
+    }).then((res) => {
+        if (!res.ok) {
+            throw new Error('Failed to get number of threads')
+        } else {
+            return res.json();
+        }
+    }).then((jsn) => {
+        console.log(jsn)
+        userStats.Threads = jsn.threadCount;
+        console.log(userStats)
+        return userStats
+    }).then(() => {
+        profileBarChart = makeProfileBarChart();
+    }).catch(err => console.log(err))
+}
+
 export const makeProfileBarChart = function () {
   let data = {
       type: 'bar',
       data: {
-          labels: ['Gardening', 'Yoga', 'Cooking'], // todo
+          labels: Object.keys(userStats),
           datasets: [
-              {
-                  label: ' # Comments written',
-                  data: [20, 5, 13], // todo
-                  backgroundColor: ['#e74a3b',],
-              },
-              {
-                  label: ' # Threads opened',
-                  data: [3, 4, 1], // todo
-                  backgroundColor: ['#4e73df',],
-              }
-          ],
+            {
+                data: Object.values(userStats),
+                backgroundColor: [
+                    '#e74a3b',
+                    '#4e73df',
+                ],
+                borderColor: 'rgb(165,165,165)',
+            }
+        ],
       },
       options: {
           plugins: {
               title: {
                   display: true,
-                  text: 'Activities in your top 10 most popular communities',
+                  text: 'Your activities',
                   fontSize: 20,
                   color: 'rgb(255, 255, 255)'
               },
@@ -134,7 +190,7 @@ export const makeProfileBarChart = function () {
           },
           scales: {
               x: {
-                  stacked: true,
+                  //stacked: true,
                   ticks: {
                       color: 'rgb(255, 255, 255)',
                   },
@@ -143,7 +199,7 @@ export const makeProfileBarChart = function () {
                   }
               },
               y: {
-                  stacked: true,
+                 // stacked: true,
                   ticks: {
                       color: 'rgb(255, 255, 255)',
                   },

@@ -484,6 +484,32 @@ const getUserEventsOfCommunity = async function(userId, communityId) {
 };
 
 /**
+ * add tag to user.
+ * @param {string} userId
+ * @param {string} tag
+ * @return {Promise}
+ * */
+ let addTagUser = function (userId, tag) {
+    return users_collection.updateOne(
+        { id: userId},
+        { $push: { interests: tag } }
+    )
+}
+
+/**
+ * remove tag from user.
+ * @param {string} userId
+ * @param {string} tag
+ * @return {Promise}
+ * */
+let removeTagUser = function (userId, tag) {
+    return users_collection.updateOne(
+        { id: userId },
+        { $pull: { interests: tag } }
+    )
+}
+
+/**
  * Returns total number of comments posted by a user.
  * @param {string} userId
  * @return {Promise}
@@ -664,26 +690,24 @@ let getUserObjectByName = function (userName) {
     return users_collection.find({ "userName" :  userName}).toArray()
 };
 
-// Commented out because server side is missing
-// /**
-//  * Update user information from profile view. 
-//  * @param {string} userName
-//  * @return {Promise}
-//  * */
-//  let updateUserInfo = function (userId) {
-//     return users_collection.update(
-//         { "user.id": userId },
-//         { $set: 
-//             { 
-//                 "users.$.userEmail": newEmail,
-//                 "users.$.age": newAge,
-//                 "users.$.location": newLocation, 
-//                 "users.$.status": newStatus,
-//                 "users.$.picture": newPicture,
-//             }
-//         }
-//     )
-// };
+/**
+ * Update user information from profile view. 
+ * @param {string} userName
+ * @return {Promise}
+ * */
+ let updateUserInfo = function (userId, newEmail, newAge, newLocation, newStatus) {
+    return users_collection.updateOne(
+        { "user.id": userId },
+        { $set: 
+            { 
+                "userEmail": newEmail,
+                "age": newAge,
+                "user.$.location": newLocation, 
+                "user.$.status": newStatus,
+            }
+        }
+    )
+};
 
 /** Register a new user
 * @param {string} userName
@@ -771,5 +795,7 @@ module.exports = {
     addTag: addTag,
     removeTag: removeTag,
     getCommunityTagsForLevenshtein: getCommunityTagsForLevenshtein,
-    //updateUserInfo: updateUserInfo,
+    addTagUser: addTagUser,
+    removeTagUser: removeTagUser,
+    updateUserInfo: updateUserInfo,
 };

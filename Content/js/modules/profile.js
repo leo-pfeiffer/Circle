@@ -4,7 +4,8 @@
 
  import {
     client, 
-    setState
+    setState,
+    goToProfile
 } from './clientUtils.js'
 
 
@@ -16,42 +17,78 @@
                  return client.state;
             },
             isOwnProfile() {
-                 // todo proabbly change this to ID instead of username but for that we need to add API connection first
-                 return this.id === client.userData.id
+                 return this.userData.userName === client.userData.userName
             },
             userData() {
                 return client.userData
             }
         },
         data: {    
-            id: client.userData.id,
-            name: client.userData.name, 
+            id: '',
+            userName: '', 
             age: '',
             email: '',
             location: '',
-            picture: client.userData.picture, 
+            picture: '', 
             status: '', 
-            tags: [],
+            interests: [],
             newTag: ''
         },
         methods: {
             addTag: function() {
-                // todo connect to API
-                if (this.tags.includes(this.newTag)) {
+                if (this.userData.interests.includes(this.newTag)) {
                     console.log("new tag already in tags.")
                     return;
                 }
                 if ((this.newTag.length <= 20) && (this.newTag.length > 0)) {
-                    this.tags.push(this.newTag)
-                    this.newTag = '';
+                    fetch('/api/add-tag-user/', {
+                        method: "POST",
+                        headers: {
+                            "Authorization": "Basic " + client.userKey,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            userId: this.userData.id,
+                            tag: this.newTag
+                        })
+                    }).then((res) => {
+                        if (!res.ok) {
+                            throw new Error('Failed to add tag')
+                        } else {
+                            return res.json()
+                        }
+                    }).then((jsn) => {
+                        // trigger reload of the current user data
+                        goToProfile(this.userData.id)
+                        this.newTag = '';
+                    }).catch(err => console.log(err))
                 }
                 else {
                     console.log("tag requires length 1 <= x <= 20.")
                }
             },
             removeTag: function(tag) {
-            // todo connect to API
-            this.tags.splice(this.tags.indexOf(tag), 1)
+                fetch('/api/remove-tag-user/', {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Basic " + client.userKey,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        userId: this.userData.id,
+                        tag: tag
+                    })
+                }).then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Failed to remove tag')
+                    } else {
+                        return res.json()
+                    }
+                }).then((jsn) => {
+                    // trigger reload of the current community data
+                    goToProfile(this.userData.id)
+                    this.newTag = '';
+                }).catch(err => console.log(err))
             }
         }
      })
@@ -204,6 +241,9 @@ const makeProfilePictureUploadVue = function() {
             state() {
                 return client.state;
             },
+            userData() {
+                return client.userData
+            }
        },
        methods: {
             saveUploadedPicture: function(event) {
@@ -245,12 +285,42 @@ const makeUpdateProfileInfoVue = function() {
             isOwnProfile() {
                 // todo probably change this to ID instead of username but for that we need to add API connection first
                 return this.id === client.userData.id
-           }
+            },
+           userData() {
+            return client.userData
+            }
        },
        methods: {
-            updateInfo: function(event) {
-                // Todo post to DB; fetch and display updated info
-                console.log("Info updated")
+            updateInfo: function() {
+                console.log("about to fetch")
+                fetch('/api/update-user-info/', {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Basic " + client.userKey,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        userId: this.userData.id,
+                        newEmail: this.newEmail,
+                        newAge: this.newAge,
+                        newLocation: this.newLocation, 
+                        newStatus: this.newStatus
+                    })
+                }).then((res) => {
+                    console.log("Should have sent updated info", this.newEmail,this.newAge, this.newLocation, this.newStatus)
+                    if (!res.ok) {
+                        throw new Error('Failed to add tag')
+                    } else {
+                        return res.json()
+                    }
+                }).then((jsn) => {
+                    // trigger reload of the current user data
+                    goToProfile(this.userData.id)
+                    this.newEmail = '';
+                    this.newAge = '';
+                    this.newLocation = '';
+                    this.newStatus = '';
+                }).catch(err => console.log(err))
             }
        },
     })

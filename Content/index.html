@@ -407,21 +407,21 @@
                                         </button>
                                         <div class="row">
                                                 <img v-bind:src="picture" class="large-user-img"/>
-                                                <h2 class="text-info">{{name}}</h2>
+                                                <h2 class="text-info">{{userData.userName}}</h2>
                                         </div>
                                     
                                         <hr>
                                         <button class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#profile-info-modal">
                                             Update info <i class="text-white fas fa-edit"></i>
                                         </button>
-                                        <p>Email: {{email}} </p>
-                                        <p>Age: {{age}}</p>
-                                        <p>Location: {{location}}</p>
-                                        <p>Status: {{status}}</p>
+                                        <p>Email: {{userData.userEmail}} </p>
+                                        <p>Age: {{userData.age}}</p>
+                                        <p>Location: {{userData.location}}</p>
+                                        <p>Status: {{userData.status}}</p>
                                         <h5>My tags:</h5>
                                         <div class="custom-tag-container">
                                             <!-- display existing tags -->
-                                            <span class="custom-tag" v-for="tag in tags" v-bind:class="[ isOwnProfile ? 'editable' : '']">
+                                            <span class="custom-tag" v-for="tag in userData.interests" v-bind:class="[ isOwnProfile ? 'editable' : '']">
                                                 <button class="btn btn-info btn-circle btn-sm font-weight-bolder" v-on:click="removeTag(tag)" v-show="isOwnProfile">&times;</button> {{ tag }}
                                             </span>
                                             <!-- add tags -->
