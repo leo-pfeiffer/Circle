@@ -181,7 +181,7 @@ export const makeProfileBarChart = function () {
                   color: 'rgb(255, 255, 255)'
               },
               legend: {
-                  display: true,
+                  display: false,
                   labels: {
                       color: 'rgb(255, 255, 255)',
                       borderColor: 'rgb(165,165,165)',
