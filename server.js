@@ -13,6 +13,7 @@ const app = express();
 
 const http = require('http');
 const auth = require('basic-auth');
+const {normaliseNHighestRanks} = require("./serverUtils");
 const {calculateLevenshteinScore} = require("./levenshtein");
 const server = http.createServer(app);
 const io = require('socket.io')(server);
@@ -813,34 +814,50 @@ let getRecommendation = async function (req, res, next) {
             // sort community IDs by descending rank
             return result.mappedResult
         })
+        .then(scores => normaliseNHighestRanks(scores, 5))
 
-    let levenshtein = await dao.getCommunityTagsForLevenshtein()
-        .then((coms) => calculateLevenshteinScore(coms, user.interests))
-        // .then(async (idArr) => {
-        //     if (idArr.length === 0) {
-        //         return [];
-        //     }
-        //     let cursor = dao.getCommunitiesById(idArr)
-        //     let communities = []
-        //
-        //     await cursor.forEach((com) => {
-        //         let community = Community.fromJSON(com)
-        //         // keep only the ones that the user isn't already a member of
-        //         if (!community.users.map(el => el.id).includes(user.id)) {
-        //             communities.push(community)
-        //         }
-        //     })
-        //
-        //     // return at most first 10 results
-        //     return communities.slice(0, 10)
-        // }).catch(err => {
-        //     console.log(`Could not get PageRank recommendation`, err);
-        //     return [];
-        // })
+    let levenshtein = await dao.getCommunityTagsForLevenshtein(userId)
+        .then(coms => calculateLevenshteinScore(coms, user.interests))
+        .then(scores => normaliseNHighestRanks(scores, 5))
+
+    // combine Levenshtein and PageRank results by giving each a 50% weight
+    let combinedScores = {}
+
+    Object.entries(levenshtein).forEach(arr => {
+        combinedScores[arr[0]] = 0.5 * arr[1]
+    })
+
+    Object.entries(pageRank).forEach(arr => {
+        if (combinedScores.hasOwnProperty(arr[0])) {
+            combinedScores[arr[0]] += 0.5 * arr[1]
+        } else {
+            combinedScores[arr[0]] = 0.5 * arr[1]
+        }
+    })
+
+    // array of community IDs sorted in descending order of rank
+    let idArr = Object.entries(combinedScores)
+        .sort((a, b) => b[1] - a[1], 0)
+        .map(arr => arr[0])
+
+    let cursor = await dao.getCommunitiesById(idArr)
+
+    // community Objects to return
+    let communities = []
+    await cursor.forEach(com => {
+        let community = Community.fromJSON(com)
+
+        // keep only the ones that the user isn't already a member of
+        if (!community.users.map(el => el.id).includes(user.id)) {
+            communities.push(community)
+        }
+    })
+
+    // return at most best 5 results
+    communities = communities.slice(0, 5)
 
     // returns array of recommended communities in descending rank order
-    // res.status(200).json({communities: communities})
-    res.status(200).json({communities: []})
+    res.status(200).json({communities: communities})
 }
 
 /**
@@ -907,7 +924,12 @@ const register = async (req, res) => {
     } else {
         dao.registerNewUserPassword(username, password).then((res) => {
             console.log(res)
-            return new User(username, email)
+            let newUser = new User(username, email)
+            newUser.gender = gender;
+            newUser.age = age;
+            newUser.location = location;
+            newUser.picture = picture;
+            return newUser
         }).then(async (user) => {
             let addedUserIds = await dao.addUser(user)
             console.log(addedUserIds)
