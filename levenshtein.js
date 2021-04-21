@@ -7,11 +7,10 @@
  * A community is recommended to the user if the Levenshtein distance is smaller or equal to 3. 
  * */
 
-
 // dummy data
-userInterests = ["swimming", "Gardening", "OutDoor", "watersport"];
+let userInterests = ["swimming", "Gardening", "OutDoor", "watersport"];
 
-allCommunitiesTags = [	
+let allCommunitiesTags = [
   { id: 1, name: "Swimming London", tags: ["Swimclub", "Swimming", "water"]},
 	{ id: 2, name: "Hiking", tags: ["outdoors", "Nature"]},
   { id: 3, name: "Healthy Cooking", tags: ["healthy", "Food", "Cooking"]}
@@ -19,8 +18,11 @@ allCommunitiesTags = [
 
 /**
  * Levenshtein distance code inspired by https://www.tutorialspoint.com/levenshtein-distance-in-javascript
+ * @param {Array<Object>} allCommunitiesTags
+ * @param {Array<string>} userInterests
+ * @return {Object<string, Number>}
  */
-const calculateLevenshteinScore = function(allCommunitiesTags, userInterests) {
+export const calculateLevenshteinScore = function(allCommunitiesTags, userInterests) {
 
   let userInterest;
   let communityTag;
@@ -40,7 +42,7 @@ const calculateLevenshteinScore = function(allCommunitiesTags, userInterests) {
           track[j][i] = Math.min(
               track[j][i - 1] + 1,
               track[j - 1][i] + 1,
-              track[j - 1][i - 1] + indicator, 
+              track[j - 1][i - 1] + indicator,
           );
         }
     }
@@ -58,7 +60,7 @@ const calculateLevenshteinScore = function(allCommunitiesTags, userInterests) {
     // for every community tag
     var scores = new Array();
     for (tag of allCommunitiesTags[i].tags) {
-      communityTag = tag.toLowerCase();  
+      communityTag = tag.toLowerCase();
       // find Levenshtein Distance with each user interest tag
       for (interest of userInterests) {
         userInterest = interest.toLowerCase();
@@ -73,12 +75,3 @@ const calculateLevenshteinScore = function(allCommunitiesTags, userInterests) {
   }
   console.log(levenshteinScores)
 }
-
-calculateLevenshteinScore(allCommunitiesTags, userInterests);
-
-/**
- * Export the Levenshtein score function.
- * @type {Function}
- * */
-
-export const LevenshteinScores = calculateLevenshteinScore(allCommunitiesTags, userInterests);
