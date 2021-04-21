@@ -2,8 +2,11 @@
  * This file contains the vue components of the user profile.
  * */
 
- import {client, setState, createChart} from './clientUtils.js'
-//  import {client, createChart} from './clientUtils.js'
+ import {
+    client, 
+    setState,
+    createChart,
+} from './clientUtils.js'
 
  const makeProfileInfoVue = function() {
      const profileInfoVue = new Vue({
@@ -14,21 +17,21 @@
             },
             isOwnProfile() {
                  // todo proabbly change this to ID instead of username but for that we need to add API connection first
-                 return this.name === client.userData.username
+                 return this.id === client.userData.id
             },
             userData() {
                 return client.userData
             }
         },
         data: {    
-            id: "123456789",
-            name: "Lena123", 
-            age: "25",
-            email: "lena1@23.com",
-            location: "London",
-            picture: 'https://randomuser.me/api/portraits/women/8.jpg', 
-            status: "To plant a garden is to believe in tomorrow", 
-            tags: ["swimming", "plants", "gardening", "veggie"],
+            id: client.userData.id,
+            name: client.userData.name, 
+            age: '',
+            email: '',
+            location: '',
+            picture: client.userData.picture, 
+            status: '', 
+            tags: [],
             newTag: ''
         },
         methods: {
@@ -230,10 +233,10 @@ const makeUpdateProfileInfoVue = function() {
     const profileInfoVue = new Vue({
        el: '#profile-info-modal',
        data: {
-            // newEmail: email,
-            // newAge: age,
-            // newLocation: location,
-            // newStatus: status, 
+            newEmail: '',
+            newAge: '',
+            newLocation: '',
+            newStatus: '', 
        },
        computed: {
             state() {
@@ -241,7 +244,7 @@ const makeUpdateProfileInfoVue = function() {
             },
             isOwnProfile() {
                 // todo probably change this to ID instead of username but for that we need to add API connection first
-                return this.name === client.userData.username
+                return this.id === client.userData.id
            }
        },
        methods: {
