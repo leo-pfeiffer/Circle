@@ -38,38 +38,36 @@ let init = function () {
 
             console.log("Connected to database @", sanitisedUrl);
 
-        }).then(async () => {
-            // create indexes to allow search: https://docs.mongodb.com/manual/text-search/
-            // remove existing indexes to avoid duplication
-            return communities_collection.dropIndexes().then(() => {
-                // create index for community search
-                return communities_collection.createIndex(
-                    {
-                        description: "text",
-                        communityName: "text",
-                        tags: "text",
-                    })
-            })
-
-        }).then(() => {
-
-            // drop indexes to avoid duplication
-            return users_collection.dropIndexes().then(() => {
-                // create index for user search
-                return users_collection.createIndex(
-                    {
-                        userName: "text",
-                        location: "text",
-                        interests: "text",
-                    }
-                )
-            })
-
         })
+        .then(() => createUserIndex())
+        .then(() => createCommunityIndex())
         .catch(err => {
             console.log(`Could not connect to ${sanitisedUrl}`, err);
             throw err;
         })
+}
+
+const createCommunityIndex = function() {
+    // create indexes to allow search: https://docs.mongodb.com/manual/text-search/
+    return communities_collection.createIndex(
+        {
+            description: "text",
+            communityName: "text",
+            tags: "text",
+        })
+        .then((result) => console.log('created index', result))
+        .catch(err => console.log('failed to create index', err))
+}
+
+const createUserIndex = function() {
+    return users_collection.createIndex(
+        {
+            userName: "text",
+            location: "text",
+            interests: "text",
+        })
+        .then((result) => console.log('created index', result))
+        .catch(err => console.log('failed to create index', err))
 }
 
 /**
@@ -732,28 +730,10 @@ let authenticateUser = async function(username, password) {
  * Drop all data collections.
  * WARNING: This cannot be undone!
  * */
-const dropCollections = function() {
-    let collections = [
-        users_data,
-        communities_data,
-        threads_data,
-        comments_data,
-        events_data,
-        user_passwords_data,
-        'test_collection',
-        'collection'
-    ]
-
-    // drop the collections if they exist
-    return collections.forEach((col) => {
-        client.db().listCollections({name: col})
-            .next((err, collectionInfo) => {
-                if (collectionInfo) {
-                    console.log(col)
-                    client.db().collection(col).drop()
-                }
-            });
-    })
+const dropCollections = async function() {
+    await users_collection.drop().catch(err => console.log(err))
+    await communities_collection.drop().catch(err => console.log(err))
+    await user_passwords_collection.drop().catch(err => console.log(err))
 }
 
 //exporting modules
@@ -798,4 +778,7 @@ module.exports = {
     addTagUser: addTagUser,
     removeTagUser: removeTagUser,
     updateUserInfo: updateUserInfo,
+    createUserIndex: createUserIndex,
+    createCommunityIndex: createCommunityIndex
+    //updateUserInfo: updateUserInfo,
 };

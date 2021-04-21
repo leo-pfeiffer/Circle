@@ -35,7 +35,7 @@ export const client = Vue.observable({
     },
     profileData: {
         id: '',
-        name: '',
+        userName: '',
     }
 })
 
@@ -414,7 +414,7 @@ const getUser = function (userId) {
             return res.json();
         }
     }).then((jsn) => {
-        client.userData = jsn;
+        client.profileData = jsn;
         console.log('getUser', jsn.id)
     }).catch(err => console.log(err))
 }
@@ -428,7 +428,7 @@ export const goToProfile = function (userId) {
     getUser(userId)
     getUserComments()
     // go to profile with of `userId`
-    client.userData.id = userId
+    client.profileData.id = userId
     setState('profile')
 }
 

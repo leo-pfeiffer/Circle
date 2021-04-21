@@ -53,7 +53,6 @@ const makeHeaderVue = function() {
                 // don't do anything if no search term was entered
                 if (search.term === '') return;
                 search.type = 'search'
-                console.log('searching')
 
                 fetch("/api/get-search-results/", {
                     method: "POST",
@@ -72,8 +71,6 @@ const makeHeaderVue = function() {
                 }).then((jsn) => {
                     search.communityResults = jsn.communityResults
                     search.userResults = jsn.userResults
-                    console.log(search.communityResults)
-                    console.log(search.userResults)
                 }).catch((err) => {
                     console.log(err)
                 })
@@ -96,7 +93,6 @@ const makeHeaderVue = function() {
                         return res.json()
                     }
                 }).then((jsn) => {
-                    console.log(jsn)
                     search.communityResults = jsn.communities || []
                     this.goToSearch();
                 }).catch((err) => {
@@ -204,17 +200,6 @@ const makeNewCommunityModalVue = function () {
 const makeSidenavVue = function() {
     const sidenavVue = new Vue({
         el: "#sidenav",
-        data: {
-            // communities: [
-            //     {name: 'Tennis', lastActive: new Date(2021, 1, 1), admin: 'test', id: '123'},
-            //     {name: 'Gardening', lastActive: new Date(2020, 1, 1), admin: 'test', id: '436'},
-            //     {name: 'Painting', lastActive: new Date(2019, 1, 1), admin: 'eliza', id: '343'},
-            //     {name: 'Cooking', lastActive: new Date(2018, 1, 1), admin: 'maurice', id: '444'},
-            //     {name: 'Dog breeding', lastActive: new Date(2017, 1, 1), admin: 'natalie', id: '555'},
-            //     {name: 'Frogs', lastActive: new Date(2016, 1, 1), admin: 'oscar', id: '666'},
-            //     {name: 'Haute horlogerie', lastActive: new Date(2015, 1, 1), admin: 'test', id: '777'},
-            // ]
-        },
         computed: {
             state() {
                 return client.state;
@@ -235,7 +220,6 @@ const makeSidenavVue = function() {
                 goToProfile(client.userData.id)
             },
             goToCommunity: function(communityId) {
-                console.log(communityId,"community")
                 goToCommunity(communityId)
             },
             goToCalendar: function() {
@@ -244,15 +228,6 @@ const makeSidenavVue = function() {
             goToDashboard: function() {
                 setState('dashboard');
             },
-            /**
-             * Get owned communities with only the relevant information (name, id)
-             * */
-            // getOwnedCommunitiesToDisplay: function() {
-            //     return this.communities.filter(el => el.admin === client.username)
-            //         .map(el => {
-            //             return {name: el.name, id: el.id}
-            //         })
-            // },
         }
     })
 }

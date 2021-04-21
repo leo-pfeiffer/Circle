@@ -3,8 +3,8 @@
  * */
 
 import {
-    client,
-    goToCommunity,
+    client, eventData,
+    goToCommunity, goToProfile,
     isDateMatch,
     mostRecentActivities,
     mostRecentCommunities,
@@ -108,7 +108,12 @@ const makeCalendarPreviewVue = function () {
             timeOfDayFormatter: function (datetime) {
                 return timeOfDayFormatter(datetime)
             },
-
+            setSelectedEvent: function(event) {
+                eventData.event = event
+            },
+            goToProfile: function (userId) {
+                goToProfile(userId)
+            },
         }
     })
 }

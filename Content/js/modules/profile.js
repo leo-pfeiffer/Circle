@@ -18,9 +18,13 @@
             },
             isOwnProfile() {
                  return this.userData.userName === client.userData.userName
+                 //return client.profileData.id === client.userData.id
+            },
+            profileData() {
+                return client.profileData;
             },
             userData() {
-                return client.userData
+                return client.userData;
             }
         },
         data: {    
@@ -32,6 +36,13 @@
             picture: '', 
             status: '', 
             interests: [],
+            // id: client.userData.id,
+            // name: client.userData.name, 
+            // age: client.userData.age,
+            // email: client.userData.email,
+            // location: client.userData.location,
+            // picture: client.userData.picture, 
+            // tags: client.userData.tags,
             newTag: ''
         },
         methods: {
