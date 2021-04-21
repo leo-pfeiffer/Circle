@@ -2,12 +2,14 @@
  * Run this file to create test data.
  * */
 const dao = require('./dao');
-const {makeGeneralTestData} = require("./testData");
-const {makePageRankDemoData} = require("./testData");
+const {makeGeneralTestData, makePageRankDemoData, makeStarterData} = require("./testData");
 const { User, Community, Thread, Comment, Event } = require('./models')
 
 let pageRankDemoData = makePageRankDemoData();
 let demoData = makeGeneralTestData();
+let starterData = makeStarterData();
+
+// todo insert only starter data
 
 let userId = demoData.adrian.id
 let communityId = "c50fc1fb-55c3-4f09-8774-59150286bfb4";
