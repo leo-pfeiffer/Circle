@@ -907,7 +907,12 @@ const register = async (req, res) => {
     } else {
         dao.registerNewUserPassword(username, password).then((res) => {
             console.log(res)
-            return new User(username, email)
+            let newUser = new User(username, email)
+            newUser.gender = gender;
+            newUser.age = age;
+            newUser.location = location;
+            newUser.picture = picture;
+            return newUser
         }).then(async (user) => {
             let addedUserIds = await dao.addUser(user)
             console.log(addedUserIds)
