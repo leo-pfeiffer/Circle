@@ -276,9 +276,6 @@ const makeViewEventVue = function () {
                     console.log('event removed')
                 }).catch((err) => console.log(err))
             },
-            getMap: function () {
-                makeMap()
-            }
         }
     })
 }
