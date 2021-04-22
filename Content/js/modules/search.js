@@ -1,9 +1,12 @@
-import {client, goToCommunity, goToProfile, search, setState} from "./clientUtils.js";
-
 /**
  * This file contains the vue components of the search results.
  * */
-const makeSearchResultVue = function() {
+import { client, goToCommunity, goToProfile, search, setState } from "./clientUtils.js";
+
+/**
+ * This function contains functionality to handle the search componenet.  
+ * */
+const makeSearchResultVue = function () {
     const searchResultVue = new Vue({
         el: "#search-results",
         computed: {
