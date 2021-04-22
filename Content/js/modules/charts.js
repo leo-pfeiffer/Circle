@@ -7,7 +7,9 @@ import {
 } from "./clientUtils.js";
 
 /**
-* Create a chart 
+* Create a chart.js chart.
+ * @param {string} chartId
+ * @param{Object} chartData
 * */
 const createChart = function (chartId, chartData) {
   const ctx = document.getElementById(chartId);
@@ -29,7 +31,8 @@ const createChart = function (chartId, chartData) {
   };
 
 /**
- * Get the stats for a specific community
+ * Get the stats for a specific community.
+ * @param {string} communityId
  * */
 export const getCommunityStats = function (communityId) {
 
@@ -49,15 +52,20 @@ export const getCommunityStats = function (communityId) {
             return res.json();
         }
     }).then((jsn) => {
+        // parse the data
         communityStats.Comments = jsn.numComments ? jsn.numComments.commentCount : 0;
         communityStats.Events = jsn.numEvents ? jsn.numEvents.eventCount : 0;
         communityStats.Threads = jsn.numThreads ? jsn.numThreads.threadCount : 0;
         return communityStats
     }).then(() => {
+        // create the chart
         communityChart = makeCommunityChart();
     }).catch(err => console.log(err))
 }
 
+/**
+ * Wrapper method around createChart to create the community chart.
+ * */
 export const makeCommunityChart = function () {
   let data = {
       type: 'doughnut',
@@ -93,6 +101,7 @@ export const makeCommunityChart = function () {
       }
   }
 
+  // make sure the old chart is destroyed first
   if (communityChart) {
       communityChart.destroy()
   }
@@ -111,16 +120,20 @@ export const makeCommunityChart = function () {
   };
 
 /**
- * Get the comments a user has made
+ * Get the comments a user has made.
  * */
 export const getUserComments = function () {
 
+    // Collect the number of comments per community initiated by the current profile user
     fetch('/api/get-user-comments/', {
-        method: "GET",
+        method: "POST",
         headers: {
             "Authorization": "Basic " + client.userKey,
             "Content-Type": "application/json"
-        }
+        },
+        body: JSON.stringify({
+            userId: client.profileData.id,
+        })
     }).then((res) => {
         if (!res.ok) {
             throw new Error('Failed to get number of comments')
@@ -129,17 +142,25 @@ export const getUserComments = function () {
         }
     }).then((jsn) => {
         console.log(jsn)
-        userStats.Comments = jsn.commentCount;
+        userStats.Comments = jsn;
         console.log(userStats)
         return userStats
+    }).then(() => {
+        // create the chart
+        profileCommentBarChart = makeProfileCommentBarChart();
     }).catch(err => console.log(err))
 
+
+    // Collect the number of threads per community initiated by the current profile user
     fetch('/api/get-user-threads/', {
-        method: "GET",
+        method: "POST",
         headers: {
             "Authorization": "Basic " + client.userKey,
             "Content-Type": "application/json"
-        }
+        },
+        body: JSON.stringify({
+            userId: client.profileData.id,
+        })
     }).then((res) => {
         if (!res.ok) {
             throw new Error('Failed to get number of threads')
@@ -148,26 +169,27 @@ export const getUserComments = function () {
         }
     }).then((jsn) => {
         console.log(jsn)
-        userStats.Threads = jsn.threadCount;
+        userStats.Threads = jsn;
         console.log(userStats)
         return userStats
     }).then(() => {
-        profileBarChart = makeProfileBarChart();
+        // create the chart
+        profileThreadBarChart = makeProfileThreadBarChart();
     }).catch(err => console.log(err))
 }
 
-export const makeProfileBarChart = function () {
+/**
+ * Wrapper method around createChart to create the comment bar chart on the profile.
+ * */
+export const makeProfileCommentBarChart = function () {
   let data = {
       type: 'bar',
       data: {
-          labels: Object.keys(userStats),
+          labels: userStats.Comments.map(el => el.communityName),
           datasets: [
             {
-                data: Object.values(userStats),
-                backgroundColor: [
-                    '#e74a3b',
-                    '#4e73df',
-                ],
+                data: userStats.Comments.map(el => el.commentCount),
+                backgroundColor: ['#17a2b8'],
                 borderColor: 'rgb(165,165,165)',
             }
         ],
@@ -176,7 +198,7 @@ export const makeProfileBarChart = function () {
           plugins: {
               title: {
                   display: true,
-                  text: 'Your activities',
+                  text: 'Comments written by you',
                   fontSize: 20,
                   color: 'rgb(255, 255, 255)'
               },
@@ -211,85 +233,80 @@ export const makeProfileBarChart = function () {
       }
   }
 
-  if (profileBarChart) {
-      profileBarChart.destroy()
+  if (profileCommentBarChart) {
+      profileCommentBarChart.destroy()
   }
 
   return createChart('commentBarChart', data)
 }
 
-export const makeProfileLineChart = function () {
-  let data = {
-      type: 'line',
-      data: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // todo
-          datasets: [
-              {
-                  label: ' # Comments written',
-                  data: [20, 9, 13, 6, 3],  // todo
-                  backgroundColor: [
-                      '#e74a3b',
-                  ],
-                  borderColor: 'rgb(165,165,165)',
-              },
-              {
-                  label: ' # Threads opened',
-                  data: [3, 4, 1, 2, 1],  // todo
-                  backgroundColor: [
-                      '#4e73df',
-                  ],
-                  borderColor: 'rgb(165,165,165)',
-              }
-          ],
-      },
-      options: {
-          plugins: {
-              title: {
-                  display: true,
-                  text: 'Total activities over time',
-                  fontSize: 20,
-                  color: 'rgb(255, 255, 255)'
-              },
-              legend: {
-                  display: true,
-                  labels: {
-                      color: 'rgb(255, 255, 255)'
-                  }
-              }
-          },
-          scales: {
-              x: {
-                  stacked: true,
-                  ticks: {
-                      color: 'rgb(255, 255, 255)',
-                  },
-                  grid: {
-                      color: 'rgb(165,165,165)',
-                  }
-              },
-              y: {
-                  stacked: true,
-                  ticks: {
-                      color: 'rgb(255, 255, 255)',
-                  },
-                  grid: {
-                      color: 'rgb(165,165,165)',
-                  }
-              }
-          }
-      }
-  }
+/**
+ * Wrapper method around createChart to create the thread bar chart on the profile.
+ * */
+export const makeProfileThreadBarChart = function () {
+    let data = {
+        type: 'bar',
+        data: {
+            labels: userStats.Threads.map(el => el.communityName),
+            datasets: [
+                {
+                    data: userStats.Threads.map(el => el.threadCount),
+                    backgroundColor: ['#17a2b8'],
+                    borderColor: 'rgb(165,165,165)',
+                }
+            ],
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Threads started by you',
+                    fontSize: 20,
+                    color: 'rgb(255, 255, 255)'
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        color: 'rgb(255, 255, 255)',
+                        borderColor: 'rgb(165,165,165)',
+                    },
+                }
+            },
+            scales: {
+                x: {
+                    //stacked: true,
+                    ticks: {
+                        color: 'rgb(255, 255, 255)',
+                    },
+                    grid: {
+                        color: 'rgb(165,165,165)',
+                    }
+                },
+                y: {
+                    // stacked: true,
+                    ticks: {
+                        color: 'rgb(255, 255, 255)',
+                    },
+                    grid: {
+                        color: 'rgb(165,165,165)',
+                    }
+                }
+            }
+        }
+    }
 
-  if (profileLineChart) {
-      profileLineChart.destroy()
-  }
+    // destroy the previous chart
+    if (profileThreadBarChart) {
+        profileThreadBarChart.destroy()
+    }
 
-  return createChart('activityLineChart', data)
+    return createChart('threadBarChart', data)
 }
 
-// initialise the community chart
+
+// initialise the charts
 let communityChart;
-let profileBarChart;
-let profileLineChart;
+let profileCommentBarChart;
+let profileThreadBarChart;
 
 
