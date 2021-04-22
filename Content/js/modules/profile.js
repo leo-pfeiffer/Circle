@@ -141,8 +141,28 @@ const makeProfilePictureUploadVue = function() {
                 reader.readAsDataURL(imgFile);
             }, 
             uploadPicture: function() {
-                // todo connect to db
-                console.log("New picture uploaded")
+                fetch('/api/update-user-profile-picture/', {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Basic " + client.userKey,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        userId: this.userData.id,
+                        newPicture: this.newPicture, 
+                    })
+                }).then((res) => {
+                    console.log("Should have sent picture", this.newPicture)
+                    if (!res.ok) {
+                        throw new Error('Failed to send picture')
+                    } else {
+                        return res.json()
+                    }
+                }).then((jsn) => {
+                    // trigger reload of the current user data
+                    goToProfile(this.userData.id)
+                    this.newPicture = '';
+                }).catch(err => console.log(err))
             }
        },
     })
@@ -192,9 +212,8 @@ const makeUpdateProfileInfoVue = function() {
                         newLocation: this.newLocation, 
                     })
                 }).then((res) => {
-                    console.log("Should have sent updated info", this.newEmail,this.newAge, this.newLocation)
                     if (!res.ok) {
-                        throw new Error('Failed to add tag')
+                        throw new Error('Failed to add updated info')
                     } else {
                         return res.json()
                     }

@@ -613,6 +613,20 @@ let updateUserInfo = async (req, res, next) => {
         });
 }
 
+// upload user profile picture from modal on profile
+let updateUserProfilePicture = async (req, res, next) => {
+    let body = req.body;
+    let newPicture = body.newPicture;
+    let userId = body.userId;
+
+    // adding the new picture to the users_collection
+    dao.updateUserProfilePicture(userId, newPicture)
+        .then(() => res.status(200).json({ msg: `Updated user picture for ${userId}` }))
+        .catch(err => {
+            console.log(`Could not update picture`, err);
+            res.status(400).json({ msg: `Could not update picture` });
+        });
+}
 
 /**
  * Handler function to GET the total number of comments a user has made. 
@@ -1068,6 +1082,7 @@ app.get('/api/get-user-threads/', authenticate, getNumberThreads);
 app.post('/api/add-tag-user/', authenticate, addTagUser);
 app.post('/api/remove-tag-user/', authenticate, removeTagUser);
 app.post('/api/update-user-info/', authenticate, updateUserInfo);
+app.post('/api/update-user-profile-picture/', authenticate, updateUserProfilePicture);
 
 app.post('/api/get-community-stats/', authenticate, getCommunityStats);
 
