@@ -44,6 +44,9 @@ const makeNewEventModalVue = function() {
             }
         },
         methods: {
+            /**
+             * Creates a new event in the community calendar.
+             */
             createEvent() {
                 if (!(this.title && this.description && this.datetime)) {
                     this.message = "Please enter at least a title, description and time."
@@ -127,9 +130,17 @@ const makeCommunityCalendarVue = function() {
             timeOfDayFormatter: function(datetime) {
                 return timeOfDayFormatter(new Date(datetime))
             },
+            /**
+             * TODO
+             * @param {string} event 
+             */
             setSelectedEvent: function(event) {
                 eventData.event = event
             },
+            /**
+             * Go to the profile with ID `userId`
+             * @param {string} userId 
+             */
             goToProfile: function (userId) {
                 goToProfile(userId)
             },
@@ -158,15 +169,15 @@ const makeCommunityInfoVue = function() {
             },
         },
         methods: {
+            /**
+             * Adds a new tag to the community.
+             */
             addTag: function() {
-
-                // todo connect to API
                 if (this.communityData.tags.includes(this.newTag)) {
-                    console.log("new tag already in tags.")
+                    //console.log("New tag already in tags.")
                     this.newTag = '';
                     return;
                 }
-
                 if ((this.newTag.length <= 20) && (this.newTag.length > 0)) {
 
                     fetch('/api/add-tag/', {
@@ -192,10 +203,14 @@ const makeCommunityInfoVue = function() {
                     }).catch(err => console.log(err))
                 }
                 else {
-                    console.log("tag requires length 1 <= x <= 20.")
+                    //console.log("Tag requires length 1 <= x <= 20.")
                     this.newTag = '';
                 }
             },
+            /**
+             * Removes tag from community.
+             * @param {string} tag 
+             */
             removeTag: function(tag) {
                 fetch('/api/remove-tag/', {
                     method: "POST",
@@ -220,6 +235,10 @@ const makeCommunityInfoVue = function() {
                 }).catch(err => console.log(err))
 
             },
+            /**
+             * Go to the profile with ID `userId`
+             * @param {string} userId 
+             */
             goToProfile: function(userId) {
                 goToProfile(userId)
             },
@@ -315,10 +334,11 @@ const makeCommunityFeedVue = function() {
             uploadThreadPicture: function() {
                 console.log("Picture for thread uploaded")
             },
+            /**
+             * Add new thread in community.
+             */
             submitNewThread: function() {
                 if ((this.newThread.title.trim() !== '') && (this.newThread.text.trim() !== '')) {
-                    // todo push to API
-
                     let thread = {
                         text: this.newThread.text,
                         title: this.newThread.title,
@@ -356,6 +376,10 @@ const makeCommunityFeedVue = function() {
             resetNewThreadMessage: function() {
                 this.newThreadMessage = '';
             },
+            /**
+             * Add new comment to thread with ID 'threadId'.
+             * @param {string} threadId 
+             */
             submitNewComment: function(threadId) {
                 if (this.newComments.hasOwnProperty(threadId) && this.newComments[threadId].length > 0) {
 
