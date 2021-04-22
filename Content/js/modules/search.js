@@ -1,6 +1,7 @@
 /**
  * This file contains the vue components of the search results.
  * */
+
 import { client, goToCommunity, goToProfile, search, setState } from "./clientUtils.js";
 
 /**
