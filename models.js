@@ -1,3 +1,7 @@
+/** 
+ * This file contains the models for all classes used throughout the application.
+ */
+
 const { v4: uuidv4 } = require('uuid')
 
 /**
@@ -6,7 +10,7 @@ const { v4: uuidv4 } = require('uuid')
 User = class {
 
     /**
-     * Create a new User.
+     * Create a new user.
      * @param {string} userName - The username of the user
      * @param {string} userEmail - The Email of the user
      * */
@@ -19,7 +23,6 @@ User = class {
         this.gender = null;
         this.age = null;
         this.picture = '';
-        this.status = null;
     }
 
     /**
@@ -45,7 +48,6 @@ User = class {
         user.picture = jsn.picture || '';
         return user;
     }
-
 
     /**
      * Add a new interest.
