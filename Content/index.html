@@ -219,7 +219,7 @@
                         <!-- Nav Item - User Information -->
                         <li class="nav-item" v-on:click="goToProfile">
                             <a class="nav-link" href="#" id="modal" role="button" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-400">{{ username }}</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-400">{{ userName }}</span>
                             </a>
                             
                         </li>
@@ -410,28 +410,29 @@
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 v-show="isOwnProfile" class="m-0 font-weight-bold text-warning">My data</h6>
-                                    <h6 v-show="!isOwnProfile" class="m-0 font-weight-bold text-warning">About {{userData.userName}}</h6>
+                                    <h6 v-show="!isOwnProfile" class="m-0 font-weight-bold text-warning">About {{profileData.userName}}</h6>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body bg-secondary">
                                     <div>
-                                        <button class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#profile-picture-upload-modal">
+                                        <button class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#profile-picture-upload-modal" v-show="isOwnProfile">
                                             Update picture <i class="text-white fas fa-camera"></i>
                                         </button>
                                         <div class="row">
                                                 <img v-bind:src="profileData.picture" class="large-user-img"/>
-                                                <h2 class="text-info">{{userData.userName}}</h2>
+                                                <h2 class="text-info">{{profileData.userName}}</h2>
                                         </div>
                                     
                                         <hr>
-                                        <button class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#profile-info-modal">
+                                        <button class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#profile-info-modal" v-show="isOwnProfile">
                                             Update info <i class="text-white fas fa-edit"></i>
                                         </button>
-                                        <p>Email: {{userData.userEmail}} </p>
-                                        <p>Age: {{userData.age}}</p>
-                                        <p>Location: {{userData.location}}</p>
-                                        <p>Status: {{userData.status}}</p>
-                                        <h5>My tags:</h5>
+                                        <p>Email: {{profileData.userEmail}} </p>
+                                        <p>Age: {{profileData.age}}</p>
+                                        <p>Location: {{profileData.location}}</p>
+                                        <p>Status: {{profileData.status}}</p>
+                                        <hr>
+                                        <h5>My interests:</h5>
                                         <div class="custom-tag-container">
                                             <!-- display existing tags -->
                                             <span class="custom-tag" v-for="tag in userData.interests" v-bind:class="[ isOwnProfile ? 'editable' : '']">

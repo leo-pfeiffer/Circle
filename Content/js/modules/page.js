@@ -30,8 +30,8 @@ const makeHeaderVue = function() {
                     search.term = searchRequest;
                 }
             },
-            username() {
-                return client.userData.name;
+            userName() {
+                return client.userData.userName;
             }
         },
         watch: {

@@ -36,6 +36,13 @@ export const client = Vue.observable({
     profileData: {
         id: '',
         userName: '',
+        picture: '',
+        userEmail: '' ,
+        location: '',
+        interests: [],
+        gender: '',
+        age: '',
+        status: '',
     }
 })
 
@@ -424,7 +431,6 @@ const getUser = function (userId) {
  * @param {string} userId
  * */
 export const goToProfile = function (userId) {
-    console.log('Now going to user profile', userId)
     getUser(userId)
     getUserComments()
     // go to profile with of `userId`

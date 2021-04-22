@@ -17,8 +17,7 @@
                  return client.state;
             },
             isOwnProfile() {
-                 return this.userData.userName === client.userData.userName
-                 //return client.profileData.id === client.userData.id
+                return client.profileData.id === client.userData.id
             },
             profileData() {
                 return client.profileData;
@@ -28,21 +27,21 @@
             }
         },
         data: {    
-            id: '',
-            userName: '', 
-            age: '',
-            email: '',
-            location: '',
-            picture: '', 
-            status: '', 
-            interests: [],
-            // id: client.userData.id,
-            // name: client.userData.name, 
-            // age: client.userData.age,
-            // email: client.userData.email,
-            // location: client.userData.location,
-            // picture: client.userData.picture, 
-            // tags: client.userData.tags,
+            // id: '',
+            // userName: '',
+            // age: '',
+            // email: '',
+            // location: '',
+            // picture: '',
+            // status: '',
+            // interests: [],
+            id: client.userData.id,
+            name: client.userData.userName,
+            age: client.userData.age,
+            email: client.userData.userEmail,
+            location: client.userData.location,
+            picture: client.userData.picture,
+            tags: client.userData.interests,
             newTag: ''
         },
         methods: {
@@ -108,137 +107,11 @@
  const makeUserStatsVue = function() {
     const userStatsVue = new Vue({
         el: '#userStats',
-        data: {
-            commentBarChartData: {
-                type: 'bar',
-                data: {
-                    labels: ['Gardening', 'Yoga', 'Cooking'],
-                    datasets: [
-                        {
-                            label:' # Comments written',
-                            data: [20, 5, 13],
-                            backgroundColor:['#e74a3b',],
-                        },
-                        {
-                            label:' # Threads opened',
-                            data: [3, 4, 1],
-                            backgroundColor:['#4e73df',],
-                        }
-                    ],
-                },
-                options: {
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Activities in your top 10 most popular communities',
-                            fontSize: 20,
-                            color: 'rgb(255, 255, 255)'
-                        },
-                        legend: {
-                            display: true,
-                            labels: {
-                                color: 'rgb(255, 255, 255)',
-                                borderColor: 'rgb(165,165,165)',
-                            },   
-                        }
-                    },
-                    scales: {
-                        x: {
-                            stacked: true,
-                            ticks: {
-                                color: 'rgb(255, 255, 255)',
-                            },
-                            grid: {
-                                color: 'rgb(165,165,165)',
-                            }
-                        },
-                        y: {
-                            stacked: true,
-                            ticks: {
-                                color: 'rgb(255, 255, 255)',
-                            },
-                            grid: {
-                                color: 'rgb(165,165,165)',
-                            }
-                        }
-                    }
-                }
-            },
-            activityLineChartData: {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-                    datasets:[
-                        {
-                            label:' # Comments written',
-                            data: [20, 9, 13, 6, 3],
-                            backgroundColor:[
-                                '#e74a3b',
-                            ],
-                            borderColor: 'rgb(165,165,165)',
-                        }, 
-                        {
-                            label:' # Threads opened',
-                            data: [3, 4, 1, 2, 1],
-                            backgroundColor:[
-                                '#4e73df',
-                            ],
-                            borderColor: 'rgb(165,165,165)',
-                        }
-                ],
-                }, 
-                options: {
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Total activities over time',
-                            fontSize: 20,
-                            color: 'rgb(255, 255, 255)'
-                        },
-                        legend: {
-                            display: true,
-                            labels: {
-                                color: 'rgb(255, 255, 255)'
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            stacked: true,
-                            ticks: {
-                                color: 'rgb(255, 255, 255)',
-                            },
-                            grid: {
-                                color: 'rgb(165,165,165)',
-                            }
-                        },
-                        y: {
-                            stacked: true,
-                            ticks: {
-                                color: 'rgb(255, 255, 255)',
-                            },
-                            grid: {
-                                color: 'rgb(165,165,165)',
-                            }
-                        }
-                    }
-                }
-            }
-        },
         computed: {
             state() {
                 return client.state;
             },
         },
-        // methods: {
-        //     createChart: function(chartId, chartData) {
-        //         createChart(chartId, chartData)
-        //     },
-        // },
-        // mounted() {
-        //     this.createChart('commentBarChart', this.commentBarChartData)
-        //     this.createChart('activityLineChart', this.activityLineChartData)
-        // }
     })
 }
 
@@ -254,7 +127,10 @@ const makeProfilePictureUploadVue = function() {
             },
             userData() {
                 return client.userData
-            }
+            },
+            isOwnProfile() {
+                return client.profileData.id === client.userData.id
+            },
        },
        methods: {
             saveUploadedPicture: function(event) {
@@ -294,7 +170,7 @@ const makeUpdateProfileInfoVue = function() {
                 return client.state;
             },
             isOwnProfile() {
-                return this.id === client.userData.id
+                return client.profileData.id === client.userData.id
             },
            userData() {
             return client.userData
