@@ -1,3 +1,5 @@
+const {images} = require("./testImageData");
+
 /**
  * Add users from an array to a community.
  * @param {Community} community
@@ -219,9 +221,20 @@ const makeStarterData = function() {
 
     for (let name of names) {
         let user = new User(name, `${name}@mail.com`)
+
+        // add random age
         user.age = parseInt(Math.random() * 20 + 18)
+
+        // add random location
         user.location = locations[parseInt(Math.random() * locations.length)]
+
+        // add random picture
+        user.picture = images[parseInt(Math.random() * images.length)]
+
+        // add random interests
         addInterestsToUser(user, randomHobbies(3))
+
+        // save to the relevant arrays
         users.push(user)
         logins.push({username: name, password: `${name}123`})
     }
