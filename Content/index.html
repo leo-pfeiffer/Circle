@@ -218,10 +218,9 @@
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item" v-on:click="goToProfile">
-                            <a class="nav-link" href="#" id="modal" role="button" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-400">{{ userName }}</span>
-                            </a>
-                            
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                <span> My profile </span></a>
                         </li>
                     </ul>
                 </nav>
@@ -430,7 +429,6 @@
                                         <p>Email: {{profileData.userEmail}} </p>
                                         <p>Age: {{profileData.age}}</p>
                                         <p>Location: {{profileData.location}}</p>
-                                        <p>Status: {{profileData.status}}</p>
                                         <hr>
                                         <h5>My interests:</h5>
                                         <div class="custom-tag-container">

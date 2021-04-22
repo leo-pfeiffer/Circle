@@ -27,14 +27,6 @@
             }
         },
         data: {    
-            // id: '',
-            // userName: '',
-            // age: '',
-            // email: '',
-            // location: '',
-            // picture: '',
-            // status: '',
-            // interests: [],
             id: client.userData.id,
             name: client.userData.userName,
             age: client.userData.age,
