@@ -428,10 +428,10 @@ const getUser = function (userId) {
  * @param {string} userId
  * */
 export const goToProfile = function (userId) {
+    client.profileData.id = userId
     getUser(userId)
     getUserComments()
     // go to profile with of `userId`
-    client.profileData.id = userId
     setState('profile')
 }
 

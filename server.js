@@ -1,3 +1,7 @@
+/**This file contains handler functions for all API endpoints used on the client side. 
+ * 
+ */
+
 const { User, Community, Thread, Comment, Event } = require('./models')
 const {PageRank, CommunityNetwork} = require("./pagerank");
 
@@ -102,10 +106,10 @@ io.on('connection', (socket) => {
 })
 
 
-// ===== Handler functions =======
+// ====== Handler functions ======
 
 /**
- * Handler function to create a new User and add it to the database
+ * Handler function to create a new user and add it to the database.
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -128,7 +132,7 @@ let createUser = function (req, res, next) {
 }
 
 /**
- * Handler function to create a new Community.
+ * Handler function to create a new community.
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -168,7 +172,7 @@ let createCommunity = async (req, res, next) => {
 }
 
 /**
- * Handler function to create a new Thread
+ * Handler function to create a new thread.
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -201,7 +205,7 @@ let createThread = async (req, res, next) => {
     });
 }
 /**
- * Handler function to join a community
+ * Handler function to join a community.
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -230,7 +234,7 @@ let joinCommunity = async (req, res, next) => {
 }
 
 /**
- * Handler function to leave a community
+ * Handler function to leave a community.
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -259,7 +263,7 @@ let leaveCommunity = async (req, res, next) => {
 }
 
 /**
- * Handler function to create a new  Comment
+ * Handler function to create a new comment.
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -292,7 +296,12 @@ let createComment = async (req, res, next) => {
         });
 }
 
-// handler function for adding Event object
+/**
+ * Handler function to POST an event that should be added to the community. 
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
 let createEvent = async (req, res, next) => {
     let body = req.body;
     let title = body.title;
@@ -327,7 +336,12 @@ let createEvent = async (req, res, next) => {
         });
 }
 
-// handler function for remove an event
+/**
+ * Handler function to POST an event that should be removed from the community. 
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
 let removeEvent = async (req, res, next) => {
 
     let communityId = req.body.communityId;
@@ -350,7 +364,12 @@ let removeEvent = async (req, res, next) => {
     }
 }
 
-// handler function for adding tag to community
+/**
+ * Handler function to POST a tag that should be added to the community. 
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
 let addTag = async (req, res, next) => {
     let body = req.body;
     let tag = body.tag;
@@ -365,7 +384,12 @@ let addTag = async (req, res, next) => {
         });
 }
 
-// handler function for removing tag from community
+/**
+ * Handler function to POST a tag that should be removed from the community. 
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
 let removeTag = async (req, res, next) => {
     let body = req.body;
     let tag = body.tag;
@@ -381,7 +405,7 @@ let removeTag = async (req, res, next) => {
 }
 
 /**
- * Handler function to GET Community object by id
+ * Handler function to GET Community object by id.
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -402,7 +426,7 @@ let getCommunityById = async function (req, res, next) {
 }
 
 /**
- * Handler function to GET Thread objects of a community
+ * Handler function to GET Thread objects of a community.
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -430,7 +454,7 @@ let getThreadsOfCommunity = function (req, res, next) {
 }
 
 /**
- * Handler function to GET most recent comments
+ * Handler function to GET most recent comments.
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -460,7 +484,7 @@ let getMostRecentComments = function (req, res, next) {
 }
 
 /**
- * Handler function to GET most recent Communities
+ * Handler function to GET most recent communities.
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -545,7 +569,7 @@ let getUserEventsOfCommunity = function (req, res, next) {
 }
 
 /**
- * Handler function to GET a user object
+ * Handler function to GET a user object.
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -566,7 +590,12 @@ let getUserEventsOfCommunity = function (req, res, next) {
         })
 };
 
-// handler function for adding tag to user interests
+/**
+ * Handler function to POST a tag that should be added to the user interests. 
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
 let addTagUser = async (req, res, next) => {
     let body = req.body;
     let tag = body.tag;
@@ -581,7 +610,12 @@ let addTagUser = async (req, res, next) => {
         });
 }
 
-// handler function for removing tag from user interests
+/**
+ * Handler function to POST a tag that should be removed from the user interests. 
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
 let removeTagUser = async (req, res, next) => {
     let body = req.body;
     let tag = body.tag;
@@ -596,7 +630,12 @@ let removeTagUser = async (req, res, next) => {
         });
 }
 
-// update user info from modal on profile
+/**
+ * Handler function to POST updated user information.
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
 let updateUserInfo = async (req, res, next) => {
     let body = req.body;
     let newEmail = body.newEmail;
@@ -613,7 +652,12 @@ let updateUserInfo = async (req, res, next) => {
         });
 }
 
-// upload user profile picture from modal on profile
+/**
+ * Handler function to POST a new profile picture. 
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * */
 let updateUserProfilePicture = async (req, res, next) => {
     let body = req.body;
     let newPicture = body.newPicture;
@@ -680,7 +724,7 @@ let updateUserProfilePicture = async (req, res, next) => {
 
 
 /**
- * Handler function to GET the stats for a community
+ * Handler function to GET the stats for a community.
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -730,7 +774,7 @@ let updateUserProfilePicture = async (req, res, next) => {
 
 
 /**
- * Handler function to GET all community tags per community 
+ * Handler function to GET all community tags per community. 
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -812,7 +856,7 @@ let updateUserProfilePicture = async (req, res, next) => {
 }
 
 /**
- * Handler function to GET recently active communities
+ * Handler function to GET recently active communities.
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -840,7 +884,7 @@ let updateUserProfilePicture = async (req, res, next) => {
 }
 
 /**
- * Handler function to get community recommendations
+ * Handler function to get community recommendations.
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -923,7 +967,7 @@ let getRecommendation = async function (req, res, next) {
 }
 
 /**
- * Handler function to get search results
+ * Handler function to get search results.
  * @param {Request} req
  * @param {Response} res
  * @param {NextFunction} next
@@ -945,10 +989,8 @@ let getSearchResults = function (req, res, next) {
         })
 }
 
-
-
 /**
- * Proxy request handler that gets a random joke from an external API
+ * Proxy request handler that gets a random joke from an external API.
  * @param {Request} req
  * @param {Response} res
  * */
@@ -1000,7 +1042,6 @@ const register = async (req, res) => {
     }
 }
 
-
 /**
  * Login a user. Send only a response as the point is to go through authentication once to
  * verify the user. If that fails, we don't even get to this point.
@@ -1022,6 +1063,7 @@ const login = async function(req, res) {
     }
 }
 
+
 /**
  * The following API endpoints allow the client to interact with the server.
  * */
@@ -1031,7 +1073,6 @@ app.post('/api/register', register)
 
 // Login an existing user
 app.get('/api/login', authenticate, login)
-
 
 // Create a new user
 app.post('/api/create-user/', authenticate, createUser);
@@ -1087,14 +1128,12 @@ app.post('/api/update-user-profile-picture/', authenticate, updateUserProfilePic
 app.post('/api/get-community-stats/', authenticate, getCommunityStats);
 
 // get community lists for sidenav access
-// get all communities the user is a member of 
 app.get('/api/get-member-communities/', authenticate, getMemberCommunities);
 app.get('/api/get-owned-communities/', authenticate, getOwnedCommunities);
 app.get('/api/get-recently-active-communities/', authenticate, getRecentlyActiveCommunities);
 
 // get tags for levenshtein distance algorithm 
 app.get('/api/get-all-community-tags', authenticate, getAllCommunityTags);
-
 
 
 /*
@@ -1104,6 +1143,7 @@ app.get('/api/get-all-community-tags', authenticate, getAllCommunityTags);
 * to the client. This also gives us more control over what the client receives, i.e. we could filter
 * or enrich the response ourselves.
  */
+
 app.get('/api/proxy/joke', getJoke);
 
 // Set the static folder

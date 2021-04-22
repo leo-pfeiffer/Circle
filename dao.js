@@ -1,4 +1,10 @@
-//build our url from our config file info
+/**This file contains the functions to initialise the database, set up the collections and indexing. It also contains all the database queries which are run by the handler functions in server.js.
+ */
+
+/**
+ * Building the url from the config file info.
+ * @type {MongoClient}
+ * */
 const config = require('./config-db.js');
 const MongoClient = require('mongodb').MongoClient;
 const fullurl = `mongodb://${config.username}:${config.password}@${config.url}:${config.port}/${config.database}?authSource=admin`;
@@ -6,7 +12,10 @@ const sanitisedUrl = fullurl.replace(/:([^:@]{1,})@/, ':****@');
 
 const client = new MongoClient(fullurl, { useUnifiedTopology: true });
 
-//retrieving collection names from config.db file
+/**
+ * Retrieving the collection names from config.db file.
+ * @type {Collection}
+ * */
 const users_data = config.collection[0];
 const communities_data = config.collection[1];
 const threads_data = config.collection[2];
@@ -20,13 +29,9 @@ const user_passwords_data = config.collection[5];
  * */
 let collection, users_collection, communities_collection, user_passwords_collection
 
-//=== test data ===
-//this is added to the DB everytime the program runs 
-const test_data = [{ userName: "A", userEmail: 'abc@gmail.com' },
-{ userName: "B", userEmail: 'bcd@gmail.com' }];
-
 /**
  * Initialise the database.
+ * @type {init}
  * */
 let init = function () {
     return client.connect()
@@ -47,6 +52,9 @@ let init = function () {
         })
 }
 
+/**
+ * Set up community indexes.
+ * */
 const createCommunityIndex = function() {
     // create indexes to allow search: https://docs.mongodb.com/manual/text-search/
     return communities_collection.createIndex(
@@ -59,6 +67,9 @@ const createCommunityIndex = function() {
         .catch(err => console.log('failed to create index', err))
 }
 
+/**
+ * Set up user indexes.
+ * */
 const createUserIndex = function() {
     return users_collection.createIndex(
         {
@@ -71,7 +82,7 @@ const createUserIndex = function() {
 }
 
 /**
- * Returns community by its ID
+ * Returns community by its ID.
  * @param {string} communityId
  * @return {Promise}
  * */
@@ -262,9 +273,8 @@ let removeUserFromCommunity = function (communityId, user) {
     )
 }
 
-
 /**
- * add comment to a thread.
+ * Add comment to a thread.
  * @param {Comment} comment
  * @param {string} threadId
  * @return {Promise}
@@ -319,7 +329,7 @@ let removeEvent = function (communityId, event) {
 }
 
 /**
- * add tag to community.
+ * Add tag to community.
  * @param {string} communityId
  * @param {string} tag
  * @return {Promise}
@@ -332,7 +342,7 @@ let addTag = function (communityId, tag) {
 }
 
 /**
- * remove tag from community.
+ * Remove tag from community.
  * @param {string} communityId
  * @param {string} tag
  * @return {Promise}
@@ -428,7 +438,7 @@ const getSearchResults = async function(searchTerm) {
 }
 
 /**
- * Get all Events of the communities the user is a member of.
+ * Get all events of the communities the user is a member of.
  * @param {string} userId
  * @return {Promise}
  * */
@@ -448,7 +458,7 @@ const getUserEvents = async function(userId) {
 }
 
 /**
- * Handler function to GET all Events of a specific community.
+ * Get all Events of a specific community.
  * @param {string} userId
  * @param {string} communityId
  * @return {Promise}
@@ -482,7 +492,7 @@ const getUserEventsOfCommunity = async function(userId, communityId) {
 };
 
 /**
- * add tag to user.
+ * Add tag to user.
  * @param {string} userId
  * @param {string} tag
  * @return {Promise}
@@ -495,7 +505,7 @@ const getUserEventsOfCommunity = async function(userId, communityId) {
 }
 
 /**
- * remove tag from user.
+ * Remove tag from user.
  * @param {string} userId
  * @param {string} tag
  * @return {Promise}
@@ -583,7 +593,7 @@ let getNumberCommentsOfCommunity = async function(communityId) {
 }
 
 /**
- * Returns total number of threads of a community
+ * Returns total number of threads of a community.
  * @param {string} communityId
  * @return {Promise}
  * */
@@ -606,7 +616,7 @@ let getNumberCommentsOfCommunity = async function(communityId) {
 }
 
 /**
- * Returns total number of events of a community
+ * Returns total number of events of a community.
  * @param {string} communityId
  * @return {Promise}
  * */
@@ -653,7 +663,7 @@ let getNumberCommentsOfCommunity = async function(communityId) {
 }
 
 /**
- * Get all communities with their tags for the Levenshtein algorithm (except the ones where user is already member".
+ * Get all communities with their tags for the Levenshtein algorithm (except the ones where user is already member).
  * @param {string} userId
  * @return {Promise}
  * */
@@ -830,7 +840,6 @@ let authenticateUser = async function(username, password) {
 }
 
 
-
 /**
  * Drop all data collections.
  * WARNING: This cannot be undone!
@@ -841,7 +850,9 @@ const dropCollections = async function() {
     await user_passwords_collection.drop().catch(err => console.log(err))
 }
 
-//exporting modules
+/**
+ * Export all modules required for handler functions in server.js
+ */
 module.exports = {
     init: init,
     addUser: addUser,
