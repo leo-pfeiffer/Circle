@@ -1,3 +1,7 @@
+/**
+ * This file contains the vue components of the calendar.
+ * */
+
 import {
     client,
     eventData,
@@ -9,9 +13,8 @@ import {
 } from "./clientUtils.js";
 
 /**
- * This file contains the vue components of the calendar.
- * */
-
+* To update/create the calendar 
+* */
 const makeMainCalendarVue = function () {
     const mainCalendarVue = new Vue({
         el: '#main-calendar',
@@ -56,7 +59,7 @@ const makeMainCalendarVue = function () {
             timeOfDayFormatter: function (datetime) {
                 return timeOfDayFormatter(datetime)
             },
-            setSelectedEvent: function(event) {
+            setSelectedEvent: function (event) {
                 eventData.event = event
             }
 
@@ -67,3 +70,4 @@ const makeMainCalendarVue = function () {
 export const makeCalendar = function () {
     makeMainCalendarVue();
 }
+
