@@ -14,7 +14,7 @@
 
 // MathJS
 const math = require('mathjs')
-const {Community} = require("./models");
+const {Community} = require("../models");
 
 /**
  * Implementation of the Google PageRank Algorithm. To run it, create an instance with an adjacency matrix

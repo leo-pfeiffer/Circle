@@ -1,10 +1,10 @@
 const mocha = require('mocha');
 const chai = require('chai');
 const chaiAlmost = require('chai-almost');
-const {PageRank} = require("../pagerank");
+const {PageRank} = require("../recommendationSystem/pagerank");
 
-const {CommunityNetwork} = require("../pagerank");
-const {makePageRankDemoData} = require("../testData");
+const {CommunityNetwork} = require("../recommendationSystem/pagerank");
+const {makePageRankDemoData} = require("../starterData/testData");
 const should = chai.should();
 const expect = chai.expect;
 

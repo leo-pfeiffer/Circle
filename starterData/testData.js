@@ -5,7 +5,7 @@ const {images} = require("./testImageData");
  * @param {Community} community
  * @param {Array<User>} users
  * */
-const {Community, Event, User, Comment, Thread} = require("./models");
+const {Community, Event, User, Comment, Thread} = require("../models");
 const addUsersToCommunity = function(community, users) {
     for (let user of users) {
         community.addUser(user)

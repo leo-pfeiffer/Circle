@@ -1,9 +1,9 @@
 /**
  * Run this file to create test data.
  * */
-const dao = require('./dao');
+const dao = require('../dao');
 const {makeGeneralTestData, makePageRankDemoData, makeStarterData} = require("./testData");
-const { User, Community, Thread, Comment, Event } = require('./models')
+const { User, Community, Thread, Comment, Event } = require('../models')
 
 // let pageRankDemoData = makePageRankDemoData();
 // let demoData = makeGeneralTestData();

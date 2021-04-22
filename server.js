@@ -3,7 +3,7 @@
  */
 
 const { User, Community, Thread, Comment, Event } = require('./models')
-const {PageRank, CommunityNetwork} = require("./pagerank");
+const {PageRank, CommunityNetwork} = require("./recommendationSystem/pagerank");
 
 const dao = require('./dao');
 
@@ -18,7 +18,7 @@ const app = express();
 const http = require('http');
 const auth = require('basic-auth');
 const {normaliseNHighestRanks} = require("./serverUtils");
-const {calculateLevenshteinScore} = require("./levenshtein");
+const {calculateLevenshteinScore} = require("./recommendationSystem/levenshtein");
 const server = http.createServer(app);
 const io = require('socket.io')(server);
 
