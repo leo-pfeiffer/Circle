@@ -22,18 +22,35 @@ window.onload = () => {
     makeSearch();
     makeCalendar();
 
-    // Make the weather map when the view event modal opens
-    $('#view-event-modal').on('show.bs.modal', function(){
+
+    // ===== Set up the weather map on the View Event / New Event modals using jQuery ====
+
+    // Make the weather map when the modal opens
+    $('#new-event-modal').on('show.bs.modal', function(){
         setTimeout(function() {
-            makeMap();
+            makeMap('weather-map-new-event');
         }, 300);
     });
 
-    // ... and destroy it when the view event modal closes
+    $('#view-event-modal').on('show.bs.modal', function(){
+        setTimeout(function() {
+            makeMap('weather-map-view-event');
+        }, 300);
+    });
+
+    // ... and destroy it when the modal closes
+    $('#new-event-modal').on('hide.bs.modal', function(){
+        setTimeout(function() {
+            destroyMap();
+        }, 300);
+    });
+
     $('#view-event-modal').on('hide.bs.modal', function(){
         setTimeout(function() {
             destroyMap();
         }, 300);
     });
+
+
 
 }

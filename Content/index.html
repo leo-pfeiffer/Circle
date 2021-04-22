@@ -838,7 +838,7 @@
                                                                 <img v-bind:src="item.picture" class="small-user-img is-link" v-bind:title="item.userName">  {{ item.userName }} {{item.id}}
                                                             </h2>
                                                             <h2 class="h3 mb-0 text-warning" v-show="item.picture === ''">
-                                                                <i class="text-warning" v-bind:class="item.symbol"></i> {{ item.userName }} {{item.id}}
+                                                                <i class="text-warning" v-bind:class="item.symbol"></i> {{ item.userName }}
                                                             </h2>
 
                                                         </div>
@@ -1094,7 +1094,7 @@
 
                     <!-- New event modal -->
                     <div class="modal fade" id="new-event-modal" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
+                        <div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Create a new event in this community.</h5>
@@ -1124,6 +1124,13 @@
                                         <hr v-show="message !== ''">
                                         <div class="text-info">{{message}}</div><br>
                                     </form>
+
+                                    <div>
+                                        <div id="weather-map-new-event"></div>
+                                        <input type="date" id="start-date">
+                                        <input type="date" id="end-date">
+                                    </div>
+
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-warning" type="button" data-dismiss="modal">Cancel</button>
@@ -1159,7 +1166,7 @@
                                     </div>
                                     <hr>
                                     <div>
-                                        <div id="weather-map"></div>
+                                        <div id="weather-map-view-event"></div>
                                         <input type="date" id="start-date">
                                         <input type="date" id="end-date">
                                     </div>

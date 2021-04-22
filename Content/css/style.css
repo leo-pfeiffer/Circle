@@ -98,10 +98,11 @@
 }
 
 /* Weather Map */
-#weather-map {
+#weather-map, #weather-map-new-event {
   height: 400px;
   width: 100%;
 }
+
 .weather-info {
   font-size: 1.2vw;
   color: #1296db;

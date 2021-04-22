@@ -54,9 +54,9 @@ const info = (weatherInfo) => {
     return _html;
 }
 
-export const makeMap = function() {
+export const makeMap = function(mapId) {
 
-    map = L.map('weather-map').setView([51.505, -0.09], 6);
+    map = L.map(mapId).setView([51.505, -0.09], 6);
 
     L.tileLayer(MAP_URL, {
         maxZoom: 23,
