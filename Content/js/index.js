@@ -28,13 +28,13 @@ window.onload = () => {
     // Make the weather map when the modal opens
     $('#new-event-modal').on('show.bs.modal', function(){
         setTimeout(function() {
-            makeMap('weather-map-new-event');
+            makeMap('weather-map-new-event', 'start-date-new-event', 'end-date-new-event');
         }, 300);
     });
 
     $('#view-event-modal').on('show.bs.modal', function(){
         setTimeout(function() {
-            makeMap('weather-map-view-event');
+            makeMap('weather-map-view-event', 'start-date-view-event', 'end-date-view-event');
         }, 300);
     });
 

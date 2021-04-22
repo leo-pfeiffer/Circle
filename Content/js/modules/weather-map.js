@@ -54,7 +54,7 @@ const info = (weatherInfo) => {
     return _html;
 }
 
-export const makeMap = function(mapId) {
+export const makeMap = function(mapId, startDateId, endDateId) {
 
     map = L.map(mapId).setView([51.505, -0.09], 6);
 
@@ -69,8 +69,8 @@ export const makeMap = function(mapId) {
     map.on('click', async function (e) {
         const coordinates = e.latlng;
         const coord = `${coordinates.lat},${coordinates.lng}`;
-        const startDate = document.getElementById('start-date').value;
-        const endDate = document.getElementById('end-date').value;
+        const startDate = document.getElementById(startDateId).value;
+        const endDate = document.getElementById(endDateId).value;
         console.log(startDate, endDate);
         if (startDate && endDate) {
             const weatherRequestUrl = WEATHER_URL_DATE.replace("$_coordinate", coord)

@@ -5,7 +5,7 @@
 import {client, setState} from './clientUtils.js'
 
 /**
- * This function contains the functionality for user login, autheticate and new user registration.
+ * This function contains the functionality for user login, authenticate and new user registration.
  * */
 const makeLoginVue = function () {
     const loginVue = new Vue({
@@ -63,8 +63,9 @@ const makeLoginVue = function () {
                     // direct user to dashboard
                     setState('dashboard');
                 }).catch(err => {
-                    //console.log('Login failed.', err)
                     this.message = "Wrong username or password."
+                    this.username = '';
+                    this.password = '';
                 })
             },
             register: function () {
@@ -98,7 +99,6 @@ const makeLoginVue = function () {
                             return res.json()
                         }
                     }).then((jsn) => {
-                        //console.log('Registration successful.')
                         this.message = "Registration successful. Please login.";
                         this.toggleEntryType();
                     }).catch((err) => console.log(err))

@@ -98,7 +98,7 @@
 }
 
 /* Weather Map */
-#weather-map, #weather-map-new-event {
+#weather-map-view-event, #weather-map-new-event {
   height: 400px;
   width: 100%;
 }
