@@ -14,6 +14,9 @@ import {
 } from "./clientUtils.js";
 import { makeMap } from "./weather-map.js";
 
+/**
+ * Function to create the header in dashboard.
+ */
 const makeHeaderVue = function () {
     const headerVue = new Vue({
         el: "#header",
@@ -41,6 +44,10 @@ const makeHeaderVue = function () {
             }
         },
         methods: {
+            /**
+             * Go to the profile with ID `userId`
+             * @param {string} userId 
+             */
             goToProfile: function () {
                 goToProfile(client.userData.id)
             },
@@ -50,6 +57,9 @@ const makeHeaderVue = function () {
             logout: function () {
                 setState('logout')
             },
+            /**
+             * Gets search results.
+             */
             search: function () {
                 // don't do anything if no search term was entered
                 if (search.term === '') return;
@@ -75,9 +85,11 @@ const makeHeaderVue = function () {
                 }).catch((err) => {
                     console.log(err)
                 })
-
                 this.goToSearch();
             },
+            /**
+             * Gets community recommendations.
+             */
             getRecommendations: function () {
                 search.type = 'recommendation'
 
@@ -104,6 +116,9 @@ const makeHeaderVue = function () {
     })
 }
 
+/**
+ * Function that handles creation of a new community.
+ */
 const makeNewCommunityModalVue = function () {
     const newCommunityModalVue = new Vue({
         el: '#new-community-modal',
@@ -119,9 +134,11 @@ const makeNewCommunityModalVue = function () {
             availableIcons: [],
         },
         methods: {
+            /**
+             * Creates a new community.
+             */
             createNewCommunity: async function () {
-
-                // make sure all the required data is entered
+                //checking if a;; the required data is entered
                 if (this.newCommunity.name === null || this.newCommunity.name === '' ||
                     this.newCommunity.description === null || this.newCommunity.description === '' ||
                     this.newCommunity.tags === null || this.newCommunity.tags === ''
@@ -179,6 +196,10 @@ const makeNewCommunityModalVue = function () {
                     picture: null,
                 }
             },
+            /**
+             * Saves uploaded picture for a community.
+             * @param {Event} event  
+             */
             saveUploadedPicture: function (event) {
                 if (!event.target.files.length) return;
                 const imgFile = event.target.files[0]
@@ -198,6 +219,9 @@ const makeNewCommunityModalVue = function () {
     })
 }
 
+/**
+ * Function that creates the sidebar.
+ */
 const makeSidenavVue = function () {
     const sidenavVue = new Vue({
         el: "#sidenav",
@@ -217,7 +241,7 @@ const makeSidenavVue = function () {
         },
         methods: {
             goToProfile: function () {
-                // go to own profile
+                //go to own profile
                 goToProfile(client.userData.id)
             },
             goToCommunity: function (communityId) {
@@ -233,6 +257,9 @@ const makeSidenavVue = function () {
     })
 }
 
+/**
+ * Function to create a pop-up window to show event details.
+ */
 const makeViewEventVue = function () {
     const viewEventVue = new Vue({
         el: "#view-event-modal",
@@ -248,7 +275,11 @@ const makeViewEventVue = function () {
             }
         },
         methods: {
+            /**
+             * Deletes event.
+             */
             cancelEvent: function () {
+                //checking if user is organiser
                 if (!this.isOrganiser) {
                     console.log('Only organiser can cancel an event.')
                     return;
@@ -276,6 +307,12 @@ const makeViewEventVue = function () {
                     console.log('event removed')
                 }).catch((err) => console.log(err))
             },
+            /**
+             * Creates a map to check weather.
+             */
+            getMap: function () {
+                makeMap()
+            }
         }
     })
 }
