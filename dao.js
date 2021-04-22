@@ -690,21 +690,69 @@ let getUserObjectByName = function (userName) {
 
 /**
  * Update user information from profile view. 
- * @param {string} userName
- * @return {Promise}
+ * @param {string} userId
+ * @param {string} newEmail
+ * @param {string} newAge
+ * @param {string} newLocation
+ * @return {Array<Promise>}
  * */
- let updateUserInfo = function (userId, newEmail, newAge, newLocation, newStatus) {
-    return users_collection.updateOne(
-        { "user.id": userId },
-        { $set: 
-            { 
-                "userEmail": newEmail,
-                "age": newAge,
-                "user.$.location": newLocation, 
-                "user.$.status": newStatus,
-            }
+ let updateUserInfo = async function (userId, newEmail, newAge, newLocation) {
+
+     // Update user
+    let userUpdateResult = await users_collection.updateOne(
+        { "id": userId },
+        { $set:
+                {
+                    "userEmail": newEmail,
+                    "age": newAge,
+                    "location": newLocation,
+                }
+        })
+
+    // Update community users
+    let communitiesUpdateResult = await communities_collection.updateMany(
+        { "users.id": userId },
+        { $set:
+                {
+                    "users.$[elem].userEmail": newEmail,
+                    "users.$[elem].age": newAge,
+                    "users.$[elem].location": newLocation,
+                }
+        },
+        {
+            arrayFilters: [ { "elem.id":  userId} ]
         }
     )
+
+    // update community admin
+    let communitiesAdminUpdateResult = await communities_collection.updateMany(
+        { "admin.id": userId },
+        {
+            $set:
+                {
+                    "userEmail": newEmail,
+                    "age": newAge,
+                    "location": newLocation,
+                }
+        }
+    )
+
+    // update event organiser
+    let communitiesEventOrganiserUpdateResult = await communities_collection.updateMany(
+        { "events.organiser.id": userId },
+        { $set:
+                {
+                    "events.$[elem].organiser.userEmail": newEmail,
+                    "events.$[elem].organiser.age": newAge,
+                    "events.$[elem].organiser.location": newLocation,
+                }
+        },
+        {
+            arrayFilters: [ { "elem.organiser.id":  userId} ]
+        }
+    )
+
+    return [userUpdateResult, communitiesUpdateResult, communitiesAdminUpdateResult, communitiesEventOrganiserUpdateResult]
 };
 
 /** Register a new user

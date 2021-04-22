@@ -294,7 +294,6 @@ const makeUpdateProfileInfoVue = function() {
                 return client.state;
             },
             isOwnProfile() {
-                // todo probably change this to ID instead of username but for that we need to add API connection first
                 return this.id === client.userData.id
             },
            userData() {
@@ -303,6 +302,9 @@ const makeUpdateProfileInfoVue = function() {
        },
        methods: {
             updateInfo: function() {
+
+                // todo to check first that empty strings aren't sent!!!!
+
                 console.log("about to fetch")
                 fetch('/api/update-user-info/', {
                     method: "POST",

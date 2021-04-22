@@ -602,11 +602,10 @@ let updateUserInfo = async (req, res, next) => {
     let newEmail = body.newEmail;
     let newAge = body.newAge; 
     let newLocation = body.newLocation;
-    let newStatus = body.newStatus;
     let userId = body.userId;
 
     // adding the new info to the users_collection
-    dao.updateUserInfo(userId, newEmail, newAge, newLocation, newStatus)
+    dao.updateUserInfo(userId, newEmail, newAge, newLocation)
         .then(() => res.status(200).json({ msg: `Updated user info for ${userId}` }))
         .catch(err => {
             console.log(`Could not update info`, err);
@@ -1068,7 +1067,7 @@ app.get('/api/get-user-comments/', authenticate, getNumberComments);
 app.get('/api/get-user-threads/', authenticate, getNumberThreads);
 app.post('/api/add-tag-user/', authenticate, addTagUser);
 app.post('/api/remove-tag-user/', authenticate, removeTagUser);
-app.post('/api/update-user-info/', authenticate,updateUserInfo);
+app.post('/api/update-user-info/', authenticate, updateUserInfo);
 
 app.post('/api/get-community-stats/', authenticate, getCommunityStats);
 
