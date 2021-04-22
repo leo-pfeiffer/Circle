@@ -755,6 +755,63 @@ let getUserObjectByName = function (userName) {
     return [userUpdateResult, communitiesUpdateResult, communitiesAdminUpdateResult, communitiesEventOrganiserUpdateResult]
 };
 
+/**
+ * Update user profile picture from profile view. 
+ * @param {string} userId
+ * @param {image} newPicture
+ * @return {Array<Promise>}
+ * */
+ let updateUserProfilePicture = async function (userId, newPicture) {
+
+    // Update user
+   let userUpdateResult = await users_collection.updateOne(
+       { "id": userId },
+       { $set:
+               {
+                   "picture": newPicture,
+               }
+       })
+
+   // Update community users
+   let communitiesUpdateResult = await communities_collection.updateMany(
+       { "users.id": userId },
+       { $set:
+               {
+                   "users.$[elem].picture": newPicture,
+               }
+       },
+       {
+           arrayFilters: [ { "elem.id":  userId} ]
+       }
+   )
+
+   // update community admin
+   let communitiesAdminUpdateResult = await communities_collection.updateMany(
+       { "admin.id": userId },
+       {
+           $set:
+               {
+                   "picture": newPicture,
+               }
+       }
+   )
+
+   // update event organiser
+   let communitiesEventOrganiserUpdateResult = await communities_collection.updateMany(
+       { "events.organiser.id": userId },
+       { $set:
+               {
+                   "events.$[elem].organiser.picture": newPicture,
+               }
+       },
+       {
+           arrayFilters: [ { "elem.organiser.id":  userId} ]
+       }
+   )
+
+   return [userUpdateResult, communitiesUpdateResult, communitiesAdminUpdateResult, communitiesEventOrganiserUpdateResult]
+};
+
 /** Register a new user
 * @param {string} userName
 * @return {Promise}
@@ -826,7 +883,7 @@ module.exports = {
     addTagUser: addTagUser,
     removeTagUser: removeTagUser,
     updateUserInfo: updateUserInfo,
+    updateUserProfilePicture: updateUserProfilePicture,
     createUserIndex: createUserIndex,
-    createCommunityIndex: createCommunityIndex
-    //updateUserInfo: updateUserInfo,
+    createCommunityIndex: createCommunityIndex,
 };

@@ -9,13 +9,13 @@ import {
     joinRoom,
     search,
     setState,
-    allCommunities, 
+    allCommunities,
     mostRecentCommunities,
     allOwnedCommunities
 } from "./clientUtils.js";
-import {makeMap} from "./weather-map.js";
+import { makeMap } from "./weather-map.js";
 
-const makeHeaderVue = function() {
+const makeHeaderVue = function () {
     const headerVue = new Vue({
         el: "#header",
         computed: {
@@ -23,15 +23,17 @@ const makeHeaderVue = function() {
                 return client.state;
             },
             searchTerm: {
-                get: function() {
+                get: function () {
                     return search.term;
                 },
-                set: function(searchRequest) {
+                set: function (searchRequest) {
                     search.term = searchRequest;
                 }
+            },profileData() {
+                return client.profileData;
             },
-            userName() {
-                return client.userData.userName;
+            userData() {
+                return client.userData;
             }
         },
         watch: {
@@ -40,17 +42,17 @@ const makeHeaderVue = function() {
             }
         },
         methods: {
-            goToProfile: function() {
+            goToProfile: function () {
                 goToProfile(client.userData.id)
             },
-            goToSearch: function() {
+            goToSearch: function () {
                 setState('search')
             },
-            logout: function() {
+            logout: function () {
                 setState('logout')
                 destroySocket();
             },
-            search: function() {
+            search: function () {
                 // don't do anything if no search term was entered
                 if (search.term === '') return;
                 search.type = 'search'
@@ -61,7 +63,7 @@ const makeHeaderVue = function() {
                         "Content-Type": "application/json",
                         "Authorization": "Basic " + client.userKey,
                     },
-                    body: JSON.stringify({searchTerm: search.term})
+                    body: JSON.stringify({ searchTerm: search.term })
                 }).then((res) => {
                     if (!res.ok) {
                         throw new Error('Failed to create new community.')
@@ -119,7 +121,7 @@ const makeNewCommunityModalVue = function () {
             availableIcons: [],
         },
         methods: {
-            createNewCommunity: async function() {
+            createNewCommunity: async function () {
 
                 // make sure all the required data is entered
                 if (this.newCommunity.name === null || this.newCommunity.name === '' ||
@@ -167,11 +169,11 @@ const makeNewCommunityModalVue = function () {
                 })
 
             },
-            resetMessageAndStatus: function() {
+            resetMessageAndStatus: function () {
                 this.message = ''
                 this.success = false;
             },
-            resetNewCommunity: function() {
+            resetNewCommunity: function () {
                 this.newCommunity = {
                     name: null,
                     description: null,
@@ -179,7 +181,7 @@ const makeNewCommunityModalVue = function () {
                     picture: null,
                 }
             },
-            saveUploadedPicture: function(event) {
+            saveUploadedPicture: function (event) {
                 if (!event.target.files.length) return;
                 const imgFile = event.target.files[0]
 
@@ -198,14 +200,14 @@ const makeNewCommunityModalVue = function () {
     })
 }
 
-const makeSidenavVue = function() {
+const makeSidenavVue = function () {
     const sidenavVue = new Vue({
         el: "#sidenav",
         computed: {
             state() {
                 return client.state;
             },
-            getRecentCommunitiesToDisplay(){
+            getRecentCommunitiesToDisplay() {
                 return mostRecentCommunities.recentCommunities
             },
             getAllCommunitiesToDisplay() {
@@ -216,24 +218,24 @@ const makeSidenavVue = function() {
             }
         },
         methods: {
-            goToProfile: function() {
+            goToProfile: function () {
                 // go to own profile
                 goToProfile(client.userData.id)
             },
-            goToCommunity: function(communityId) {
+            goToCommunity: function (communityId) {
                 goToCommunity(communityId)
             },
-            goToCalendar: function() {
+            goToCalendar: function () {
                 setState('calendar');
             },
-            goToDashboard: function() {
+            goToDashboard: function () {
                 setState('dashboard');
             },
         }
     })
 }
 
-const makeViewEventVue = function() {
+const makeViewEventVue = function () {
     const viewEventVue = new Vue({
         el: "#view-event-modal",
         computed: {
@@ -248,7 +250,7 @@ const makeViewEventVue = function() {
             }
         },
         methods: {
-            cancelEvent: function() {
+            cancelEvent: function () {
                 if (!this.isOrganiser) {
                     console.log('Only organiser can cancel an event.')
                     return;
@@ -276,14 +278,14 @@ const makeViewEventVue = function() {
                     console.log('event removed')
                 }).catch((err) => console.log(err))
             },
-            getMap: function() {
+            getMap: function () {
                 makeMap()
             }
         }
     })
 }
 
-export const makePage = function() {
+export const makePage = function () {
     makeHeaderVue();
     makeSidenavVue();
     makeNewCommunityModalVue();

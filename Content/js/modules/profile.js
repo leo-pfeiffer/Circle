@@ -27,14 +27,6 @@
             }
         },
         data: {    
-            // id: '',
-            // userName: '',
-            // age: '',
-            // email: '',
-            // location: '',
-            // picture: '',
-            // status: '',
-            // interests: [],
             id: client.userData.id,
             name: client.userData.userName,
             age: client.userData.age,
@@ -149,8 +141,28 @@ const makeProfilePictureUploadVue = function() {
                 reader.readAsDataURL(imgFile);
             }, 
             uploadPicture: function() {
-                // todo connect to db
-                console.log("New picture uploaded")
+                fetch('/api/update-user-profile-picture/', {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Basic " + client.userKey,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        userId: this.userData.id,
+                        newPicture: this.newPicture, 
+                    })
+                }).then((res) => {
+                    console.log("Should have sent picture", this.newPicture)
+                    if (!res.ok) {
+                        throw new Error('Failed to send picture')
+                    } else {
+                        return res.json()
+                    }
+                }).then((jsn) => {
+                    // trigger reload of the current user data
+                    goToProfile(this.userData.id)
+                    this.newPicture = '';
+                }).catch(err => console.log(err))
             }
        },
     })
@@ -163,7 +175,6 @@ const makeUpdateProfileInfoVue = function() {
             newEmail: '',
             newAge: '',
             newLocation: '',
-            newStatus: '', 
        },
        computed: {
             state() {
@@ -178,10 +189,16 @@ const makeUpdateProfileInfoVue = function() {
        },
        methods: {
             updateInfo: function() {
-
-                // todo to check first that empty strings aren't sent!!!!
-
-                console.log("about to fetch")
+                //checking if strings are empty and assigning previous values if empty
+                if(this.newEmail === ''){
+                    this.newEmail = client.profileData.userEmail
+                }
+                if (this.newAge === ''){
+                    this.newAge = client.profileData.age
+                }
+                if (this.newLocation === ''){
+                    this.newLocation = client.profileData.location
+                }
                 fetch('/api/update-user-info/', {
                     method: "POST",
                     headers: {
@@ -193,12 +210,10 @@ const makeUpdateProfileInfoVue = function() {
                         newEmail: this.newEmail,
                         newAge: this.newAge,
                         newLocation: this.newLocation, 
-                        newStatus: this.newStatus
                     })
                 }).then((res) => {
-                    console.log("Should have sent updated info", this.newEmail,this.newAge, this.newLocation, this.newStatus)
                     if (!res.ok) {
-                        throw new Error('Failed to add tag')
+                        throw new Error('Failed to add updated info')
                     } else {
                         return res.json()
                     }
@@ -208,7 +223,6 @@ const makeUpdateProfileInfoVue = function() {
                     this.newEmail = '';
                     this.newAge = '';
                     this.newLocation = '';
-                    this.newStatus = '';
                 }).catch(err => console.log(err))
             }
        },

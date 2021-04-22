@@ -39,6 +39,15 @@
   height: 40px;
 }
 
+#defaultProfileIcon{
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  margin-bottom: 0.25rem;
+  margin-top: 0.25rem;
+  width: 40px;
+  height: 40px;
+}
+
 /* Comment section */
 .comment-section {
   max-height: 300px;
