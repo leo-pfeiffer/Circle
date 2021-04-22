@@ -4,11 +4,10 @@
 
 import {client, setState} from './clientUtils.js'
 
-const toggleEntryType = function() {
-
-}
-
-const makeLoginVue = function() {
+/**
+ * This function contains the functionality for user login, autheticate and new user registration.
+ * */
+const makeLoginVue = function () {
     const loginVue = new Vue({
         el: '#login',
         data: {
@@ -45,7 +44,7 @@ const makeLoginVue = function() {
                 // set the user key
                 client.userKey = btoa(this.username + ':' + this.password)
 
-                fetch('/api/login',{
+                fetch('/api/login', {
                     headers: {
                         "Authorization": "Basic " + client.userKey,
                         "Content-Type": "application/json"
@@ -58,18 +57,17 @@ const makeLoginVue = function() {
                     }
                 }).then((jsn) => {
 
-                    // todo save entire User object to client.userData for convenience
                     client.userData.name = jsn.user.userName;
                     client.userData.id = jsn.user.id
 
                     // direct user to dashboard
                     setState('dashboard');
                 }).catch(err => {
-                    console.log('Login failed.', err)
+                    //console.log('Login failed.', err)
                     this.message = "Wrong username or password."
                 })
             },
-            register: function() {
+            register: function () {
 
                 this.message = ''
 
@@ -100,13 +98,13 @@ const makeLoginVue = function() {
                             return res.json()
                         }
                     }).then((jsn) => {
-                        console.log('Registration successful.')
+                        //console.log('Registration successful.')
                         this.message = "Registration successful. Please login.";
                         this.toggleEntryType();
                     }).catch((err) => console.log(err))
                 }
             },
-            saveUploadedPicture: function(event) {
+            saveUploadedPicture: function (event) {
                 if (!event.target.files.length) return;
                 const imgFile = event.target.files[0]
 
@@ -121,7 +119,7 @@ const makeLoginVue = function() {
                 // read the imgFile in as data URL
                 reader.readAsDataURL(imgFile);
             },
-            toggleEntryType: function() {
+            toggleEntryType: function () {
                 // reset data
                 this.username = "";
                 this.password = "",
@@ -132,7 +130,7 @@ const makeLoginVue = function() {
                 this.location = "";
                 this.picture = null;
 
-                this.entryType = this.entryType === 'login' ? 'register': 'login';
+                this.entryType = this.entryType === 'login' ? 'register' : 'login';
             }
         }
     })
