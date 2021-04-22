@@ -434,7 +434,7 @@
                                         <h5>My interests:</h5>
                                         <div class="custom-tag-container">
                                             <!-- display existing tags -->
-                                            <span class="custom-tag" v-for="tag in userData.interests" v-bind:class="[ isOwnProfile ? 'editable' : '']">
+                                            <span class="custom-tag" v-for="tag in profileData.interests" v-bind:class="[ isOwnProfile ? 'editable' : '']">
                                                 <button class="btn btn-info btn-circle btn-sm font-weight-bolder" v-on:click="removeTag(tag)" v-show="isOwnProfile">&times;</button> {{ tag }}
                                             </span>
                                             <!-- add tags -->
