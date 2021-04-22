@@ -189,7 +189,9 @@ const makeUpdateProfileInfoVue = function() {
        },
        methods: {
             updateInfo: function() {
-                //checking if strings are empty and assigning previous values if empty
+                //checking if strings are empty while updating user info
+                //and assigning current values if empty
+
                 if(this.newEmail === ''){
                     this.newEmail = client.profileData.userEmail
                 }

@@ -2,7 +2,7 @@
  * This file contains utility functions used on the client side as well as information that is shared across
  * files on the client side.
  * */
- import {
+import {
     getCommunityStats,
     getUserComments
 } from './charts.js'
@@ -17,7 +17,7 @@ export const client = Vue.observable({
         id: '',
         userName: '',
         picture: '',
-        userEmail: '' ,
+        userEmail: '',
         location: '',
         interests: [],
         gender: '',
@@ -36,7 +36,7 @@ export const client = Vue.observable({
         id: '',
         userName: '',
         picture: '',
-        userEmail: '' ,
+        userEmail: '',
         location: '',
         interests: [],
         gender: '',
@@ -90,12 +90,9 @@ export const setState = function (newState) {
         throw new Error(`Invalid state: ${newState}. Must be one of ${ALLOWED_STATES}`)
     }
 
-    // here, we can gather all sorts of things that need to happen if a client transitions into a given state
+    // all the changes that need to happen if a client transitions into a given state are gathered here
     // Ideally, we would only like to call other functions from here in order to not clutter up this function with
     // unrelated code snippets.
-    if (newState === "login") {
-        // todo
-    }
 
     else if (newState === "dashboard") {
         search.term = ''
@@ -134,10 +131,10 @@ export const setState = function (newState) {
         search.term = ''
         leaveRoom(client.communityData.id);
         getUpdateCalendar();
-        //resetProfileData();
+        resetProfileData();
     }
 
-    // finally, set the new State
+    //setting the state
     client.state = newState;
 }
 
@@ -152,6 +149,7 @@ export const updateCalendar = Vue.observable({
  * Vue observable for calendar updates.
  * */
 export const eventData = Vue.observable({
+    //TODO
     event: null
 })
 
@@ -176,6 +174,7 @@ export const getUpdateCalendar = function () {
         updateCalendar.events = [];
 
         jsn.forEach(element => {
+            //retrieving only the required details from the objects returned
             let obj = {}
             obj.id = element.event.id
             obj.title = element.event.title
@@ -192,6 +191,7 @@ export const getUpdateCalendar = function () {
             }
             obj.datetime = new Date(element.event.datetime)
 
+            //storing the returned objects in the Vue observable
             updateCalendar.events.push(obj)
         })
     }).catch(err => console.log(err))
@@ -208,7 +208,6 @@ export const mostRecentActivities = Vue.observable({
  * Get the most recent activities to display on the dashboard.
  * */
 const getMostRecentActivities = function () {
-
     fetch('/api/get-recent-comments/', {
         method: "POST",
         headers: {
@@ -216,7 +215,7 @@ const getMostRecentActivities = function () {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            // number of activities to get
+            //number of activities to get
             num: 10
         })
     }).then((res) => {
@@ -228,6 +227,7 @@ const getMostRecentActivities = function () {
     }).then((jsn) => {
         mostRecentActivities.activities = [];
         jsn.forEach(activity => {
+            //retrieving only the required details from the objects returned
             let obj = {}
             obj.community = { id: activity.community.id, name: activity.community.name };
             obj.thread = { id: activity.thread.id, name: activity.thread.title }
@@ -236,25 +236,25 @@ const getMostRecentActivities = function () {
                 time: formatDateTime(new Date(activity.comment.text.datetime)),
                 text: activity.comment.text.text
             }
+
+            //storing the returned objects in the Vue observable
             mostRecentActivities.activities.push(obj)
         })
-        // this.mostRecentActivities = jsn;
     }).catch(err => console.log(err))
 }
 
 /**
- * Vue observable for the most recent activities.
+ * Vue observable for the most recently active communities.
  * */
 export const mostRecentCommunities = Vue.observable({
-    communities: [],
-    recentCommunities: []
+    communities: [],      //for header display 
+    recentCommunities: [] //for sidebar display
 })
 
 /**
  * Get the most recent activities to display on the dashboard.
  * */
 const getMostRecentlyActiveCommunities = function () {
-
     fetch('/api/get-recent-communities/', {
         method: "POST",
         headers: {
@@ -262,7 +262,7 @@ const getMostRecentlyActiveCommunities = function () {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            // at most 4 communities
+            //number of communities
             num: 4
         })
     }).then((res) => {
@@ -276,17 +276,22 @@ const getMostRecentlyActiveCommunities = function () {
         mostRecentCommunities.recentCommunities = [];
 
         jsn.forEach(comm => {
+
+            //storing the returned objects in the Vue observable for header 
             mostRecentCommunities.communities.push(comm)
+
+            //retrieving only the required details from the objects returned
             let obj = {}
             obj.name = comm.communityName
             obj.id = comm.id
+            //storing the returned objects in the Vue observable for sidebar
             mostRecentCommunities.recentCommunities.push(obj)
         })
     }).catch(err => console.log(err))
 }
 
 /**
- * Vue observable for all the communities 
+ * Vue observable for all the communities the user is a member of.
  * */
 export const allCommunities = Vue.observable({
     communities_all: [],
@@ -294,11 +299,9 @@ export const allCommunities = Vue.observable({
 
 
 /**
- * Get all the communities
+ * Get all the communities the user is a member of.
  * */
-
 const getAllCommunities = function () {
-
     fetch('/api/get-member-communities', {
         method: "GET",
         headers: {
@@ -313,25 +316,28 @@ const getAllCommunities = function () {
         }
     }).then((jsn) => {
         allCommunities.communities_all = [];
+
         jsn.forEach(el => {
+            //retrieving only the required details from the objects returned
             let obj = {};
             obj.name = el.communityName
             obj.id = el.id
 
+            //storing the returned objects in the Vue observable
             allCommunities.communities_all.push(obj)
         })
     }).catch(err => console.log(err))
 }
 
 /**
- * Vue observable for all the owned communities 
+ * Vue observable for all the communities owned by the current user.
  * */
 export const allOwnedCommunities = Vue.observable({
     ownedCommunities: [],
 })
 
 /**
- * Get a community with all its data and save it to the client observable.
+ * Get all communities owned by the current user.
  * */
 const getAllOwnedCommunity = function () {
     fetch('/api/get-owned-communities', {
@@ -348,11 +354,14 @@ const getAllOwnedCommunity = function () {
         }
     }).then((jsn) => {
         allOwnedCommunities.ownedCommunities = [];
+
         jsn.forEach(el => {
+            //retrieving only the required details from the objects returned
             let obj = {};
             obj.name = el.communityName
             obj.id = el.id
 
+            //storing the returned objects in the Vue observable
             allOwnedCommunities.ownedCommunities.push(obj)
         })
     }).catch(err => console.log(err))
@@ -361,6 +370,7 @@ const getAllOwnedCommunity = function () {
 
 /**
  * Get a community with all its data and save it to the client observable.
+ * @param {string} communityId
  * */
 const getCommunity = function (communityId) {
 
@@ -380,6 +390,7 @@ const getCommunity = function (communityId) {
             return res.json();
         }
     }).then((jsn) => {
+        //storing the returned data in the client observable
         client.communityData = jsn;
     }).catch(err => console.log(err))
 }
@@ -392,16 +403,15 @@ export const goToCommunity = function (communityId) {
     client.communityData.id = communityId;
     getCommunity(communityId)
     getCommunityStats(communityId)
-    // go to community with id `communityId`
     setState('community')
     joinRoom(communityId)
 }
 
 /**
 * Get a user with all its data and save it to the client observable.
+* @param {string} userId
 * */
 const getUser = function (userId) {
-
     fetch('/api/get-user-object/', {
         method: "POST",
         headers: {
@@ -418,8 +428,8 @@ const getUser = function (userId) {
             return res.json();
         }
     }).then((jsn) => {
+        //storing the returned data in the client observable
         client.profileData = jsn;
-        console.log('getUser', jsn.id)
     }).catch(err => console.log(err))
 }
 
@@ -431,7 +441,6 @@ export const goToProfile = function (userId) {
     client.profileData.id = userId
     getUser(userId)
     getUserComments()
-    // go to profile with of `userId`
     setState('profile')
 }
 
@@ -492,7 +501,7 @@ export const addAuthToSocket = function () {
 
 /**
  * Make the actual socket, i.e. instantiate and connect it.
- * Also define action handlers of socket.io
+ * Define action handlers of socket.io
  * */
 export const makeSocket = function () {
     if (client.userData.name !== '' || client.userData.name !== null) {
