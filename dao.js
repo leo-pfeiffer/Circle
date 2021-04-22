@@ -513,23 +513,44 @@ let removeTagUser = function (userId, tag) {
  * @return {Promise}
  * */
  let getNumberComments = async function(userId) {
+
     const pipeline = [
+        // match
         {
-            $match: {"users.id": userId}
+            $match: {
+                "users.id": userId
+            },
         },
         {
-            $unwind: {path: '$threads'}
+            $unwind: {
+                path: '$threads'
+            }
         },
         {
-            $unwind: {path: '$threads.comments'}
+            $unwind: {
+                path: '$threads.comments'
+            }
         },
         {
-            $group: {_id: "$threads.comments", communityId: {$first: "$id"}, communityName: {$first: "$communityName"}}
+            $match: {
+                "threads.comments.author.id": userId
+            },
         },
         {
-            $count: "commentCount"
+            $group: {
+                _id: "$communityName",
+                communityId: {$first: "$id"},
+                communityName: {$first: "$communityName"},
+                commentCount: {$sum: 1}
+            }
+        },
+        {
+            $project: {
+                _id: 0
+            }
         }
     ]
+
     return communities_collection.aggregate(pipeline);
 }
 
@@ -566,17 +587,35 @@ let getNumberCommentsOfCommunity = async function(communityId) {
  * */
  let getNumberThreads = async function(userId) {
     const pipeline = [
+        // match
         {
-            $match: {"users.id": userId}
+            $match: {
+                "users.id": userId
+            },
+        },
+        // unwind the user array
+        {
+            $unwind: {
+                path: '$threads'
+            }
         },
         {
-            $unwind: {path: '$threads'}
+            $match: {
+                "threads.author.id": userId
+            },
         },
         {
-            $group: {_id: "$threads", communityId: {$first: "$id"}, communityName: {$first: "$communityName"}}
+            $group: {
+                _id: "$communityName",
+                communityId: {$first: "$id"},
+                communityName: {$first: "$communityName"},
+                threadCount: {$sum: 1}
+            }
         },
         {
-            $count: "threadCount"
+            $project: {
+                _id: 0
+            }
         }
     ]
     return communities_collection.aggregate(pipeline);

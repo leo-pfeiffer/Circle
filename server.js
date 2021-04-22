@@ -688,7 +688,7 @@ let updateUserProfilePicture = async (req, res, next) => {
             await cursor.forEach(el => {
                 numComments.push(el);
             })
-            return numComments[0]
+            return numComments
         })
         .then(numComments => res.status(200).json(numComments))
         .catch(err => {
@@ -705,21 +705,21 @@ let updateUserProfilePicture = async (req, res, next) => {
  * */
  let getNumberThreads = function (req, res, next) {
     
-    const userId = req.userId
+    const userId = req.body.userId
 
     dao.getNumberThreads(userId)
-    .then(async function(cursor) {
-        const numThreads = [];
-        await cursor.forEach(el => {
-            numThreads.push(el);
+        .then(async function(cursor) {
+            const numThreads = [];
+            await cursor.forEach(el => {
+                numThreads.push(el);
+            })
+            return numThreads
         })
-        return numThreads[0]
-    })
-    .then(numThreads => res.status(200).json(numThreads))
-    .catch(err => {
-        console.log(`Could not get number of threads`, err);
-        res.status(400).json({ msg: `Could not get number of threads` });
-    })
+        .then(numThreads => res.status(200).json(numThreads))
+        .catch(err => {
+            console.log(`Could not get number of threads`, err);
+            res.status(400).json({ msg: `Could not get number of threads` });
+        })
 };
 
 
@@ -1118,8 +1118,8 @@ app.post('/api/get-search-results/', authenticate, getSearchResults);
 
 // get a user object by ID
 app.post('/api/get-user-object/', authenticate, getUserObject);
-app.get('/api/get-user-comments/', authenticate, getNumberComments);
-app.get('/api/get-user-threads/', authenticate, getNumberThreads);
+app.post('/api/get-user-comments/', authenticate, getNumberComments);
+app.post('/api/get-user-threads/', authenticate, getNumberThreads);
 app.post('/api/add-tag-user/', authenticate, addTagUser);
 app.post('/api/remove-tag-user/', authenticate, removeTagUser);
 app.post('/api/update-user-info/', authenticate, updateUserInfo);
