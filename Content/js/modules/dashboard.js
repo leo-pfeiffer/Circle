@@ -12,6 +12,9 @@ import {
     updateCalendar
 } from './clientUtils.js'
 
+/**
+* To make the Dashboard Header
+* */
 const makeDashboardHeaderVue = function () {
     const dashboardHeaderVue = new Vue({
         el: '#dashboard-header',
@@ -24,7 +27,9 @@ const makeDashboardHeaderVue = function () {
     })
 }
 
-
+/**
+* To display the most recently active community 
+* */
 const makeShortlistVue = function () {
     const shortlistVue = new Vue({
         el: '#shortlist',
@@ -46,6 +51,9 @@ const makeShortlistVue = function () {
     })
 }
 
+/**
+* To display the most recently activity in the feed. 
+* */
 const makeFeedVue = function () {
     const feedVue = new Vue({
         el: '#feed',
@@ -65,7 +73,9 @@ const makeFeedVue = function () {
         }
     })
 }
-
+/**
+* To display calendar in the dashboard
+* */
 const makeCalendarPreviewVue = function () {
     const makeCalendarPreview = new Vue({
         el: '#calendar-preview',
@@ -108,7 +118,7 @@ const makeCalendarPreviewVue = function () {
             timeOfDayFormatter: function (datetime) {
                 return timeOfDayFormatter(datetime)
             },
-            setSelectedEvent: function(event) {
+            setSelectedEvent: function (event) {
                 eventData.event = event
             },
             goToProfile: function (userId) {
@@ -118,6 +128,9 @@ const makeCalendarPreviewVue = function () {
     })
 }
 
+/**
+* To get display/get random jokes 
+* */
 const makeJokeVue = function () {
     const jokeVue = new Vue({
         el: '#have-a-laugh',
