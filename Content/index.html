@@ -1145,16 +1145,19 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <div>Admin: {{ event.organiser.username }}</div>
+                                    <div><i class="fas fa-user"></i> <strong>Organiser:</strong> {{ event.organiser.username }}</div>
                                     <hr>
-                                    <div>Community: {{ event.community.name }}</div>
+                                    <div><i class="fas fa-users"></i> <strong>Community:</strong> {{ event.community.name }}</div>
                                     <hr>
-                                    <div>{{ event.description }}</div>
-                                    <div v-show="event.location"><hr>Location: {{ event.location }}</div>
-                                    <div v-show="event.link"><hr>URL: <a v-bind:href="event.link">{{ event.link }}</a></div>
+                                    <div><i class="fas fa-info"></i> <strong>Info:</strong> {{ event.description }}</div>
+                                    <div v-show="event.location"><hr><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> {{ event.location }}</div>
+                                    <div v-show="event.link"><hr><i class="fas fa-globe"></i> <strong>URL:</strong> <a v-bind:href="event.link">{{ event.link }}</a></div>
 
                                     <hr>
-                                    <button v-on:click="getMap">Get Map</button>
+                                    <div class="text-warning">
+                                        Drag the map to see the weather forecast for the event!
+                                    </div>
+                                    <hr>
                                     <div>
                                         <div id="weather-map"></div>
                                         <input type="date" id="start-date">

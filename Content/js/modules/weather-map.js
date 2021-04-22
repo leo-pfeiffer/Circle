@@ -97,11 +97,9 @@ export const makeMap = function() {
             }
         } else {
             const weatherRequestUrl = WEATHER_URL.replace("$_coordinate", coord);
-            // console.log(weatherRequestUrl);
             const res = await fetch(weatherRequestUrl);
             const data = await res.json();
             const weatherInfo = data.currentConditions;
-            // console.log(data);
             const popup = L.popup();
             let _html = "";
             _html += `<p class='weather-info'>${weatherInfo.conditions}</p>`;
@@ -114,7 +112,7 @@ export const makeMap = function() {
     });
 }
 
-export const resetMap = function() {
+export const destroyMap = function() {
     if (map && map.remove) {
         map.off();
         map.remove();
