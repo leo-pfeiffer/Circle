@@ -141,9 +141,7 @@ export const getUserComments = function () {
             return res.json();
         }
     }).then((jsn) => {
-        console.log(jsn)
         userStats.Comments = jsn;
-        console.log(userStats)
         return userStats
     }).then(() => {
         // create the chart
@@ -168,9 +166,7 @@ export const getUserComments = function () {
             return res.json();
         }
     }).then((jsn) => {
-        console.log(jsn)
         userStats.Threads = jsn;
-        console.log(userStats)
         return userStats
     }).then(() => {
         // create the chart

@@ -2,7 +2,7 @@
  * This file contains the vue components of the login.
  * */
 
-import {client, makeSocket, setState} from './clientUtils.js'
+import {client, setState} from './clientUtils.js'
 
 const toggleEntryType = function() {
 
@@ -61,7 +61,6 @@ const makeLoginVue = function() {
                     // todo save entire User object to client.userData for convenience
                     client.userData.name = jsn.user.userName;
                     client.userData.id = jsn.user.id
-                    makeSocket();
 
                     // direct user to dashboard
                     setState('dashboard');

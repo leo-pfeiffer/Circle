@@ -1,4 +1,4 @@
-import {client, goToCommunity, goToProfile, joinRoom, search, setState} from "./clientUtils.js";
+import {client, goToCommunity, goToProfile, search, setState} from "./clientUtils.js";
 
 /**
  * This file contains the vue components of the search results.
