@@ -169,10 +169,16 @@ const makeUpdateProfileInfoVue = function() {
        },
        methods: {
             updateInfo: function() {
-
-                // todo to check first that empty strings aren't sent!!!!
-
-                console.log("about to fetch")
+                //checking if strings are empty and assigning previous values if empty
+                if(this.newEmail === ''){
+                    this.newEmail = client.profileData.userEmail
+                }
+                if (this.newAge === ''){
+                    this.newAge = client.profileData.age
+                }
+                if (this.newLocation === ''){
+                    this.newLocation = client.profileData.location
+                }
                 fetch('/api/update-user-info/', {
                     method: "POST",
                     headers: {
