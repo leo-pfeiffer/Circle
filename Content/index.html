@@ -545,7 +545,7 @@
                                                         <div>
                                                             <div>
                                                                 <a class="collapsed" href="#" data-toggle="collapse" data-target="#collapseUploadSection" aria-expanded="true" aria-controls="collapseStats">
-                                                                    <button class="btn btn-sm btn-danger float-right" v-on:click="uploadThreadPicture">
+                                                                    <button class="btn btn-sm btn-danger float-right">
                                                                         <i class="text-white fas fa-camera"></i> Add picture
                                                                     </button>
                                                                 </a>
@@ -555,7 +555,7 @@
                                                                     <div class="form-group">
                                                                         <input type="file" id="thread-picture-upload" accept="image/*" v-on:change="saveThreadPicture"/>
                                                                     </div>
-                                                                    <img v-bind:src="threadPicture">
+                                                                    <img v-bind:src="newThread.picture" class="img-width-small">
                                                                 </form>
                                                             </div>
                                                             
@@ -588,6 +588,7 @@
                                                                 <div class="col mr-2">
                                                                     <div class="text-xs text-warning mb-1">{{ thread.author.userName }} <span class="text-gray-700">{{ thread.time }}</span></div>
                                                                     <div>{{ thread.text }}</div>
+                                                                    <div v-show="thread.picture !== '' && thread.picture !== null"><img v-bind:src="thread.picture" class="img-width-small"></div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -938,7 +939,7 @@
                                                         <input type="file" id="profile-picture-upload-registration" accept="image/*" v-on:change="saveUploadedPicture"/>
                                                     </div>
 
-                                                    <img v-bind:src="picture">
+                                                    <img v-bind:src="picture" class="img-width-small">
 
                                                     <p class="text-white">{{ message }}</p>
                                                     <a class="btn btn-warning btn-user btn-block" v-on:click="register">Register</a>
@@ -1008,7 +1009,7 @@
                                             <label for="community-picture-upload">Upload a community picture:</label>
                                             <input type="file" id="community-picture-upload" accept="image/*" v-on:change="saveUploadedPicture"/>
                                         </div>
-                                        <img v-bind:src="newCommunity.picture">
+                                        <img v-bind:src="newCommunity.picture" class="img-width-small">
                                         <div v-show="message !== ''">
                                             <hr>
                                             <p v-bind:class="[ success ? 'text-success' : 'text-danger']">{{ message }}</p>
@@ -1041,7 +1042,7 @@
                                         <div class="form-group">
                                             <input type="file" id="profile-picture-upload" accept="image/*" v-on:change="saveUploadedPicture"/>
                                         </div>
-                                        <img v-bind:src="newPicture">
+                                        <img v-bind:src="newPicture" class="img-width-small">
                                     </form>
 
                                 </div>

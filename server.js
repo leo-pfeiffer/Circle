@@ -189,6 +189,7 @@ let createThread = async (req, res, next) => {
     let body = req.body;
     let text = body.thread.text;
     let title = body.thread.title;
+    let picture = body.thread.picture
     let communityId = body.communityId
 
     //creating new instances of class User, Community and Thread
@@ -203,6 +204,7 @@ let createThread = async (req, res, next) => {
         });
 
     let thread = new Thread(text, title, author)
+    thread.picture = picture
 
     //adding new Thread to the database
     dao.addThreadToCommunity(communityId, thread).then(() => {

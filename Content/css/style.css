@@ -60,6 +60,12 @@
   overflow-y: auto;
 }
 
+/* User image */
+.img-width-small {
+  max-width: 200px;
+  max-height: 200px;
+}
+
 /* Tag layout (e.g. interest, group tags, ...) */
 .custom-tag {
   border: black solid;

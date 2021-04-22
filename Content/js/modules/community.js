@@ -302,9 +302,9 @@ const makeCommunityFeedVue = function() {
             newThread: {
                 title: '',
                 text: '',
+                picture: null,
             },
             newThreadMessage: '',
-            threadPicture: null,
         },
         computed: {
             state() {
@@ -324,7 +324,7 @@ const makeCommunityFeedVue = function() {
             
                 // onload set imgUpload to the relevant file
                 reader.onload = (e) => {
-                    this.threadPicture = e.target.result;
+                    this.newThread.picture = e.target.result;
                 }
             
                 // read the imgFile in as data URL
@@ -341,6 +341,7 @@ const makeCommunityFeedVue = function() {
                     let thread = {
                         text: this.newThread.text,
                         title: this.newThread.title,
+                        picture: this.newThread.picture
                     }
 
                     fetch('/api/create-thread/', {
@@ -363,11 +364,11 @@ const makeCommunityFeedVue = function() {
                         // trigger reload of the current community data
                         console.log(jsn)
                         goToCommunity(this.communityData.id)
-                        this.newThread = {title: '', text: ''}
+                        this.newThread = {title: '', text: '', picture: ''}
                     }).catch(err => console.log(err))
 
                 } else {
-                    this.newThread = {title: '', text: ''}
+                    this.newThread = {title: '', text: '', picture: null}
                     this.newThreadMessage = 'Please enter both a title and a text.'
                     setTimeout(this.resetNewThreadMessage, 5000);
                 }
