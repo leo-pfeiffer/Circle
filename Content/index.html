@@ -418,7 +418,8 @@
                                             Update picture <i class="text-white fas fa-camera"></i>
                                         </button>
                                         <div class="row">
-                                                <img v-bind:src="profileData.picture" class="large-user-img"/>
+                                            <i class="fas fa-user fa-2x text-gray-300" id="defaultProfileIcon" v-show="profileData.picture === ''"></i>
+                                            <img v-bind:src="profileData.picture" class="small-user-img is-link" v-show="profileData.picture !== ''">
                                                 <h2 class="text-info">{{profileData.userName}}</h2>
                                         </div>
                                     

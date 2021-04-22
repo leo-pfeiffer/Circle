@@ -22,7 +22,6 @@ export const client = Vue.observable({
         interests: [],
         gender: '',
         age: '',
-        status: '',
     },
     communityData: {
         id: '',
@@ -42,7 +41,6 @@ export const client = Vue.observable({
         interests: [],
         gender: '',
         age: '',
-        status: '',
     }
 })
 

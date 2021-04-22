@@ -155,7 +155,6 @@ const makeUpdateProfileInfoVue = function() {
             newEmail: '',
             newAge: '',
             newLocation: '',
-            newStatus: '', 
        },
        computed: {
             state() {
@@ -185,10 +184,9 @@ const makeUpdateProfileInfoVue = function() {
                         newEmail: this.newEmail,
                         newAge: this.newAge,
                         newLocation: this.newLocation, 
-                        newStatus: this.newStatus
                     })
                 }).then((res) => {
-                    console.log("Should have sent updated info", this.newEmail,this.newAge, this.newLocation, this.newStatus)
+                    console.log("Should have sent updated info", this.newEmail,this.newAge, this.newLocation)
                     if (!res.ok) {
                         throw new Error('Failed to add tag')
                     } else {
@@ -200,7 +198,6 @@ const makeUpdateProfileInfoVue = function() {
                     this.newEmail = '';
                     this.newAge = '';
                     this.newLocation = '';
-                    this.newStatus = '';
                 }).catch(err => console.log(err))
             }
        },
