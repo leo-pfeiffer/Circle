@@ -16,18 +16,15 @@ const client = new MongoClient(fullurl, { useUnifiedTopology: true });
  * Retrieving the collection names from config.db file.
  * @type {Collection}
  * */
-const users_data = config.collection[0];
-const communities_data = config.collection[1];
-const threads_data = config.collection[2];
-const comments_data = config.collection[3];
-const events_data = config.collection[4];
-const user_passwords_data = config.collection[5];
+const users_data = config.collection.user_data;
+const communities_data = config.collection.communities_data;
+const user_passwords_data = config.collection.user_passwords;
 
 /**
  * MongoDB collections.
  * @type {Collection}
  * */
-let collection, users_collection, communities_collection, user_passwords_collection
+let users_collection, communities_collection, user_passwords_collection
 
 /**
  * Initialise the database.
