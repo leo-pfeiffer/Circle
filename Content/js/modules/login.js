@@ -4,10 +4,9 @@
 
 import {client, makeSocket, setState} from './clientUtils.js'
 
-const toggleEntryType = function() {
-
-}
-
+/**
+ * This function contains the functionality for user login, autheticate and new user registration.
+ * */
 const makeLoginVue = function() {
     const loginVue = new Vue({
         el: '#login',
@@ -58,7 +57,6 @@ const makeLoginVue = function() {
                     }
                 }).then((jsn) => {
 
-                    // todo save entire User object to client.userData for convenience
                     client.userData.name = jsn.user.userName;
                     client.userData.id = jsn.user.id
                     makeSocket();
@@ -66,7 +64,7 @@ const makeLoginVue = function() {
                     // direct user to dashboard
                     setState('dashboard');
                 }).catch(err => {
-                    console.log('Login failed.', err)
+                    //console.log('Login failed.', err)
                     this.message = "Wrong username or password."
                 })
             },
@@ -101,7 +99,7 @@ const makeLoginVue = function() {
                             return res.json()
                         }
                     }).then((jsn) => {
-                        console.log('Registration successful.')
+                        //console.log('Registration successful.')
                         this.message = "Registration successful. Please login.";
                         this.toggleEntryType();
                     }).catch((err) => console.log(err))

@@ -129,7 +129,7 @@ const makeCalendarPreviewVue = function () {
 }
 
 /**
-* To get display/get random jokes 
+* To display/get random jokes 
 * */
 const makeJokeVue = function () {
     const jokeVue = new Vue({
