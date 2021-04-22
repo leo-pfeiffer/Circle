@@ -2,7 +2,7 @@
  * This file contains the vue components of the login.
  * */
 
-import { client, makeSocket, setState } from './clientUtils.js'
+import {client, setState} from './clientUtils.js'
 
 /**
  * This function contains the functionality for user login, autheticate and new user registration.
@@ -37,7 +37,7 @@ const makeLoginVue = function () {
             }
         },
         methods: {
-            login: function () {
+            login: function() {
 
                 this.message = "";
 
@@ -59,7 +59,6 @@ const makeLoginVue = function () {
 
                     client.userData.name = jsn.user.userName;
                     client.userData.id = jsn.user.id
-                    makeSocket();
 
                     // direct user to dashboard
                     setState('dashboard');
@@ -124,7 +123,7 @@ const makeLoginVue = function () {
                 // reset data
                 this.username = "";
                 this.password = "",
-                    this.passwordConfirm = "";
+                this.passwordConfirm = "";
                 this.email = "";
                 this.gender = "";
                 this.age = "";

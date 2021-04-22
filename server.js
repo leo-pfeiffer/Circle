@@ -53,12 +53,17 @@ let authenticate = async function (req, res, next) {
 };
 
 // ===== Socket IO =====
+// We started implementing Socket IO to allow instant updates of pages and more responsivenes.
+// However, as the code is actually working (we're just not making any use of it), we decided to leave it in.
+// If we had more time, we could have for instance implemented a chat room inside the communities.
 // authentication using basicAuth
 io.use((socket, next) => {
 
     const user = socket.handshake.auth
 
-    // todo -> check if user is in db and password is correct
+    // As we're not actually using socket IO, we did not put in the actual authentication here.
+    // If this were to be implemented, it would look pretty much like the authenticate method above
+    // that we're actually using for express.
     let validUser = true;
 
     if (!validUser) {
@@ -71,11 +76,13 @@ io.use((socket, next) => {
 
 // Connection handler
 io.on('connection', (socket) => {
+
+    // do something when a user connects
     console.log(socket.handshake.auth.username, 'connected');
 
     // Basic ping event handler for testing
     socket.on('ping', msg => {
-        console.log('received ping from',)
+        console.log('received ping from')
         io.emit('pong', { data: 'pong' });
     })
 
@@ -83,9 +90,9 @@ io.on('connection', (socket) => {
     socket.on('join', data => {
         if (!socket.rooms.has(data.room)) {
             socket.join(data.room);
-            let text = `${socket.handshake.auth.username} joined room ${data.room}`;
-            io.to(data.room).emit('notify', { data: text })
-            console.log(text)
+            // here we could add something that would happen when a user joins a room, e.g. send a message to the room:
+            // let text = `${socket.handshake.auth.username} joined room ${data.room}`;
+            // io.to(data.room).emit('notify', { data: text })
         }
     })
 
@@ -93,15 +100,16 @@ io.on('connection', (socket) => {
     socket.on('leave', data => {
         if (socket.rooms.has(data.room)) {
             socket.leave(data.room);
-            let text = `${socket.handshake.auth.username} left room ${data.room}`;
-            io.to(data.room).emit('notify', { data: text })
-            console.log(text)
+            // here we could add something that would happen when a user joins a room, e.g. send a message to the room:
+            // let text = `${socket.handshake.auth.username} left room ${data.room}`;
+            // io.to(data.room).emit('notify', { data: text })
         }
     })
 
     // Handler for disconnect events
     socket.on('disconnect', (reason) => {
-        console.log(socket.handshake.auth.username, 'disconnected')
+        // here we could add something that would happen when a user joins a room, e.g.
+        // console.log(socket.handshake.auth.username, 'disconnected')
     })
 })
 

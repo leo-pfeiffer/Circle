@@ -98,7 +98,6 @@ export const setState = function (newState) {
         search.term = ''
         getMostRecentActivities();
         getMostRecentlyActiveCommunities();
-        leaveRoom(client.communityData.id);
         resetProfileData();
         getUpdateCalendar();
         getAllCommunities();
@@ -112,24 +111,20 @@ export const setState = function (newState) {
 
     else if (newState === "profile") {
         search.term = ''
-        leaveRoom(client.communityData.id);
     }
 
     else if (newState === "logout") {
         search.term = ''
-        leaveRoom(client.communityData.id);
         resetClientData();
         resetProfileData();
     }
 
     else if (newState === "search") {
-        leaveRoom(client.communityData.id);
         resetProfileData();
     }
 
     else if (newState === "calendar") {
         search.term = ''
-        leaveRoom(client.communityData.id);
         getUpdateCalendar();
         resetProfileData();
     }
@@ -247,7 +242,7 @@ const getMostRecentActivities = function () {
  * Vue observable for the most recently active communities.
  * */
 export const mostRecentCommunities = Vue.observable({
-    communities: [],      //for header display 
+    communities: [],      //for header display
     recentCommunities: [] //for sidebar display
 })
 
@@ -277,7 +272,7 @@ const getMostRecentlyActiveCommunities = function () {
 
         jsn.forEach(comm => {
 
-            //storing the returned objects in the Vue observable for header 
+            //storing the returned objects in the Vue observable for header
             mostRecentCommunities.communities.push(comm)
 
             //retrieving only the required details from the objects returned
@@ -404,7 +399,6 @@ export const goToCommunity = function (communityId) {
     getCommunity(communityId)
     getCommunityStats(communityId)
     setState('community')
-    joinRoom(communityId)
 }
 
 /**
@@ -484,24 +478,18 @@ export const formatDateTime = function (dateTime) {
     return str
 }
 
-// Socket.io related utility functions ======
+// ====== Socket.io related utility functions ======
+// As explained in server.js we didn't end up using Socket.io but decided to leave the code in anyway to show how
+// we could have extended the project.
 /**
  * Create the variable that will eventually contain the socket connection.
  * */
 let socket = null;
 
 /**
- * Add authentication to socket.
- * */
-export const addAuthToSocket = function () {
-    let username = client.userData.name
-    let password = client.userData.password
-    socket.auth = { username: username, password: password };
-}
-
-/**
- * Make the actual socket, i.e. instantiate and connect it.
- * Define action handlers of socket.io
+ * This function would be called after the user successfully logged in. It would create an actual
+ * socket.io instance, i.e. instantiate and connect it.
+ * Also define action handlers of socket.io
  * */
 export const makeSocket = function () {
     if (client.userData.name !== '' || client.userData.name !== null) {
@@ -511,7 +499,7 @@ export const makeSocket = function () {
         socket.connect();
 
         socket.on('notify', msg => {
-            console.log(msg.data);
+            // here we could implement something that would happen if we received a notify event.
         })
 
     } else {
@@ -520,12 +508,22 @@ export const makeSocket = function () {
 }
 
 /**
- * Destroy the socket and reset it to it's initial state.
+ * Destroy the socket and reset it to it's initial state. This would be called when the user logs out.
  * */
 export const destroySocket = function () {
     if (socket.connected) socket.disconnect();
     socket = null;
-    console.log('disconnected from socket')
+    // here we could add something that would happen when we disconnect from a socket
+}
+
+/**
+ * Add authentication to socket.
+ * */
+export const addAuthToSocket = function () {
+    // not in use, hence we send a mock password.
+    let username = client.userData.id
+    let password = ''
+    socket.auth = { username: username, password: password };
 }
 
 /**

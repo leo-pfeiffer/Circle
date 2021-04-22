@@ -4,9 +4,8 @@
 
 import {
     client,
-    destroySocket, eventData, getUpdateCalendar,
+    eventData, getUpdateCalendar,
     goToCommunity, goToProfile,
-    joinRoom,
     search,
     setState,
     allCommunities,
@@ -50,7 +49,6 @@ const makeHeaderVue = function () {
             },
             logout: function () {
                 setState('logout')
-                destroySocket();
             },
             search: function () {
                 // don't do anything if no search term was entered
