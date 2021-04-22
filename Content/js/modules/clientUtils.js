@@ -141,10 +141,9 @@ export const updateCalendar = Vue.observable({
 })
 
 /**
- * Vue observable for calendar updates.
+ * Vue observable for calendar updates of the community and the dashboard.
  * */
 export const eventData = Vue.observable({
-    //TODO
     event: null
 })
 
@@ -228,13 +227,16 @@ const getMostRecentActivities = function () {
             obj.thread = { id: activity.thread.id, name: activity.thread.title }
             obj.comment = {
                 author: activity.comment.text.author.userName,
-                time: formatDateTime(new Date(activity.comment.text.datetime)),
+                time: new Date(activity.comment.text.datetime),
                 text: activity.comment.text.text
             }
 
             //storing the returned objects in the Vue observable
             mostRecentActivities.activities.push(obj)
         })
+
+        // sort in descending order
+        mostRecentActivities.activities.sort((a, b) => b.comment.time - a.comment.time)
     }).catch(err => console.log(err))
 }
 

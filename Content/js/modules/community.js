@@ -131,14 +131,14 @@ const makeCommunityCalendarVue = function() {
                 return timeOfDayFormatter(new Date(datetime))
             },
             /**
-             * TODO
+             * Save the currently selected event.
              * @param {string} event 
              */
             setSelectedEvent: function(event) {
                 eventData.event = event
             },
             /**
-             * Go to the profile with ID `userId`
+             * Go to the profile with ID `userId`.
              * @param {string} userId 
              */
             goToProfile: function (userId) {
@@ -298,7 +298,6 @@ const makeCommunityFeedVue = function() {
     const communityFeedVue = new Vue({
         el: '#community-feed',
         data: {
-            // todo Threads should be sorted by most recent first -> maybe make computed property for this
             newComments: {},
             newThread: {
                 title: '',

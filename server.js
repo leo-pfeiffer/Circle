@@ -554,7 +554,6 @@ let getUserEvents = function (req, res, next) {
  * */
 let getUserEventsOfCommunity = function (req, res, next) {
 
-    // todo get from auth
     const userId = req.userId
     const communityId = req.body.communityId
 

@@ -3,7 +3,7 @@
  * */
 
 import {
-    client, eventData,
+    client, eventData, formatDateTime,
     goToCommunity, goToProfile,
     isDateMatch,
     mostRecentActivities,
@@ -63,7 +63,15 @@ const makeFeedVue = function () {
                 return client.state;
             },
             mostRecentActivities() {
-                return mostRecentActivities.activities;
+
+                // format the datetime
+                const activities = []
+                mostRecentActivities.activities.forEach(obj => {
+                    obj.comment.time = formatDateTime(obj.comment.time)
+                    activities.push(obj)
+                })
+
+                return activities;
             }
         },
         methods: {
