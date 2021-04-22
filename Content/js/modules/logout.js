@@ -2,9 +2,12 @@
  * This file contains the vue components of the logout.
  * */
 
-import {client, setState} from './clientUtils.js'
+import { client, setState } from './clientUtils.js'
 
-const makeLogoutVue = function() {
+/**
+ * This function contains the functionality for user login out.
+ * */
+const makeLogoutVue = function () {
     const logoutVue = new Vue({
         el: '#logout',
         computed: {

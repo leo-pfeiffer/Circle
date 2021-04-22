@@ -2,12 +2,12 @@
  * This file contains the vue components of the login.
  * */
 
-import {client, makeSocket, setState} from './clientUtils.js'
+import { client, makeSocket, setState } from './clientUtils.js'
 
 /**
  * This function contains the functionality for user login, autheticate and new user registration.
  * */
-const makeLoginVue = function() {
+const makeLoginVue = function () {
     const loginVue = new Vue({
         el: '#login',
         data: {
@@ -37,14 +37,14 @@ const makeLoginVue = function() {
             }
         },
         methods: {
-            login: function() {
+            login: function () {
 
                 this.message = "";
 
                 // set the user key
                 client.userKey = btoa(this.username + ':' + this.password)
 
-                fetch('/api/login',{
+                fetch('/api/login', {
                     headers: {
                         "Authorization": "Basic " + client.userKey,
                         "Content-Type": "application/json"
@@ -68,7 +68,7 @@ const makeLoginVue = function() {
                     this.message = "Wrong username or password."
                 })
             },
-            register: function() {
+            register: function () {
 
                 this.message = ''
 
@@ -105,7 +105,7 @@ const makeLoginVue = function() {
                     }).catch((err) => console.log(err))
                 }
             },
-            saveUploadedPicture: function(event) {
+            saveUploadedPicture: function (event) {
                 if (!event.target.files.length) return;
                 const imgFile = event.target.files[0]
 
@@ -120,18 +120,18 @@ const makeLoginVue = function() {
                 // read the imgFile in as data URL
                 reader.readAsDataURL(imgFile);
             },
-            toggleEntryType: function() {
+            toggleEntryType: function () {
                 // reset data
                 this.username = "";
                 this.password = "",
-                this.passwordConfirm = "";
+                    this.passwordConfirm = "";
                 this.email = "";
                 this.gender = "";
                 this.age = "";
                 this.location = "";
                 this.picture = null;
 
-                this.entryType = this.entryType === 'login' ? 'register': 'login';
+                this.entryType = this.entryType === 'login' ? 'register' : 'login';
             }
         }
     })
