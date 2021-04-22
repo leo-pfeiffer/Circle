@@ -9,7 +9,7 @@ import {
 } from './clientUtils.js'
 
 /**
- * Function for the profile information.
+ * Function to display profile information.
  * */
 const makeProfileInfoVue = function () {
     const profileInfoVue = new Vue({
@@ -39,9 +39,12 @@ const makeProfileInfoVue = function () {
             newTag: ''
         },
         methods: {
+            /**
+             * Add tags/interests to user profile.
+             */
             addTag: function () {
                 if (this.userData.interests.includes(this.newTag)) {
-                    console.log("new tag already in tags.")
+                    //console.log("New tag already in tags.")
                     return;
                 }
                 if ((this.newTag.length <= 20) && (this.newTag.length > 0)) {
@@ -68,9 +71,13 @@ const makeProfileInfoVue = function () {
                     }).catch(err => console.log(err))
                 }
                 else {
-                    console.log("tag requires length 1 <= x <= 20.")
+                    //console.log("Tag requires length 1 <= x <= 20.")
                 }
             },
+            /**
+             * Remove tags/interest from user profile.
+             * @param {string} tag 
+             */
             removeTag: function (tag) {
                 fetch('/api/remove-tag-user/', {
                     method: "POST",
@@ -99,9 +106,8 @@ const makeProfileInfoVue = function () {
 }
 
 /**
-* Function for the user stats
+* Function to display graphs in user profile.
 * */
-
 const makeUserStatsVue = function () {
     const userStatsVue = new Vue({
         el: '#userStats',
@@ -114,9 +120,8 @@ const makeUserStatsVue = function () {
 }
 
 /**
-* Function for the user profile upload
+* Function tp upload a profile picture for the user.
 * */
-
 const makeProfilePictureUploadVue = function () {
     const profileInfoVue = new Vue({
         el: '#profile-picture-upload-modal',
@@ -135,6 +140,10 @@ const makeProfilePictureUploadVue = function () {
             },
         },
         methods: {
+            /**
+             * Saving the uploaded picture.
+             * @param {Event} event 
+             */
             saveUploadedPicture: function (event) {
                 if (!event.target.files.length) return;
                 const imgFile = event.target.files[0]
@@ -150,6 +159,9 @@ const makeProfilePictureUploadVue = function () {
                 // read the imgFile in as data URL
                 reader.readAsDataURL(imgFile);
             },
+            /**
+             * Uploading the picture to the User object in the DB.
+             */
             uploadPicture: function () {
                 fetch('/api/update-user-profile-picture/', {
                     method: "POST",
@@ -179,9 +191,8 @@ const makeProfilePictureUploadVue = function () {
 }
 
 /**
-* Function for the user profile update
+* Function to update the user's profile info.
 * */
-
 const makeUpdateProfileInfoVue = function () {
     const profileInfoVue = new Vue({
         el: '#profile-info-modal',
@@ -202,10 +213,12 @@ const makeUpdateProfileInfoVue = function () {
             }
         },
         methods: {
+            /**
+             * Updating user's info in the DB.
+             */
             updateInfo: function () {
                 //checking if strings are empty while updating user info
                 //and assigning current values if empty
-
                 if (this.newEmail === '') {
                     this.newEmail = client.profileData.userEmail
                 }
