@@ -693,7 +693,10 @@
                                             </a>
                                             <div id="collapseUsers" class="collapse">
                                                 <span v-for="u in this.communityData.users">
-                                                    <img v-bind:src="u.picture" class="small-user-img is-link" v-bind:title="u.userName" v-on:click="goToProfile(u.id)">
+                                                    <!-- show picture if available-->
+                                                    <img v-show="u.picture !== '' && u.picture !== null" v-bind:src="u.picture" class="small-user-img is-link" v-bind:title="u.userName" v-on:click="goToProfile(u.id)">
+                                                    <!-- else show icon -->
+                                                    <i v-show="u.picture === '' || u.picture === null" class="small-user-img fas fa-user is-link" v-bind:title="u.userName" v-on:click="goToProfile(u.id)"></i>
                                                 </span>
                                             </div>
                                         </div>
