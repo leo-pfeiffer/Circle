@@ -47,6 +47,13 @@ const levenshteinDistance = function (userInterest = '', communityTag = '') {
  * */
 const makeRecommendation = function(allCommunitiesTags, userInterests) {
 
+    // for empty userInterests, return score 1 for all
+    if (userInterests.length === 0) {
+        let result = {};
+        allCommunitiesTags.forEach(obj => {result[obj.id] = 1})
+        return result
+    }
+
     /**
      * Contains ranking scores.
      * @type {Object<string, Number>}
@@ -57,6 +64,12 @@ const makeRecommendation = function(allCommunitiesTags, userInterests) {
     for (let i=0; i < allCommunitiesTags.length; i++) {
         // for every community tag
         const scores = [];
+
+        // skip communities without tags
+        if (allCommunitiesTags[i].tags.length === 0) {
+            continue
+        }
+
         for (let tag of allCommunitiesTags[i].tags) {
 
             const communityTag = tag.toLowerCase();
