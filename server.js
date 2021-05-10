@@ -26,7 +26,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 
-const API_PORT = 3000;
+const API_PORT = process.env.PORT || 3000;
 
 /**
  * Basic middleware function that is used for basic authentication upon requests that require it.
