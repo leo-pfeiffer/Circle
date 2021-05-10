@@ -1156,7 +1156,7 @@ app.get('/api/get-all-community-tags', authenticate, getAllCommunityTags);
 app.get('/api/proxy/joke', getJoke);
 
 // Set the static folder
-app.use(express.static('content'));
+app.use(express.static('Content'));
 
 function run() {
     // initialise the database
