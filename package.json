@@ -1,5 +1,5 @@
 {
-  "name": "cs5003-p3",
+  "name": "circle",
   "version": "1.0.0",
   "description": "Community hub built as part of Practical 3 of CS5003 at the University of St Andrews",
   "main": "server.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "ssh://ljp9@ljp9.host.cs.st-andrews.ac.uk:/cs/group/cs5003-group20/repos/cs5003-p3"
+    "url": "git@github.com:leo-pfeiffer/Circle.git"
   },
   "keywords": [
     "community",

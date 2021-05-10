@@ -6,8 +6,13 @@
  * @type {MongoClient}
  * */
 const config = require('./config-db.js');
+
+const database = process.env.DATABASE;
+const user = process.env.DBUSER;
+const password = process.env.DBPASSWORD;
+
 const MongoClient = require('mongodb').MongoClient;
-const fullurl = `mongodb://${config.username}:${config.password}@${config.url}:${config.port}/${config.database}?authSource=admin`;
+const fullurl = `mongodb+srv://${user}:${password}@playground.eqgtb.mongodb.net/${database}?retryWrites=true&w=majority&`;
 const sanitisedUrl = fullurl.replace(/:([^:@]{1,})@/, ':****@');
 
 const client = new MongoClient(fullurl, { useUnifiedTopology: true });
